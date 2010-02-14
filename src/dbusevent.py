@@ -42,8 +42,8 @@ class DbusEvent:
     def button_handler(self, sender, destination, path):
         if sender == 'ButtonPressed':
             if destination == 'volume-up':
-                self.main.change_volume('up')
+                self.main.change_volume('up', True)
             elif destination == 'volume-down':
-                self.main.change_volume('down')
+                self.main.change_volume('down', True)
             elif destination.startswith('mute'):
-                self.main.change_volume('mute')
+                self.main.change_volume('mute', True)
