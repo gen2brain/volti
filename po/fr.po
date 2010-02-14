@@ -1,0 +1,139 @@
+# French translations for volti package.
+# Copyright (C) 2010 THE volti'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the volti package.
+# Jean-Alexandre Anglès d'Auriac <archidiacredusquig@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: volti 0.1.7\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-11 10:29+0100\n"
+"PO-Revision-Date: 2010-02-12 01:12+0100\n"
+"Last-Translator: Jean-Alexandre Anglès d'Auriac <archidiacredusquig@gmail."
+"com>\n"
+"Language-Team: français <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ../src/scale.py:79 ../src/menu.py:53 ../src/preferences.py:294
+#: ../src/main.py:207 ../src/main.py:218
+msgid "Muted"
+msgstr "Muêt"
+
+#: ../src/menu.py:28 ../data/preferences.glade.h:12
+msgid "Mute"
+msgstr "Rendre muêt"
+
+#: ../src/menu.py:33 ../data/preferences.glade.h:17
+msgid "Show Mixer"
+msgstr "Montrer le mixeur"
+
+#: ../src/preferences.py:210
+msgid "Choose external mixer"
+msgstr "Choisissez un mixeur externe"
+
+#: ../src/preferences.py:216
+msgid "Audio Mixers"
+msgstr "Mixeurs audio"
+
+#: ../src/preferences.py:219
+msgid "All files"
+msgstr "Tous les fichiers"
+
+#: ../src/main.py:229
+msgid "Output"
+msgstr "Sortie"
+
+#: ../src/main.py:229 ../src/main.py:236
+msgid "Card"
+msgstr "Carte"
+
+#: ../src/main.py:229 ../src/main.py:236 ../data/preferences.glade.h:11
+msgid "Mixer"
+msgstr "Mixeur"
+
+#: ../data/preferences.glade.h:1
+msgid "Backend:"
+msgstr "Arrière-plan :"
+
+#: ../data/preferences.glade.h:2
+msgid "Browse"
+msgstr "Naviguer"
+
+#: ../data/preferences.glade.h:3
+msgid "Close"
+msgstr "Fermer"
+
+#: ../data/preferences.glade.h:4
+msgid "Enable desktop notifications"
+msgstr "Activer les notifications"
+
+#: ../data/preferences.glade.h:5
+msgid "Enable multimedia keys"
+msgstr "Activer les touches multimédia"
+
+#: ../data/preferences.glade.h:6
+msgid "External mixer:"
+msgstr "Mixeurs externes :"
+
+#: ../data/preferences.glade.h:7
+msgid "Hal"
+msgstr "HAL"
+
+#: ../data/preferences.glade.h:8
+msgid "Hardware"
+msgstr "Matériel"
+
+#: ../data/preferences.glade.h:9
+msgid "Keyboard"
+msgstr "Clavier"
+
+#: ../data/preferences.glade.h:10
+msgid "Middle click toggles:"
+msgstr "Clic roulette pour basculer :"
+
+#: ../data/preferences.glade.h:13
+msgid "Notification timeout:"
+msgstr "Délai d'expiration des notifications :"
+
+#: ../data/preferences.glade.h:14
+msgid "Run in terminal"
+msgstr "Lancer dans un terminal"
+
+#: ../data/preferences.glade.h:15
+msgid "Select a mixer to control:"
+msgstr "Choisissez le mixeur à contrôler :"
+
+#: ../data/preferences.glade.h:16
+msgid "Select audio card:"
+msgstr "Choisissez une carte son :"
+
+#: ../data/preferences.glade.h:18
+msgid "Show scale value"
+msgstr "Montre la valeur de mise à l'échelle"
+
+#: ../data/preferences.glade.h:19
+msgid "Show tooltip"
+msgstr "Montre l'infobulle"
+
+#: ../data/preferences.glade.h:20
+msgid "UI"
+msgstr "Interface"
+
+#: ../data/preferences.glade.h:21
+msgid "Volti Preferences"
+msgstr "Préférences de Volti"
+
+#: ../data/preferences.glade.h:22
+msgid "Volume increment:"
+msgstr "Pas d'augmentation du volume :"
+
+#: ../data/preferences.glade.h:23
+msgid "Xlib"
+msgstr "Xlib"
+
+#: ../data/preferences.glade.h:24
+msgid "seconds"
+msgstr "secondes"
