@@ -1,0 +1,39 @@
+Volti is an GTK+ application for controlling audio volume from system tray/notification area.
+
+Features:
+
+- no pulseaudio, gstreamer, phonon etc. only alsa is needed
+- uses external mixer that you can choose, it goes nicely with gnome-alsamixer
+- left click opens volume scale (slider)
+- scroll wheel on tray icon changes volume, increment in percents is configurable
+- you can configure middle click to toggle 'mute' or 'show mixer'
+- nice tooltip with card and volume info
+- support multimedia keys on keyboard
+- support desktop notifications on keys events
+
+Dependencies:
+
+- pygtk 2.16.0 or later
+- pyalsaaudio 0.6 or later
+- dbus-python (optional, used for keys events via hal and for notifications)
+- python-xlib 0.15rc1 or later (optional, used for keys events)
+
+Install:
+
+Run 'python setup.py install'.
+You can also start application without installing, just run './volti'.
+Gentoo users can use ebuild provided in data/dist directory.
+
+Usage:
+
+Start volti from your applications menu or run 'volti' from terminal.
+You will probably want to add volti to autostart.
+
+Website:
+
+http://code.google.com/p/volti/
+
+Bugs:
+
+Please submit bug reports at:
+http://code.google.com/p/volti/issues/entry

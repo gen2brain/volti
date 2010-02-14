@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Volti
+Exec=volti
+Terminal=false
+Type=Application
+Icon=multimedia-volume-control
+Comment=Tray Audio Volume Control
+Categories=Audio;AudioVideo;

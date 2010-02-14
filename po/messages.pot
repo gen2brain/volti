@@ -1,0 +1,138 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-11 10:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/scale.py:79 ../src/menu.py:53 ../src/preferences.py:294
+#: ../src/main.py:207 ../src/main.py:218
+msgid "Muted"
+msgstr ""
+
+#: ../src/menu.py:28 ../data/preferences.glade.h:12
+msgid "Mute"
+msgstr ""
+
+#: ../src/menu.py:33 ../data/preferences.glade.h:17
+msgid "Show Mixer"
+msgstr ""
+
+#: ../src/preferences.py:210
+msgid "Choose external mixer"
+msgstr ""
+
+#: ../src/preferences.py:216
+msgid "Audio Mixers"
+msgstr ""
+
+#: ../src/preferences.py:219
+msgid "All files"
+msgstr ""
+
+#: ../src/main.py:229
+msgid "Output"
+msgstr ""
+
+#: ../src/main.py:229 ../src/main.py:236
+msgid "Card"
+msgstr ""
+
+#: ../src/main.py:229 ../src/main.py:236 ../data/preferences.glade.h:11
+msgid "Mixer"
+msgstr ""
+
+#: ../data/preferences.glade.h:1
+msgid "Backend:"
+msgstr ""
+
+#: ../data/preferences.glade.h:2
+msgid "Browse"
+msgstr ""
+
+#: ../data/preferences.glade.h:3
+msgid "Close"
+msgstr ""
+
+#: ../data/preferences.glade.h:4
+msgid "Enable desktop notifications"
+msgstr ""
+
+#: ../data/preferences.glade.h:5
+msgid "Enable multimedia keys"
+msgstr ""
+
+#: ../data/preferences.glade.h:6
+msgid "External mixer:"
+msgstr ""
+
+#: ../data/preferences.glade.h:7
+msgid "Hal"
+msgstr ""
+
+#: ../data/preferences.glade.h:8
+msgid "Hardware"
+msgstr ""
+
+#: ../data/preferences.glade.h:9
+msgid "Keyboard"
+msgstr ""
+
+#: ../data/preferences.glade.h:10
+msgid "Middle click toggles:"
+msgstr ""
+
+#: ../data/preferences.glade.h:13
+msgid "Notification timeout:"
+msgstr ""
+
+#: ../data/preferences.glade.h:14
+msgid "Run in terminal"
+msgstr ""
+
+#: ../data/preferences.glade.h:15
+msgid "Select a mixer to control:"
+msgstr ""
+
+#: ../data/preferences.glade.h:16
+msgid "Select audio card:"
+msgstr ""
+
+#: ../data/preferences.glade.h:18
+msgid "Show scale value"
+msgstr ""
+
+#: ../data/preferences.glade.h:19
+msgid "Show tooltip"
+msgstr ""
+
+#: ../data/preferences.glade.h:20
+msgid "UI"
+msgstr ""
+
+#: ../data/preferences.glade.h:21
+msgid "Volti Preferences"
+msgstr ""
+
+#: ../data/preferences.glade.h:22
+msgid "Volume increment:"
+msgstr ""
+
+#: ../data/preferences.glade.h:23
+msgid "Xlib"
+msgstr ""
+
+#: ../data/preferences.glade.h:24
+msgid "seconds"
+msgstr ""

@@ -1,0 +1,41 @@
+v0.1.7 February 11, 2010:
+
+    * localization support
+    * desktop notifications on keys events
+    * Xlib backend for keys, for those that do not like hal or use xmodmap
+
+v0.1.6 January 16, 2010:
+
+    * support multimedia keys via dbus/hal, thanks to Jon Nettleton <jon.nettleton@gmail.com> for the patch
+
+v0.1.5 January 15, 2010:
+
+    * fix bug when saving scale window position
+    * fix window must be realized before allocation
+    * update mute checkitem also when menu popup
+    * exit if not alsaaudio >= 0.6
+
+v0.1.4 January 10, 2010:
+
+    * first public release
+
+v0.1.3 December 24, 2009:
+
+    * switch back to pyalsaaudio, it have polldescriptors now
+    * cleanup
+
+v0.1.2 November 23, 2009:
+
+    * use distutils instead of Makefile
+
+v0.1.1  October 29, 2009:
+
+    * switch from pyalsaaudio to pyalsa
+    * added preferences dialog
+    * added Makefile
+    * added volti.desktop
+    * status icon was not showing at start when volume=0
+
+v0.1.0  October 4, 2009:
+
+    * Initial release
