@@ -36,7 +36,9 @@ prefs = {
     "keys": 0,
     "keys_backend": "hal",
     "show_notify": 0,
-    "notify_timeout": 2.0
+    "notify_timeout": 2.0,
+    "notify_position": 0,
+    "notify_body": '<span font_desc="14" weight="bold">{volume}</span>\n<small>{card}\n{mixer}</small>'
     }
 
 _preferences = None
@@ -54,6 +56,56 @@ class Preferences:
 
         self.read_file()
 
+    def read_file(self):
+        self.cp.read(self.main.config.CONFIG_FILE)
+        for option in self.cp.options("global"):
+            prefs[option.lower()] = self.cp.get("global", option).strip()
+        self.set_section()
+        prefs["control"] = self.cp.get(self.section, "control").strip()
+
+    def write_file(self):
+        if not os.path.isdir(self.main.config.CONFIG_DIR):
+            try:
+                os.makedirs(self.main.config.CONFIG_DIR)
+            except OSError:
+                pass
+        for section in self.section, "global":
+            if not self.cp.has_section(section):
+                self.cp.add_section(section)
+        for k,v in prefs.items():
+            if k in ["control"]:
+                self.cp.set(self.section, k, v)
+            else:
+                self.cp.set("global", k, v)
+        self.cp.write(open(self.main.config.CONFIG_FILE, "w"))
+
+    def open(self, widget=None, data=None):
+        global _preferences
+        if _preferences is None:
+            _preferences = Preferences(self.main)
+            _preferences.init_builder()
+            _preferences.init_combobox()
+            _preferences.init_treeview()
+            _preferences.window.show_all()
+        else:
+            _preferences.window.present()
+
+    def close(self, widget=None):
+        global _preferences
+        start, end = self.notify_body_text.get_buffer().get_bounds()
+        body = self.notify_body_text.get_buffer().get_text(start, end)
+        prefs["notify_body"] = body
+        self.main.notify_body = body
+
+        self.write_file()
+        if _preferences is not None:
+            _preferences.window.destroy()
+            _preferences = None
+
+    def set_section(self):
+        self.section = "card-%s" % prefs["card_index"]
+
+    def init_builder(self):
         self.glade = os.path.join(self.main.config.RES_DIR, "preferences.glade")
         self.tree = gtk.Builder()
         self.tree.set_translation_domain(self.main.config.APP_NAME)
@@ -106,6 +158,12 @@ class Preferences:
         self.notify_checkbutton = self.tree.get_object("notify_checkbutton")
         notify_handler_id = self.notify_checkbutton.connect("toggled", self.on_notify_toggled)
 
+        self.notify_body_text = self.tree.get_object("notify_body_text")
+        self.notify_body_text.get_buffer().set_text(prefs["notify_body"])
+
+        self.position_checkbutton = self.tree.get_object("position_checkbutton")
+        position_handler_id = self.position_checkbutton.connect("toggled", self.on_position_toggled)
+
         self.timeout_spinbutton = self.tree.get_object("timeout_spinbutton")
         self.timeout_spinbutton.set_value(float(prefs["notify_timeout"]))
         self.timeout_spinbutton.connect("value_changed", self.on_timeout_spinbutton_changed)
@@ -128,27 +186,11 @@ class Preferences:
         self.notify_checkbutton.set_active(bool(int(prefs["show_notify"])))
         self.notify_checkbutton.handler_unblock(notify_handler_id)
 
+        self.position_checkbutton.handler_block(position_handler_id)
+        self.position_checkbutton.set_active(bool(int(prefs["notify_position"])))
+        self.position_checkbutton.handler_unblock(position_handler_id)
+
         self.set_sensitive(bool(int(prefs["keys"])))
-
-    def open(self, widget=None, data=None):
-        global _preferences
-        if _preferences is None:
-            _preferences = Preferences(self.main)
-            _preferences.init_combobox()
-            _preferences.init_treeview()
-            _preferences.window.show_all()
-        else:
-            _preferences.window.present()
-
-    def close(self, widget=None):
-        global _preferences
-        self.write_file()
-        if _preferences is not None:
-            _preferences.window.destroy()
-            _preferences = None
-
-    def set_section(self):
-        self.section = "card-%s" % prefs["card_index"]
 
     def init_combobox(self):
         icon_theme = gtk.icon_theme_get_default()
@@ -241,8 +283,7 @@ class Preferences:
     def custom_mixer_filter(self, filter_info=None, data=None):
         mixers = ["aumix", "alsamixer", "alsamixergui", "gamix", "gmixer", "gnome-alsamixer", "gnome-volume-control"]
         if filter_info[2] in mixers:
-            if filter_info[3] == "application/x-executable":
-                return True
+            return True
         return False
 
     def on_combobox_changed(self, widget=None):
@@ -338,29 +379,48 @@ class Preferences:
             self.xlib_radiobutton.set_sensitive(False)
             self.notify_checkbutton.set_sensitive(False)
             self.timeout_spinbutton.set_sensitive(False)
+            self.position_checkbutton.set_sensitive(False)
+            self.notify_body_text.set_sensitive(False)
         else:
             self.hal_radiobutton.set_sensitive(True)
             self.xlib_radiobutton.set_sensitive(True)
             self.notify_checkbutton.set_sensitive(True)
             if prefs["show_notify"] and self.main.notify:
                 self.timeout_spinbutton.set_sensitive(True)
+                self.position_checkbutton.set_sensitive(True)
+                self.notify_body_text.set_sensitive(True)
             else:
                 self.timeout_spinbutton.set_sensitive(False)
+                self.position_checkbutton.set_sensitive(False)
+                self.notify_body_text.set_sensitive(False)
 
     def on_notify_toggled(self, widget):
         active = widget.get_active()
         prefs["show_notify"] = int(active)
-        self.main.show_notify = bool(int(active))
+        self.main.show_notify = active
         self.main.init_notify()
         if active and self.main.notify:
             self.timeout_spinbutton.set_sensitive(True)
+            self.position_checkbutton.set_sensitive(True)
+            self.notify_body_text.set_sensitive(True)
+            volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
+            self.main.update_notify(volume)
         else:
             self.timeout_spinbutton.set_sensitive(False)
+            self.position_checkbutton.set_sensitive(False)
+            self.notify_body_text.set_sensitive(False)
+
+    def on_position_toggled(self, widget):
+        active = widget.get_active()
+        prefs["notify_position"] = int(active)
+        self.main.notify_position = active
+        volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
+        self.main.update_notify(volume)
 
     def on_timeout_spinbutton_changed(self, widget):
-        scale_increment = widget.get_value()
-        prefs["notify_timeout"] = scale_increment
-        self.main.notify_timeout = scale_increment
+        timeout = widget.get_value()
+        prefs["notify_timeout"] = timeout
+        self.main.notify_timeout = timeout
 
     def on_radio_hal_toggled(self, widget):
         if widget.get_active():
@@ -373,26 +433,3 @@ class Preferences:
             prefs["keys_backend"] = "xlib"
             self.main.keys_backend = "xlib"
             self.main.init_keys_events()
-
-    def read_file(self):
-        self.cp.read(self.main.config.CONFIG_FILE)
-        for option in self.cp.options("global"):
-            prefs[option.lower()] = self.cp.get("global", option).strip()
-        self.set_section()
-        prefs["control"] = self.cp.get(self.section, "control").strip()
-
-    def write_file(self):
-        if not os.path.isdir(self.main.config.CONFIG_DIR):
-            try:
-                os.makedirs(self.main.config.CONFIG_DIR)
-            except OSError:
-                pass
-        for section in self.section, "global":
-            if not self.cp.has_section(section):
-                self.cp.add_section(section)
-        for k,v in prefs.items():
-            if k in ["control"]:
-                self.cp.set(self.section, k, v)
-            else:
-                self.cp.set("global", k, v)
-        self.cp.write(open(self.main.config.CONFIG_FILE, "w"))

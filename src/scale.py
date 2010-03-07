@@ -35,13 +35,10 @@ class VolumeScale(gtk.VScale):
         self.set_range(0,100)
         self.set_increments(self.main.scale_increment, 10)
         self.add_events(gtk.gdk.SCROLL_MASK)
-
-        # declare height
         self.set_size_request(-1, 128)
 
-        # scale window
-        self.swindow = gtk.Window(type=gtk.WINDOW_POPUP)
-        self.swindow.resize(1, 1)
+        self.win = gtk.Window(type=gtk.WINDOW_POPUP)
+        self.win.resize(1, 1)
 
         align = gtk.Alignment()
         align.set_padding(10, 10, 4, 4)
@@ -51,7 +48,7 @@ class VolumeScale(gtk.VScale):
 
         align.add(self)
         frame.add(align)
-        self.swindow.add(frame)
+        self.win.add(frame)
 
         self.x, self.y = None, None
         self.screen, self.rectangle, self.orientation = self.main.get_geometry()
@@ -60,10 +57,10 @@ class VolumeScale(gtk.VScale):
         self.connect("button_press_event", self.on_scale_button_press_event)
         self.connect("button_release_event", self.on_scale_button_release_event)
         self.connect("scroll_event", self.on_scale_scroll_event)
-        self.swindow.connect("button_press_event", self.on_window_button_press_event)
-        self.swindow.connect("key_release_event", self.on_window_key_release_event)
-        self.swindow.connect("scroll_event", self.on_window_scroll_event)
-        self.swindow.connect_after("realize", self.on_realize)
+        self.win.connect("button_press_event", self.on_window_button_press_event)
+        self.win.connect("key_release_event", self.on_window_key_release_event)
+        self.win.connect("scroll_event", self.on_window_scroll_event)
+        self.win.connect_after("realize", self.on_realize)
 
     def on_scale_value_changed(self, widget, data=None):
         if self.lock:
@@ -79,7 +76,6 @@ class VolumeScale(gtk.VScale):
         vol = _("Muted") if self.main.alsactrl.is_muted() else volume
 
         self.main.update_icon(vol)
-
         if self.main.show_tooltip:
             self.main.update_tooltip(vol)
 
@@ -91,8 +87,8 @@ class VolumeScale(gtk.VScale):
         self.lockid = gobject.timeout_add(10, self._unlock)
 
     def _unlock(self):
-        self.lockid = None
         self.lock = False
+        self.lockid = None
         self.main.key_press = False
         return False
 
@@ -137,62 +133,57 @@ class VolumeScale(gtk.VScale):
         self.move_window()
 
     def toggle_window(self):
-        if self.swindow.get_property("visible"):
-            # release grab and hide window
+        if self.win.get_property("visible"):
             self.release_grab()
         else:
-            # show, move and grab window
-            self.swindow.show_all()
+            self.win.show_all()
             self.move_window()
             self.grab_window()
 
     def move_window(self):
         screen,rectangle,orientation = self.main.get_geometry()
         if self.x and rectangle.x == self.rectangle.x and rectangle.y == self.rectangle.y:
-            self.swindow.move(self.x, self.y)
+            self.win.move(self.x, self.y)
         else:
             x, y = self.get_position()
-            self.swindow.move(x, y)
+            self.win.move(x, y)
             # save window position
             self.rectangle = rectangle
             self.x, self.y = x, y
 
     def grab_window(self):
-        # grab pointer
-        self.swindow.grab_add()
-        gtk.gdk.pointer_grab(self.swindow.window, True,
+        self.win.grab_add()
+        gtk.gdk.pointer_grab(self.win.window, True,
             gtk.gdk.BUTTON_PRESS_MASK |
             gtk.gdk.BUTTON_RELEASE_MASK |
             gtk.gdk.POINTER_MOTION_MASK |
             gtk.gdk.SCROLL_MASK)
 
-        # grab keyboard
         if gtk.gdk.pointer_is_grabbed():
-            if gtk.gdk.keyboard_grab(self.swindow.window, True) != gtk.gdk.GRAB_SUCCESS:
+            if gtk.gdk.keyboard_grab(self.win.window, True) != gtk.gdk.GRAB_SUCCESS:
                 self.release_grab()
                 return False
         else:
-            self.swindow.grab_remove()
-            self.swindow.hide()
+            self.win.grab_remove()
+            self.win.hide()
             return False
 
-        # grab focus
-        self.swindow.grab_focus()
+        self.win.grab_focus()
         return True
 
     def release_grab(self):
-        display = self.swindow.get_display()
+        display = self.win.get_display()
         display.keyboard_ungrab()
         display.pointer_ungrab()
-        self.swindow.grab_remove()
-        self.swindow.hide()
+        self.win.grab_remove()
+        self.win.hide()
 
     def get_position(self):
         screen,rectangle,orientation = self.main.get_geometry()
-        self.swindow.set_screen(screen)
+        self.win.set_screen(screen)
         monitor_num = screen.get_monitor_at_point(rectangle.x, rectangle.y)
         monitor = screen.get_monitor_geometry(monitor_num)
-        window = self.swindow.allocation
+        window = self.win.allocation
 
         if (rectangle.y + rectangle.height + window.height <= monitor.y + monitor.height):
             y = rectangle.y + rectangle.height

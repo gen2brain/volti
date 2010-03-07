@@ -72,6 +72,8 @@ class VolumeTray(gtk.StatusIcon):
         self.keys_backend = preferences.prefs["keys_backend"]
         self.show_notify = bool(int(preferences.prefs["show_notify"]))
         self.notify_timeout = float(preferences.prefs["notify_timeout"])
+        self.notify_position = bool(int(preferences.prefs["notify_position"]))
+        self.notify_body = preferences.prefs["notify_body"]
 
         self.alsactrl = AlsaControl(preferences.prefs)
         self.menu = PopupMenu(self)
@@ -143,6 +145,14 @@ class VolumeTray(gtk.StatusIcon):
                 self.keys_events = None
 
     def init_notify(self):
+        if self.notify:
+            self.notify.close()
+            del self.notify
+            self.notify = None
+
+        if not self.keys:
+            return
+
         if self.show_notify:
             if self.has_dbus:
                 try:
@@ -154,9 +164,6 @@ class VolumeTray(gtk.StatusIcon):
             else:
                 sys.stderr.write("Desktop notifications needs python-dbus module\n")
                 self.notify = None
-        else:
-            del self.notify
-            self.notify = None
 
     def on_button_press_event(self, widget, event, data=None):
         if event.button == 1:
@@ -198,13 +205,13 @@ class VolumeTray(gtk.StatusIcon):
 
         if event == "mute":
             self.menu.toggle_mute.set_active(not self.menu.toggle_mute.get_active())
-            if self.key_press and self.alsactrl.switch:
+            if self.key_press and self.alsactrl.mute_switch:
                 self.scale.emit("value_changed")
         else:
-            self.scale.set_value(volume)
             self.menu.toggle_mute.set_active(False)
+            self.scale.set_value(volume)
 
-    def get_icon(self, volume):
+    def get_icon_name(self, volume):
         if volume == 0 or volume == _("Muted"):
             icon = "audio-volume-muted"
         elif volume <= 33:
@@ -215,26 +222,24 @@ class VolumeTray(gtk.StatusIcon):
             icon = "audio-volume-high"
         return icon
 
-    def get_info(self, volume):
-        string = "" if volume == _("Muted") else "%"
+    def get_status_info(self, volume):
+        var = "" if volume == _("Muted") else "%"
         card_name = self.alsactrl.get_card_name()
         mixer_name = self.alsactrl.get_mixer_name()
-        return string, card_name, mixer_name
+        return var, card_name, mixer_name
 
     def update_icon(self, volume):
-        self.set_from_icon_name(self.get_icon(volume))
+        self.set_from_icon_name(self.get_icon_name(volume))
 
     def update_tooltip(self, volume):
-        string, card_name, mixer_name = self.get_info(volume)
+        var, card_name, mixer_name = self.get_status_info(volume)
         tooltip = "<b>%s: %s%s </b>\n<small>%s: %s\n%s: %s</small>" % (
-                _("Output"), volume, string, _("Card"), card_name, _("Mixer"), mixer_name)
+                _("Output"), volume, var, _("Card"), card_name, _("Mixer"), mixer_name)
         self.set_tooltip_markup(tooltip)
 
     def update_notify(self, volume):
-        string, card_name, mixer_name = self.get_info(volume)
-        icon = self.get_icon(volume)
-        self.notify.show(icon, '', '<span font_desc="14" weight="bold">%s%s</span>\n<small>%s: %s\n%s: %s</small>' % (
-                volume, string, _("Card"), card_name, _("Mixer"), mixer_name), self.notify_timeout)
+        icon = self.get_icon_name(volume)
+        self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
 
     def update(self, source=None, condition=None):
         if self.scale.lock:
@@ -242,8 +247,12 @@ class VolumeTray(gtk.StatusIcon):
         try:
             self.alsactrl = AlsaControl(preferences.prefs)
             volume = self.alsactrl.get_volume()
+            scale_value = self.scale.get_value()
             gtk.gdk.threads_enter()
-            self.scale.set_value(volume)
+            if volume != scale_value:
+                self.scale.set_value(volume)
+            else:
+                self.scale.emit("value_changed")
             gtk.gdk.threads_leave()
             return True
         except Exception, e:
@@ -264,7 +273,7 @@ class VolumeTray(gtk.StatusIcon):
                         term_full = which(term)
                     cmd = [term_full, "-e", self.mixer]
                 else:
-                    cmd = self.mixer
+                    cmd = which(self.mixer)
                 Popen(cmd, shell=False)
         except Exception, e:
             sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
@@ -290,7 +299,7 @@ class VolumeTray(gtk.StatusIcon):
         except KeyboardInterrupt:
             pass
 
-    def quit(self, widget):
+    def quit(self, widget=None):
         gtk.main_quit()
 
 if __name__ == "__main__":

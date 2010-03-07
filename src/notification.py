@@ -26,10 +26,26 @@ class Notification:
         self.notify = dbus.Interface(obj, 'org.freedesktop.Notifications')
         self.last_id = dbus.UInt32()
 
-    def show(self, icon, subject, msg, duration):
+    def show(self, icon, message, duration, volume):
+        body = self.format(message, volume)
         hints = {"urgency": dbus.Byte(0), "desktop-entry": dbus.String("volti")}
-        self.last_id = self.notify.Notify('audiovolume', self.last_id, icon, subject, msg, [], hints, duration * 1000)
+        if self.main.notify_position:
+            hints["x"], hints["y"] = self.get_position()
+        self.last_id = self.notify.Notify('audiovolume', self.last_id, icon, '', body, [], hints, duration * 1000)
 
     def close(self):
         if self.last_id:
             self.notify.CloseNotification(self.last_id)
+
+    def get_position(self):
+        screen,rectangle,orientation = self.main.get_geometry()
+        x = rectangle.x + rectangle.width/2
+        y = rectangle.y + rectangle.height/2
+        return x, y
+
+    def format(self, message, volume):
+        var, card_name, mixer_name = self.main.get_status_info(volume)
+        message = message.replace('{volume}', '%s%s' % (volume, var))
+        message = message.replace('{card}', '%s: %s' % (_("Card"), card_name))
+        message = message.replace('{mixer}', '%s: %s' % (_("Mixer"), mixer_name))
+        return message
