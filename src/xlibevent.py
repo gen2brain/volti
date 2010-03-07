@@ -21,8 +21,7 @@ import threading
 import gtk
 import gobject
 from Xlib.display import Display
-from Xlib import X
-from Xlib import XK
+from Xlib import X, XK
 
 
 class XlibEvent(gobject.GObject, threading.Thread):
@@ -36,6 +35,7 @@ class XlibEvent(gobject.GObject, threading.Thread):
         gobject.GObject.__init__(self)
         threading.Thread.__init__(self)
         self.setDaemon(True)
+        self.running = False
         self.main = MainInstance
 
         try:
@@ -60,9 +60,9 @@ class XlibEvent(gobject.GObject, threading.Thread):
         self.connect("volume-down", self.button_handler, "volume-down")
         self.connect("mute", self.button_handler, "mute")
 
-    def get_keycodes(self, list):
+    def get_keycodes(self, keys):
         keycodes = []
-        for keycode, index in list:
+        for keycode, index in keys:
             if keycode not in keycodes:
                 keycodes.append(keycode)
         return keycodes
