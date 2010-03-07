@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volti 0.1.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-11 10:29+0100\n"
+"POT-Creation-Date: 2010-03-07 19:44+0100\n"
 "PO-Revision-Date: 2010-02-09 12:34+0100\n"
 "Last-Translator: Milan Nikolic <gen2brain@gmail.com>\n"
 "Language-Team: Serbian\n"
@@ -17,42 +17,43 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../src/scale.py:79 ../src/menu.py:53 ../src/preferences.py:294
-#: ../src/main.py:207 ../src/main.py:218
-msgid "Muted"
-msgstr "Mutirano"
-
-#: ../src/menu.py:28 ../data/preferences.glade.h:12
+#: ../src/menu.py:28 ../data/preferences.glade.h:20
 msgid "Mute"
 msgstr "Mutiraj"
 
-#: ../src/menu.py:33 ../data/preferences.glade.h:17
+#: ../src/menu.py:33 ../data/preferences.glade.h:25
 msgid "Show Mixer"
 msgstr "Prikaži Mikser"
 
-#: ../src/preferences.py:210
-msgid "Choose external mixer"
-msgstr "Odaberi spoljni mikser"
+#: ../src/menu.py:53 ../src/main.py:215 ../src/main.py:226 ../src/scale.py:76
+#: ../src/preferences.py:338 ../src/preferences.py:406
+#: ../src/preferences.py:417
+msgid "Muted"
+msgstr "Mutirano"
 
-#: ../src/preferences.py:216
-msgid "Audio Mixers"
-msgstr "Mikseri"
-
-#: ../src/preferences.py:219
-msgid "All files"
-msgstr "Sve datoteke"
-
-#: ../src/main.py:229
+#: ../src/main.py:237
 msgid "Output"
 msgstr "Izlaz"
 
-#: ../src/main.py:229 ../src/main.py:236
+#: ../src/main.py:237 ../src/notification.py:49
 msgid "Card"
 msgstr "Karta"
 
-#: ../src/main.py:229 ../src/main.py:236 ../data/preferences.glade.h:11
+#: ../src/main.py:237 ../src/notification.py:50 ../data/preferences.glade.h:19
 msgid "Mixer"
 msgstr "Mikser"
+
+#: ../src/preferences.py:255
+msgid "Choose external mixer"
+msgstr "Odaberi spoljni mikser"
+
+#: ../src/preferences.py:261
+msgid "Audio Mixers"
+msgstr "Mikseri"
+
+#: ../src/preferences.py:264
+msgid "All files"
+msgstr "Sve datoteke"
 
 #: ../data/preferences.glade.h:1
 msgid "Backend:"
@@ -79,61 +80,77 @@ msgid "External mixer:"
 msgstr "Spoljni mikser:"
 
 #: ../data/preferences.glade.h:7
+msgid ""
+"Polja sa formom {polje} će biti zamenjena odgovarajućom vrednošću.\n"
+"\n"
+"Na raspolaganju su:\n"
+"{volume}\n"
+"{card}\n"
+"{mixer}\n"
+"\n"
+"Možete da koristite Pango markup jezik da formatirate tekst."
+msgstr ""
+
+#: ../data/preferences.glade.h:15
 msgid "Hal"
 msgstr "Hal"
 
-#: ../data/preferences.glade.h:8
+#: ../data/preferences.glade.h:16
 msgid "Hardware"
 msgstr "Hardver"
 
-#: ../data/preferences.glade.h:9
+#: ../data/preferences.glade.h:17
 msgid "Keyboard"
 msgstr "Tastatura"
 
-#: ../data/preferences.glade.h:10
+#: ../data/preferences.glade.h:18
 msgid "Middle click toggles:"
 msgstr "Srednji klik menja:"
 
-#: ../data/preferences.glade.h:13
-msgid "Notification timeout:"
-msgstr "Obaveštenje traje:"
+#: ../data/preferences.glade.h:21
+msgid "Position notification"
+msgstr "Pozicioniraj obaveštenja"
 
-#: ../data/preferences.glade.h:14
+#: ../data/preferences.glade.h:22
 msgid "Run in terminal"
 msgstr "Startuj u terminalu"
 
-#: ../data/preferences.glade.h:15
+#: ../data/preferences.glade.h:23
 msgid "Select a mixer to control:"
 msgstr "Odaberi mikser za kontrolu:"
 
-#: ../data/preferences.glade.h:16
+#: ../data/preferences.glade.h:24
 msgid "Select audio card:"
 msgstr "Odaberi zvučnu kartu:"
 
-#: ../data/preferences.glade.h:18
+#: ../data/preferences.glade.h:26
 msgid "Show scale value"
 msgstr "Prikaži vrednost skale"
 
-#: ../data/preferences.glade.h:19
+#: ../data/preferences.glade.h:27
 msgid "Show tooltip"
 msgstr "Prikaži tultip"
 
-#: ../data/preferences.glade.h:20
+#: ../data/preferences.glade.h:28
+msgid "Timeout:"
+msgstr "Trajanje:"
+
+#: ../data/preferences.glade.h:29
 msgid "UI"
 msgstr "Interfejs"
 
-#: ../data/preferences.glade.h:21
+#: ../data/preferences.glade.h:30
 msgid "Volti Preferences"
 msgstr "Volti Postavke"
 
-#: ../data/preferences.glade.h:22
+#: ../data/preferences.glade.h:31
 msgid "Volume increment:"
 msgstr "Povećanje zvuka:"
 
-#: ../data/preferences.glade.h:23
+#: ../data/preferences.glade.h:32
 msgid "Xlib"
 msgstr "Xlib"
 
-#: ../data/preferences.glade.h:24
+#: ../data/preferences.glade.h:33
 msgid "seconds"
 msgstr "sekunde"

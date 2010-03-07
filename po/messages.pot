@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-11 10:29+0100\n"
+"POT-Creation-Date: 2010-03-07 19:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,41 +16,42 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/scale.py:79 ../src/menu.py:53 ../src/preferences.py:294
-#: ../src/main.py:207 ../src/main.py:218
-msgid "Muted"
-msgstr ""
-
-#: ../src/menu.py:28 ../data/preferences.glade.h:12
+#: ../src/menu.py:28 ../data/preferences.glade.h:20
 msgid "Mute"
 msgstr ""
 
-#: ../src/menu.py:33 ../data/preferences.glade.h:17
+#: ../src/menu.py:33 ../data/preferences.glade.h:25
 msgid "Show Mixer"
 msgstr ""
 
-#: ../src/preferences.py:210
-msgid "Choose external mixer"
+#: ../src/menu.py:53 ../src/main.py:215 ../src/main.py:226 ../src/scale.py:76
+#: ../src/preferences.py:338 ../src/preferences.py:406
+#: ../src/preferences.py:417
+msgid "Muted"
 msgstr ""
 
-#: ../src/preferences.py:216
-msgid "Audio Mixers"
-msgstr ""
-
-#: ../src/preferences.py:219
-msgid "All files"
-msgstr ""
-
-#: ../src/main.py:229
+#: ../src/main.py:237
 msgid "Output"
 msgstr ""
 
-#: ../src/main.py:229 ../src/main.py:236
+#: ../src/main.py:237 ../src/notification.py:49
 msgid "Card"
 msgstr ""
 
-#: ../src/main.py:229 ../src/main.py:236 ../data/preferences.glade.h:11
+#: ../src/main.py:237 ../src/notification.py:50 ../data/preferences.glade.h:19
 msgid "Mixer"
+msgstr ""
+
+#: ../src/preferences.py:255
+msgid "Choose external mixer"
+msgstr ""
+
+#: ../src/preferences.py:261
+msgid "Audio Mixers"
+msgstr ""
+
+#: ../src/preferences.py:264
+msgid "All files"
 msgstr ""
 
 #: ../data/preferences.glade.h:1
@@ -78,61 +79,77 @@ msgid "External mixer:"
 msgstr ""
 
 #: ../data/preferences.glade.h:7
-msgid "Hal"
-msgstr ""
-
-#: ../data/preferences.glade.h:8
-msgid "Hardware"
-msgstr ""
-
-#: ../data/preferences.glade.h:9
-msgid "Keyboard"
-msgstr ""
-
-#: ../data/preferences.glade.h:10
-msgid "Middle click toggles:"
-msgstr ""
-
-#: ../data/preferences.glade.h:13
-msgid "Notification timeout:"
-msgstr ""
-
-#: ../data/preferences.glade.h:14
-msgid "Run in terminal"
+msgid ""
+"Fields of the form {field} are replaced by their corresponding value.\n"
+"\n"
+"Available fields are:\n"
+"{volume}\n"
+"{card}\n"
+"{mixer}\n"
+"\n"
+"You can use the Pango markup language to format the text."
 msgstr ""
 
 #: ../data/preferences.glade.h:15
-msgid "Select a mixer to control:"
+msgid "Hal"
 msgstr ""
 
 #: ../data/preferences.glade.h:16
-msgid "Select audio card:"
+msgid "Hardware"
+msgstr ""
+
+#: ../data/preferences.glade.h:17
+msgid "Keyboard"
 msgstr ""
 
 #: ../data/preferences.glade.h:18
-msgid "Show scale value"
-msgstr ""
-
-#: ../data/preferences.glade.h:19
-msgid "Show tooltip"
-msgstr ""
-
-#: ../data/preferences.glade.h:20
-msgid "UI"
+msgid "Middle click toggles:"
 msgstr ""
 
 #: ../data/preferences.glade.h:21
-msgid "Volti Preferences"
+msgid "Position notification"
 msgstr ""
 
 #: ../data/preferences.glade.h:22
-msgid "Volume increment:"
+msgid "Run in terminal"
 msgstr ""
 
 #: ../data/preferences.glade.h:23
-msgid "Xlib"
+msgid "Select a mixer to control:"
 msgstr ""
 
 #: ../data/preferences.glade.h:24
+msgid "Select audio card:"
+msgstr ""
+
+#: ../data/preferences.glade.h:26
+msgid "Show scale value"
+msgstr ""
+
+#: ../data/preferences.glade.h:27
+msgid "Show tooltip"
+msgstr ""
+
+#: ../data/preferences.glade.h:28
+msgid "Timeout:"
+msgstr ""
+
+#: ../data/preferences.glade.h:29
+msgid "UI"
+msgstr ""
+
+#: ../data/preferences.glade.h:30
+msgid "Volti Preferences"
+msgstr ""
+
+#: ../data/preferences.glade.h:31
+msgid "Volume increment:"
+msgstr ""
+
+#: ../data/preferences.glade.h:32
+msgid "Xlib"
+msgstr ""
+
+#: ../data/preferences.glade.h:33
 msgid "seconds"
 msgstr ""
