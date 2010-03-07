@@ -27,7 +27,7 @@ class AlsaControl():
         try:
             self.prefs = prefs
             self.muted = False
-            self.switch = True
+            self.mute_switch = True
             self.card_index = int(self.prefs["card_index"])
             self.control = self.prefs["control"]
             self.channel = alsa.MIXER_CHANNEL_ALL
@@ -74,10 +74,10 @@ class AlsaControl():
         global _old_volume, _muted
         try:
             self.mixer.setmute(mute, self.channel)
-            self.switch = True
+            self.mute_switch = True
         except alsa.ALSAAudioError, e:
             # element has no mute switch
-            self.switch = False
+            self.mute_switch = False
             if mute == 1:
                 _old_volume = self.get_volume()
                 self.set_volume(0)
@@ -114,9 +114,10 @@ class AlsaControl():
         for index in range(0, len(acards)):
             try:
                 mixer = alsa.mixers(index)[0]
-            except IndexError:
+            except Exception, e:
                 # card has no mixer control
                 cards.append(None)
+                sys.stderr.write("%s.%s: %s %s\n" % (__name__, sys._getframe().f_code.co_name, type(e), str(e)))
             else:
                 cards.append(acards[index])
         return cards
