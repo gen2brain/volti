@@ -1,6 +1,6 @@
 include setup.py volti AUTHORS README ChangeLog TODO COPYING
 recursive-include src/ *.py
-recursive-include po/ *.po *.pot
+recursive-include po/ *.po *.pot Makefile
 recursive-include data/ *.glade *.desktop
 recursive-include data/dist *
 recursive-include doc/ *

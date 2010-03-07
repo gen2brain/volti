@@ -1,3 +1,12 @@
+v0.1.8 March 7, 2010:
+
+    * notification message can now be formatted
+    * notification balloon can be positioned to point at status icon
+    * added German translation
+    * added Turkish translation
+    * added French translation
+    * fixed bug where notifications were not showing when using hal backend
+
 v0.1.7 February 11, 2010:
 
     * localization support

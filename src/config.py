@@ -21,7 +21,7 @@ class Config:
 
     def __init__(self):
         self.APP_NAME = "volti"
-        self.APP_VERSION = "0.1.7"
+        self.APP_VERSION = "0.1.8"
         self.RES_DIR = None
         self.LOCALE_DIR = None
 
