@@ -57,6 +57,7 @@ __builtin__._ = gettext.gettext
 class VolumeTray(gtk.StatusIcon):
 
     def __init__(self):
+        """ Constructor """
         gtk.StatusIcon.__init__(self)
 
         self.config = config
@@ -99,6 +100,7 @@ class VolumeTray(gtk.StatusIcon):
         gobject.io_add_watch(fd, eventmask, self.update)
 
     def init_keys_events(self):
+        """ Initialize keys events """
         if self.keys_events:
             if hasattr(self.keys_events, "stop"):
                 self.keys_events.stop()
@@ -145,6 +147,7 @@ class VolumeTray(gtk.StatusIcon):
                 self.keys_events = None
 
     def init_notify(self):
+        """ Initialize desktop notifications """
         if self.notify:
             self.notify.close()
             del self.notify
@@ -166,6 +169,7 @@ class VolumeTray(gtk.StatusIcon):
                 self.notify = None
 
     def on_button_press_event(self, widget, event, data=None):
+        """ Callback for button_press_event """
         if event.button == 1:
             self.scale.toggle_window()
         elif event.button == 2:
@@ -175,6 +179,7 @@ class VolumeTray(gtk.StatusIcon):
                 self.menu.toggle_mixer.set_active(not self.menu.toggle_mixer.get_active())
 
     def on_scroll_event(self, widget, event):
+        """ Callback for scroll_event """
         if event.direction == gtk.gdk.SCROLL_UP:
             self.change_volume("up")
         elif event.direction == gtk.gdk.SCROLL_DOWN:
@@ -184,6 +189,7 @@ class VolumeTray(gtk.StatusIcon):
                 self.notify.close()
 
     def on_popup_menu(self, status, button, time):
+        """ Show popup menu """
         self.menu.toggle_mixer.handler_block(self.menu.mixer_handler_id)
         self.menu.toggle_mixer.set_active(self.mixer_get_active())
         self.menu.toggle_mixer.handler_unblock(self.menu.mixer_handler_id)
@@ -195,6 +201,7 @@ class VolumeTray(gtk.StatusIcon):
         self.menu.popup(None, None, gtk.status_icon_position_menu, button, time, self)
 
     def change_volume(self, event, key_press=False):
+        """ Change volume """
         self.key_press = key_press
         volume = self.scale.get_value()
 
@@ -212,6 +219,7 @@ class VolumeTray(gtk.StatusIcon):
             self.scale.set_value(volume)
 
     def get_icon_name(self, volume):
+        """ Returns icon name for current volume """
         if volume == 0 or volume == _("Muted"):
             icon = "audio-volume-muted"
         elif volume <= 33:
@@ -223,25 +231,30 @@ class VolumeTray(gtk.StatusIcon):
         return icon
 
     def get_status_info(self, volume):
+        """ Returns status information """
         var = "" if volume == _("Muted") else "%"
         card_name = self.alsactrl.get_card_name()
         mixer_name = self.alsactrl.get_mixer_name()
         return var, card_name, mixer_name
 
     def update_icon(self, volume):
+        """ Update icon """
         self.set_from_icon_name(self.get_icon_name(volume))
 
     def update_tooltip(self, volume):
+        """ Update tooltip """
         var, card_name, mixer_name = self.get_status_info(volume)
         tooltip = "<b>%s: %s%s </b>\n<small>%s: %s\n%s: %s</small>" % (
                 _("Output"), volume, var, _("Card"), card_name, _("Mixer"), mixer_name)
         self.set_tooltip_markup(tooltip)
 
     def update_notify(self, volume):
+        """ Update notification """
         icon = self.get_icon_name(volume)
         self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
 
     def update(self, source=None, condition=None):
+        """ Update volume """
         if self.scale.lock:
             return True
         try:
@@ -261,6 +274,7 @@ class VolumeTray(gtk.StatusIcon):
             return False
 
     def toggle_mixer(self, widget=None):
+        """ Toggle mixer application """
         try:
             pid = self.mixer_get_pid()
             if pid:
@@ -281,6 +295,7 @@ class VolumeTray(gtk.StatusIcon):
                 __name__, sys._getframe().f_code.co_name, str(err)))
 
     def mixer_get_pid(self):
+        """ Get process id of mixer application """
         pid = Popen(["pidof", "-x", self.mixer], stdout=PIPE).communicate()[0]
         if pid:
             try:
@@ -290,11 +305,13 @@ class VolumeTray(gtk.StatusIcon):
         return None
 
     def mixer_get_active(self):
+        """ Returns status of mixer application """
         if self.mixer_get_pid():
             return True
         return False
 
     def main(self):
+        """ Main loop """
         gobject.threads_init()
         try:
             gtk.main()
@@ -302,6 +319,7 @@ class VolumeTray(gtk.StatusIcon):
             pass
 
     def quit(self, widget=None):
+        """ Quit main loop """
         gtk.main_quit()
 
 if __name__ == "__main__":

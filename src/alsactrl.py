@@ -24,6 +24,7 @@ MUTED = False
 class AlsaControl():
 
     def __init__(self, prefs):
+        """ Constructor """
         try:
             self.prefs = prefs
             self.muted = False
@@ -50,6 +51,7 @@ class AlsaControl():
                 sys.exit(1)
 
     def get_descriptors(self):
+        """ Returns file descriptors """
         try:
             return self.mixer.polldescriptors()[0]
         except Exception, err:
@@ -58,6 +60,7 @@ class AlsaControl():
             return None
 
     def set_volume(self, volume):
+        """ Set mixer volume """
         try:
             self.mixer.setvolume(volume, self.channel)
             return True
@@ -67,6 +70,7 @@ class AlsaControl():
             return False
 
     def get_volume(self):
+        """ Get mixer volume """
         try:
             return self.mixer.getvolume()[0]
         except alsa.ALSAAudioError, err:
@@ -74,6 +78,7 @@ class AlsaControl():
                 __name__, sys._getframe().f_code.co_name, str(err)))
 
     def set_mute(self, mute=0):
+        """ Set mixer mute status """
         global OLD_VOLUME, MUTED
         try:
             self.mixer.setmute(mute, self.channel)
@@ -90,6 +95,7 @@ class AlsaControl():
                 MUTED = False
 
     def is_muted(self):
+        """ Returns mixer mute status """
         global OLD_VOLUME, MUTED
         try:
             if self.mixer.getmute()[0] == 1:
@@ -100,6 +106,7 @@ class AlsaControl():
         return False
 
     def get_card_name(self):
+        """ Returns card name """
         try:
             return alsa.cards()[self.card_index]
         except IndexError, err:
@@ -107,6 +114,7 @@ class AlsaControl():
                 __name__, sys._getframe().f_code.co_name, str(err)))
 
     def get_mixer_name(self):
+        """ Returns mixer name """
         try:
             return self.mixer.mixer()
         except alsa.ALSAAudioError, err:
@@ -114,6 +122,7 @@ class AlsaControl():
                 __name__, sys._getframe().f_code.co_name, str(err)))
 
     def get_cards(self):
+        """ Returns cards list """
         cards = []
         acards = alsa.cards()
         for index in range(0, len(acards)):
@@ -129,6 +138,7 @@ class AlsaControl():
         return cards
 
     def get_mixers(self):
+        """ Returns mixers list """
         try:
             return alsa.mixers(self.card_index)
         except Exception, err:

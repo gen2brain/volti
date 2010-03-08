@@ -20,6 +20,7 @@ import os
 class Config:
 
     def __init__(self):
+        """ Constructor """
         self.app_name = "volti"
         self.app_version = "0.1.8"
         self.res_dir = None

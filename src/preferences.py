@@ -42,6 +42,7 @@ _PREFERENCES = None
 class Preferences:
 
     def __init__(self, main_instance):
+        """ Constructor """
         self.main = main_instance
 
         self.cp = ConfigParser()
@@ -53,6 +54,7 @@ class Preferences:
         self.read_file()
 
     def read_file(self):
+        """ Read config file """
         self.cp.read(self.main.config.config_file)
         for option in self.cp.options("global"):
             PREFS[option.lower()] = self.cp.get("global", option).strip()
@@ -60,6 +62,7 @@ class Preferences:
         PREFS["control"] = self.cp.get(self.section, "control").strip()
 
     def write_file(self):
+        """ Write config file """
         if not os.path.isdir(self.main.config.config_dir):
             try:
                 os.makedirs(self.main.config.config_dir)
@@ -76,6 +79,7 @@ class Preferences:
         self.cp.write(open(self.main.config.config_file, "w"))
 
     def open(self, widget=None, data=None):
+        """ Open preferences window """
         global _PREFERENCES
         if _PREFERENCES is None:
             _PREFERENCES = Preferences(self.main)
@@ -87,6 +91,7 @@ class Preferences:
             _PREFERENCES.window.present()
 
     def close(self, widget=None):
+        """ Close preferences window """
         global _PREFERENCES
         start, end = self.notify_body_text.get_buffer().get_bounds()
         body = self.notify_body_text.get_buffer().get_text(start, end)
@@ -99,9 +104,11 @@ class Preferences:
             _PREFERENCES = None
 
     def set_section(self):
+        """ Set section name """
         self.section = "card-%s" % PREFS["card_index"]
 
     def init_builder(self):
+        """ Initialize gtk.Builder """
         self.glade = os.path.join(self.main.config.res_dir, "preferences.glade")
         self.tree = gtk.Builder()
         self.tree.set_translation_domain(self.main.config.app_name)
@@ -189,6 +196,7 @@ class Preferences:
         self.set_sensitive(bool(int(PREFS["keys"])))
 
     def init_combobox(self):
+        """ Initialize combobox with audio cards """
         icon_theme = gtk.icon_theme_get_default()
         icon = icon_theme.load_icon("audio-card", 18, flags=gtk.ICON_LOOKUP_FORCE_SVG)
 
@@ -216,6 +224,7 @@ class Preferences:
         self.combobox.connect("changed", self.on_combobox_changed)
 
     def init_treeview(self):
+        """ Initialize treeview with mixers """
         self.liststore = gtk.ListStore(bool, str, int)
         for mixer in self.main.alsactrl.get_mixers():
             active = (mixer == PREFS["control"])
@@ -247,6 +256,7 @@ class Preferences:
         scrolledwindow.add(self.treeview)
 
     def on_browse_button_clicked(self, widget=None):
+        """ Callback for browse_button_clicked event """
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK)
         dialog = gtk.FileChooserDialog(title=_("Choose external mixer"), action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=buttons)
         dialog.set_current_folder("/usr/bin")
@@ -277,12 +287,14 @@ class Preferences:
             return None
 
     def custom_mixer_filter(self, filter_info=None, data=None):
+        """ Custom filter with names of common mixer apps """
         mixers = ["aumix", "alsamixer", "alsamixergui", "gamix", "gmixer", "gnome-alsamixer", "gnome-volume-control"]
         if filter_info[2] in mixers:
             return True
         return False
 
     def on_combobox_changed(self, widget=None):
+        """ Callback for combobox_changed event """
         model = widget.get_model()
         iter = widget.get_active_iter()
         card_index = model.get_value(iter, 0)
@@ -304,6 +316,7 @@ class Preferences:
                 self.liststore.append([active, mixer, pango.WEIGHT_NORMAL])
 
     def on_treeview_toggled(self, cell, path, model):
+        """ Callback for treeview_toggled event """
         iter = model.get_iter_from_string(path)
         active = model.get_value(iter, 0)
         if not active:
@@ -316,17 +329,20 @@ class Preferences:
             self.write_file()
 
     def radio_toggle(self, model, path, iter):
+        """ Toggles radio buttons status """
         active = model.get(iter, 0)
         if active:
             model.set(iter, 0, not active)
             model.set(iter, 2, pango.WEIGHT_NORMAL)
 
     def on_scale_spinbutton_changed(self, widget):
+        """ Callback for scale_spinbutton_changed event """
         scale_increment = widget.get_value()
         PREFS["scale_increment"] = scale_increment
         self.main.scale_increment = scale_increment
 
     def on_tooltip_toggled(self, widget):
+        """ Callback for tooltip_toggled event """
         active = widget.get_active()
         PREFS["show_tooltip"] = int(active)
         self.main.show_tooltip = active
@@ -337,31 +353,37 @@ class Preferences:
             self.main.set_tooltip(None)
 
     def on_terminal_toggled(self, widget):
+        """ Callback for terminal_toggled event """
         active = widget.get_active()
         PREFS["run_in_terminal"] = int(active)
         self.main.run_in_terminal = active
 
     def on_draw_value_toggled(self, widget):
+        """ Callback for draw_value_toggled event """
         active = widget.get_active()
         PREFS["scale_show_value"] = int(active)
         self.main.scale.set_draw_value(active)
 
     def on_entry_changed(self, widget):
+        """ Callback for entry_changed event """
         mixer = widget.get_text()
         PREFS["mixer"] = mixer
         self.main.mixer = mixer
 
     def on_radio_mute_toggled(self, widget):
+        """ Callback for radio_mute_toggled event """
         if widget.get_active():
             PREFS["toggle"] = "mute"
             self.main.toggle = "mute"
 
     def on_radio_mixer_toggled(self, widget):
+        """ Callback for radio_mixer_toggled event """
         if widget.get_active():
             PREFS["toggle"] = "mixer"
             self.main.toggle = "mixer"
 
     def on_keys_toggled(self, widget):
+        """ Callback for keys_toggled event """
         active = widget.get_active()
         PREFS["keys"] = int(active)
         self.main.keys = active
@@ -370,6 +392,7 @@ class Preferences:
         self.set_sensitive(active)
 
     def set_sensitive(self, active):
+        """ Set widgets sensitivity """
         if not active:
             self.hal_radiobutton.set_sensitive(False)
             self.xlib_radiobutton.set_sensitive(False)
@@ -391,6 +414,7 @@ class Preferences:
                 self.notify_body_text.set_sensitive(False)
 
     def on_notify_toggled(self, widget):
+        """ Callback for notify_toggled event """
         active = widget.get_active()
         PREFS["show_notify"] = int(active)
         self.main.show_notify = active
@@ -407,6 +431,7 @@ class Preferences:
             self.notify_body_text.set_sensitive(False)
 
     def on_position_toggled(self, widget):
+        """ Callback for position_toggled event """
         active = widget.get_active()
         PREFS["notify_position"] = int(active)
         self.main.notify_position = active
@@ -414,17 +439,20 @@ class Preferences:
         self.main.update_notify(volume)
 
     def on_timeout_spinbutton_changed(self, widget):
+        """ Callback for spinbutton_changed event """
         timeout = widget.get_value()
         PREFS["notify_timeout"] = timeout
         self.main.notify_timeout = timeout
 
     def on_radio_hal_toggled(self, widget):
+        """ Callback for radio_hal_toggled event """
         if widget.get_active():
             PREFS["keys_backend"] = "hal"
             self.main.keys_backend = "hal"
             self.main.init_keys_events()
 
     def on_radio_xlib_toggled(self, widget):
+        """ Callback for radio_xlib_toggled event """
         if widget.get_active():
             PREFS["keys_backend"] = "xlib"
             self.main.keys_backend = "xlib"

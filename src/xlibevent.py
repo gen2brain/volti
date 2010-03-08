@@ -32,6 +32,7 @@ class XlibEvent(gobject.GObject, threading.Thread):
         }
 
     def __init__(self, main_instance):
+        """ Constructor """
         gobject.GObject.__init__(self)
         threading.Thread.__init__(self)
         self.setDaemon(True)
@@ -61,6 +62,7 @@ class XlibEvent(gobject.GObject, threading.Thread):
         self.connect("mute", self.button_handler, "mute")
 
     def get_keycodes(self, keys):
+        """ Returns keycodes without modifiers """
         keycodes = []
         for keycode, index in keys:
             if keycode not in keycodes:
@@ -68,16 +70,19 @@ class XlibEvent(gobject.GObject, threading.Thread):
         return keycodes
 
     def grab(self):
+        """ Grab keys, will print error if some other app already have those keys grabbed """
         for keys in self.keycodes:
             for keycode in keys:
                 self.root.grab_key(keycode, X.AnyModifier, True, X.GrabModeAsync, X.GrabModeAsync)
 
     def ungrab(self):
+        """ Ungrab keys """
         for keys in self.keycodes:
             for keycode in keys:
                 self.root.ungrab_key(keycode, X.AnyModifier, self.root)
 
     def button_handler(self, sender, event):
+        """ Handle button events and pass them to main app """
         if event == 'volume-up':
             self.main.change_volume('up', True)
         elif event == 'volume-down':
@@ -86,12 +91,14 @@ class XlibEvent(gobject.GObject, threading.Thread):
             self.main.change_volume('mute', True)
 
     def signal(self, signal):
+        """ Emit signal """
         gtk.gdk.threads_enter()
         self.emit(signal)
         gtk.gdk.threads_leave()
         return False
 
     def run(self):
+        """ Start thread """
         self.running = True
         while self.running:
             event = self.display.next_event()
@@ -104,6 +111,7 @@ class XlibEvent(gobject.GObject, threading.Thread):
                     gobject.idle_add(self.signal, "mute")
 
     def stop(self):
+        """ Stop thread """
         self.running = False
         self.ungrab()
         self.display.close()

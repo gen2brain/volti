@@ -1,6 +1,7 @@
 import os
 
 def which(prog):
+    """ Equivalent of unix which command """
     def is_exe(fpath):
         return os.path.exists(fpath) and os.access(fpath, os.X_OK)
 

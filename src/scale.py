@@ -21,6 +21,7 @@ import gobject
 class VolumeScale(gtk.VScale):
 
     def __init__(self, main_instance):
+        """ Constructor """
         gtk.VScale.__init__(self)
         self.main = main_instance
 
@@ -63,6 +64,7 @@ class VolumeScale(gtk.VScale):
         self.win.connect_after("realize", self.on_realize)
 
     def on_scale_value_changed(self, widget=None, data=None):
+        """ Callback for value_changed signal """
         if self.lock:
             return
 
@@ -87,52 +89,54 @@ class VolumeScale(gtk.VScale):
         self.lockid = gobject.timeout_add(10, self._unlock)
 
     def _unlock(self):
+        """ Unlock scale """
         self.lock = False
         self.lockid = None
         self.main.key_press = False
         return False
 
     def on_scale_button_press_event(self, widget, event):
-        # we want the behaviour you get with the middle button
+        """ Callback for button_press_event. We want the behaviour you get with the middle button """
         if event.button == 1:
             event.button = 2
         return False
 
     def on_scale_button_release_event(self, widget, event):
-        # we want the behaviour you get with the middle button
+        """ Callback for button_release_event. We want the behaviour you get with the middle button """
         if event.button == 1:
             event.button = 2
         return False
 
     def on_scale_scroll_event(self, widget, event):
-        # forward event to the statusicon
+        """ Callback for scroll_event. Forwards event to statusicon """
         self.main.on_scroll_event(widget, event)
         return True
 
     def on_window_button_press_event(self, widget, event):
-        # if clicked somewhere else release window
+        """ Callback for button_press_event. If clicked somewhere else release window """
         if event.type == gtk.gdk.BUTTON_PRESS:
             self.release_grab()
             return True
         return False
 
     def on_window_key_release_event(self, widget, event):
-        # on escape key release window
+        """ Callback for key_release_event. On escape key release window """
         if event.keyval == gtk.gdk.keyval_from_name("Escape"):
             self.release_grab()
             return True
         return True
 
     def on_window_scroll_event(self, widget, event):
-        # forward event to the statusicon
+        """ Callback for scroll_event. Forwards event to statusicon """
         self.main.on_scroll_event(widget, event)
         return True
 
     def on_realize(self, widget):
-        # move window when realized
+        """ Callback for realize. Move window when realized """
         self.move_window()
 
     def toggle_window(self):
+        """ Toggle scale window visibility """
         if self.win.get_property("visible"):
             self.release_grab()
         else:
@@ -141,6 +145,7 @@ class VolumeScale(gtk.VScale):
             self.grab_window()
 
     def move_window(self):
+        """ Move scale window """
         screen, rectangle, orientation = self.main.get_geometry()
         if self.posx and rectangle.x == self.rectangle.x and rectangle.y == self.rectangle.y:
             self.win.move(self.posx, self.posy)
@@ -152,6 +157,7 @@ class VolumeScale(gtk.VScale):
             self.posx, self.posy = posx, posy
 
     def grab_window(self):
+        """ Grab and focus window """
         self.win.grab_add()
         gtk.gdk.pointer_grab(self.win.window, True,
             gtk.gdk.BUTTON_PRESS_MASK |
@@ -172,6 +178,7 @@ class VolumeScale(gtk.VScale):
         return True
 
     def release_grab(self):
+        """ Release grab from window """
         display = self.win.get_display()
         display.keyboard_ungrab()
         display.pointer_ungrab()
@@ -179,6 +186,7 @@ class VolumeScale(gtk.VScale):
         self.win.hide()
 
     def get_position(self):
+        """ Get coordinates to place scale window """
         screen, rectangle, orientation = self.main.get_geometry()
         self.win.set_screen(screen)
         monitor_num = screen.get_monitor_at_point(rectangle.x, rectangle.y)

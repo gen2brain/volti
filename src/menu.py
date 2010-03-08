@@ -22,6 +22,7 @@ import gtk
 class PopupMenu(gtk.Menu):
 
     def __init__(self, main_instance):
+        """ Constructor """
         gtk.Menu.__init__(self)
         self.main = main_instance
 
@@ -46,9 +47,11 @@ class PopupMenu(gtk.Menu):
         self.show_all()
 
     def show_preferences(self, widget=None, data=None):
+        """ Show preferences window """
         self.main.preferences.open()
 
     def on_toggle_mute(self, widget=None):
+        """ Toggles mute status """
         self.main.alsactrl.set_mute(widget.get_active())
         volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
         self.main.update_icon(volume)
@@ -56,4 +59,5 @@ class PopupMenu(gtk.Menu):
             self.main.update_tooltip(volume)
 
     def on_toggle_mixer(self, widget=None):
+        """ Start mixer app in new thread """
         Thread(target = self.main.toggle_mixer).start()

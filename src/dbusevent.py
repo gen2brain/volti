@@ -23,6 +23,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 class DbusEvent:
 
     def __init__(self, main_instance):
+        """ Constructor """
         loop = DBusGMainLoop()
         self.main = main_instance
         bus = dbus.SystemBus(mainloop=loop)
@@ -32,14 +33,17 @@ class DbusEvent:
             iface.connect_to_signal("Condition", self.button_handler, path_keyword="path")
 
     def hal_manager(self):
+        """ Hal manager """
         bus = dbus.SystemBus()
         obj = bus.get_object('org.freedesktop.Hal', '/org/freedesktop/Hal/Manager')
         return dbus.Interface(obj, 'org.freedesktop.Hal.Manager')
 
     def get_inputs(self):
+        """ Get keys """
         return self.hal_manager().FindDeviceByCapability("input.keys")
 
     def button_handler(self, sender, destination, path):
+        """ Handle button events and pass them to main app """
         if sender == 'ButtonPressed':
             if destination == 'volume-up':
                 self.main.change_volume('up', True)
