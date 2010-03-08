@@ -19,7 +19,7 @@
 import os
 import sys
 import gettext
-from subprocess import Popen,PIPE
+from subprocess import Popen, PIPE
 from signal import SIGTERM
 
 try:
@@ -48,8 +48,8 @@ except ImportError:
     sys.exit(1)
 
 config = Config()
-gettext.bindtextdomain(config.APP_NAME, config.LOCALE_DIR)
-gettext.textdomain(config.APP_NAME)
+gettext.bindtextdomain(config.app_name, config.locale_dir)
+gettext.textdomain(config.app_name)
 
 import __builtin__
 __builtin__._ = gettext.gettext
@@ -62,20 +62,20 @@ class VolumeTray(gtk.StatusIcon):
         self.config = config
         self.preferences = preferences.Preferences(self)
 
-        self.toggle = preferences.prefs["toggle"]
-        self.mixer = preferences.prefs["mixer"]
-        self.show_tooltip = bool(int(preferences.prefs["show_tooltip"]))
-        self.run_in_terminal = bool(int(preferences.prefs["run_in_terminal"]))
-        self.scale_increment = float(preferences.prefs["scale_increment"])
-        self.scale_show_value = bool(int(preferences.prefs["scale_show_value"]))
-        self.keys = bool(int(preferences.prefs["keys"]))
-        self.keys_backend = preferences.prefs["keys_backend"]
-        self.show_notify = bool(int(preferences.prefs["show_notify"]))
-        self.notify_timeout = float(preferences.prefs["notify_timeout"])
-        self.notify_position = bool(int(preferences.prefs["notify_position"]))
-        self.notify_body = preferences.prefs["notify_body"]
+        self.toggle = preferences.PREFS["toggle"]
+        self.mixer = preferences.PREFS["mixer"]
+        self.show_tooltip = bool(int(preferences.PREFS["show_tooltip"]))
+        self.run_in_terminal = bool(int(preferences.PREFS["run_in_terminal"]))
+        self.scale_increment = float(preferences.PREFS["scale_increment"])
+        self.scale_show_value = bool(int(preferences.PREFS["scale_show_value"]))
+        self.keys = bool(int(preferences.PREFS["keys"]))
+        self.keys_backend = preferences.PREFS["keys_backend"]
+        self.show_notify = bool(int(preferences.PREFS["show_notify"]))
+        self.notify_timeout = float(preferences.PREFS["notify_timeout"])
+        self.notify_position = bool(int(preferences.PREFS["notify_position"]))
+        self.notify_body = preferences.PREFS["notify_body"]
 
-        self.alsactrl = AlsaControl(preferences.prefs)
+        self.alsactrl = AlsaControl(preferences.PREFS)
         self.menu = PopupMenu(self)
         self.scale = VolumeScale(self)
 
@@ -125,8 +125,8 @@ class VolumeTray(gtk.StatusIcon):
                 try:
                     from dbusevent import DbusEvent
                     self.keys_events = DbusEvent(self)
-                except Exception, e:
-                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+                except Exception, err:
+                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
                     self.keys_events = None
             else:
                 sys.stderr.write("Hal backend needs python-dbus module\n")
@@ -137,8 +137,8 @@ class VolumeTray(gtk.StatusIcon):
                     from xlibevent import XlibEvent
                     self.keys_events = XlibEvent(self)
                     self.keys_events.start()
-                except Exception, e:
-                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+                except Exception, err:
+                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
                     self.keys_events = None
             else:
                 sys.stderr.write("Xlib backend needs python-xlib 0.15rc1 or higher\n")
@@ -158,8 +158,8 @@ class VolumeTray(gtk.StatusIcon):
                 try:
                     from notification import Notification
                     self.notify = Notification(self)
-                except Exception, e:
-                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+                except Exception, err:
+                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
                     self.notify = None
             else:
                 sys.stderr.write("Desktop notifications needs python-dbus module\n")
@@ -245,7 +245,7 @@ class VolumeTray(gtk.StatusIcon):
         if self.scale.lock:
             return True
         try:
-            self.alsactrl = AlsaControl(preferences.prefs)
+            self.alsactrl = AlsaControl(preferences.PREFS)
             volume = self.alsactrl.get_volume()
             scale_value = self.scale.get_value()
             gtk.gdk.threads_enter()
@@ -255,8 +255,9 @@ class VolumeTray(gtk.StatusIcon):
                 self.scale.emit("value_changed")
             gtk.gdk.threads_leave()
             return True
-        except Exception, e:
-            sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+        except Exception, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
             return False
 
     def toggle_mixer(self, widget=None):
@@ -275,8 +276,9 @@ class VolumeTray(gtk.StatusIcon):
                 else:
                     cmd = which(self.mixer)
                 Popen(cmd, shell=False)
-        except Exception, e:
-            sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+        except Exception, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
 
     def mixer_get_pid(self):
         pid = Popen(["pidof", "-x", self.mixer], stdout=PIPE).communicate()[0]
@@ -303,5 +305,5 @@ class VolumeTray(gtk.StatusIcon):
         gtk.main_quit()
 
 if __name__ == "__main__":
-    v = VolumeTray()
-    v.main()
+    volti = VolumeTray()
+    volti.main()

@@ -22,7 +22,7 @@ class BuildLocales(build):
 
     for po in glob.glob(os.path.join(PO_DIR, '*.po')):
       lang = os.path.basename(po[:-3])
-      mo = os.path.join(MO_DIR, lang, config.APP_NAME + '.mo')
+      mo = os.path.join(MO_DIR, lang, config.app_name + '.mo')
 
       directory = os.path.dirname(mo)
       if not os.path.exists(directory):
@@ -46,20 +46,20 @@ class InstallLocales(install_data):
 
   def _find_mo_files(self):
     data_files = []
-    for mo in glob.glob(os.path.join(MO_DIR, '*', config.APP_NAME + '.mo')):
+    for mo in glob.glob(os.path.join(MO_DIR, '*', config.app_name + '.mo')):
         lang = os.path.basename(os.path.dirname(mo))
         dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
         data_files.append((dest, [mo]))
     return data_files
 
-setup(name = config.APP_NAME,
-        version = config.APP_VERSION,
+setup(name = config.app_name,
+        version = config.app_version,
         description = "GTK+ application for controlling audio volume from system tray/notification area",
         author = "Milan Nikolic",
         author_email = "gen2brain@gmail.com",
         license = "GNU GPLv3",
         url = "http://code.google.com/p/volti/",
-        download_url = "http://volti.googlecode.com/files/%s-%s.tar.gz " % (config.APP_NAME, config.APP_VERSION),
+        download_url = "http://volti.googlecode.com/files/%s-%s.tar.gz " % (config.app_name, config.app_version),
         packages = ["volti"],
         package_dir = {"volti": "src"},
         scripts = ["volti"],

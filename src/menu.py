@@ -21,9 +21,9 @@ import gtk
 
 class PopupMenu(gtk.Menu):
 
-    def __init__(self, MainInstance):
+    def __init__(self, main_instance):
         gtk.Menu.__init__(self)
-        self.main = MainInstance
+        self.main = main_instance
 
         self.toggle_mute = gtk.CheckMenuItem(_("Mute"))
         self.toggle_mute.set_active(self.main.alsactrl.is_muted())

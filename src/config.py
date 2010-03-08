@@ -20,19 +20,19 @@ import os
 class Config:
 
     def __init__(self):
-        self.APP_NAME = "volti"
-        self.APP_VERSION = "0.1.8"
-        self.RES_DIR = None
-        self.LOCALE_DIR = None
+        self.app_name = "volti"
+        self.app_version = "0.1.8"
+        self.res_dir = None
+        self.locale_dir = None
 
         for base in ["/usr/share", "/usr/local/share"]:
-            if os.path.isdir(os.path.join(base, self.APP_NAME)):
-                self.RES_DIR = os.path.join(base, self.APP_NAME)
-                self.LOCALE_DIR = os.path.join(base, "locale")
+            if os.path.isdir(os.path.join(base, self.app_name)):
+                self.res_dir = os.path.join(base, self.app_name)
+                self.locale_dir = os.path.join(base, "locale")
                 break
 
-        if not self.RES_DIR:
-            self.RES_DIR = "data"
+        if not self.res_dir:
+            self.res_dir = "data"
 
-        self.CONFIG_DIR = os.path.expanduser(os.path.join("~", ".config", self.APP_NAME))
-        self.CONFIG_FILE = os.path.join(self.CONFIG_DIR, "config")
+        self.config_dir = os.path.expanduser(os.path.join("~", ".config", self.app_name))
+        self.config_file = os.path.join(self.config_dir, "config")

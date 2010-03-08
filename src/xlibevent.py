@@ -31,18 +31,18 @@ class XlibEvent(gobject.GObject, threading.Thread):
             'mute': (gobject.SIGNAL_RUN_FIRST, None, ())
         }
 
-    def __init__(self, MainInstance):
+    def __init__(self, main_instance):
         gobject.GObject.__init__(self)
         threading.Thread.__init__(self)
         self.setDaemon(True)
         self.running = False
-        self.main = MainInstance
+        self.main = main_instance
 
         try:
             XK.load_keysym_group("xf86")
-        except ImportError, e:
+        except ImportError, err:
             sys.stderr.write("Xlib backend needs python-xlib 0.15rc1 or higher\n")
-            raise ImportError(str(e))
+            raise ImportError(str(err))
 
         self.display = Display()
         self.screen = self.display.screen()

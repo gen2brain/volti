@@ -19,8 +19,8 @@ import dbus
 
 class Notification:
 
-    def __init__(self, MainInstance=None):
-        self.main = MainInstance
+    def __init__(self, main_instance):
+        self.main = main_instance
         bus = dbus.SessionBus()
         obj = bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications')
         self.notify = dbus.Interface(obj, 'org.freedesktop.Notifications')
@@ -38,10 +38,10 @@ class Notification:
             self.notify.CloseNotification(self.last_id)
 
     def get_position(self):
-        screen,rectangle,orientation = self.main.get_geometry()
-        x = rectangle.x + rectangle.width/2
-        y = rectangle.y + rectangle.height/2
-        return x, y
+        screen, rectangle, orientation = self.main.get_geometry()
+        posx = rectangle.x + rectangle.width/2
+        posy = rectangle.y + rectangle.height/2
+        return posx, posy
 
     def format(self, message, volume):
         var, card_name, mixer_name = self.main.get_status_info(volume)

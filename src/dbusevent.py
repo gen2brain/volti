@@ -22,9 +22,9 @@ from dbus.mainloop.glib import DBusGMainLoop
 
 class DbusEvent:
 
-    def __init__(self, MainInstance):
+    def __init__(self, main_instance):
         loop = DBusGMainLoop()
-        self.main = MainInstance
+        self.main = main_instance
         bus = dbus.SystemBus(mainloop=loop)
         for udi in self.get_inputs():
             obj = bus.get_object('org.freedesktop.Hal', udi)

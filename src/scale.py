@@ -20,9 +20,9 @@ import gobject
 
 class VolumeScale(gtk.VScale):
 
-    def __init__(self, MainInstance):
+    def __init__(self, main_instance):
         gtk.VScale.__init__(self)
-        self.main = MainInstance
+        self.main = main_instance
 
         self.lock = False
         self.lockid = None
@@ -32,7 +32,7 @@ class VolumeScale(gtk.VScale):
         self.set_value_pos(gtk.POS_BOTTOM)
         self.set_inverted(True)
         self.set_digits(0)
-        self.set_range(0,100)
+        self.set_range(0, 100)
         self.set_increments(self.main.scale_increment, 10)
         self.add_events(gtk.gdk.SCROLL_MASK)
         self.set_size_request(-1, 128)
@@ -50,7 +50,7 @@ class VolumeScale(gtk.VScale):
         frame.add(align)
         self.win.add(frame)
 
-        self.x, self.y = None, None
+        self.posx, self.posy = None, None
         self.screen, self.rectangle, self.orientation = self.main.get_geometry()
 
         self.connect("value_changed", self.on_scale_value_changed)
@@ -62,7 +62,7 @@ class VolumeScale(gtk.VScale):
         self.win.connect("scroll_event", self.on_window_scroll_event)
         self.win.connect_after("realize", self.on_realize)
 
-    def on_scale_value_changed(self, widget, data=None):
+    def on_scale_value_changed(self, widget=None, data=None):
         if self.lock:
             return
 
@@ -106,7 +106,7 @@ class VolumeScale(gtk.VScale):
 
     def on_scale_scroll_event(self, widget, event):
         # forward event to the statusicon
-        self.main.on_scroll_event(widget,event)
+        self.main.on_scroll_event(widget, event)
         return True
 
     def on_window_button_press_event(self, widget, event):
@@ -125,7 +125,7 @@ class VolumeScale(gtk.VScale):
 
     def on_window_scroll_event(self, widget, event):
         # forward event to the statusicon
-        self.main.on_scroll_event(widget,event)
+        self.main.on_scroll_event(widget, event)
         return True
 
     def on_realize(self, widget):
@@ -141,15 +141,15 @@ class VolumeScale(gtk.VScale):
             self.grab_window()
 
     def move_window(self):
-        screen,rectangle,orientation = self.main.get_geometry()
-        if self.x and rectangle.x == self.rectangle.x and rectangle.y == self.rectangle.y:
-            self.win.move(self.x, self.y)
+        screen, rectangle, orientation = self.main.get_geometry()
+        if self.posx and rectangle.x == self.rectangle.x and rectangle.y == self.rectangle.y:
+            self.win.move(self.posx, self.posy)
         else:
-            x, y = self.get_position()
-            self.win.move(x, y)
+            posx, posy = self.get_position()
+            self.win.move(posx, posy)
             # save window position
             self.rectangle = rectangle
-            self.x, self.y = x, y
+            self.posx, self.posy = posx, posy
 
     def grab_window(self):
         self.win.grab_add()
@@ -179,20 +179,20 @@ class VolumeScale(gtk.VScale):
         self.win.hide()
 
     def get_position(self):
-        screen,rectangle,orientation = self.main.get_geometry()
+        screen, rectangle, orientation = self.main.get_geometry()
         self.win.set_screen(screen)
         monitor_num = screen.get_monitor_at_point(rectangle.x, rectangle.y)
         monitor = screen.get_monitor_geometry(monitor_num)
         window = self.win.allocation
 
         if (rectangle.y + rectangle.height + window.height <= monitor.y + monitor.height):
-            y = rectangle.y + rectangle.height
+            posy = rectangle.y + rectangle.height
         else:
-            y = rectangle.y - window.height
+            posy = rectangle.y - window.height
 
         if (rectangle.x + window.width <= monitor.x + monitor.width):
-            x = rectangle.x
+            posx = rectangle.x
         else:
-            x = monitor.x + monitor.width - window.width
+            posx = monitor.x + monitor.width - window.width
 
-        return x, y
+        return posx, posy

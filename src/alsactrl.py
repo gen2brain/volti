@@ -18,8 +18,8 @@
 import sys
 import alsaaudio as alsa
 
-_old_volume = 0
-_muted = False
+OLD_VOLUME = 0
+MUTED = False
 
 class AlsaControl():
 
@@ -39,85 +39,91 @@ class AlsaControl():
                 sys.stderr.write("This program needs pyalsaaudio 0.6 or higher\nExiting\n")
                 sys.exit(1)
 
-        except Exception, e:
+        except Exception, err:
             sys.stderr.write("%s.%s: can't open %s control for card %s\nerror: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name(), str(e)))
+                __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name(), str(err)))
             try:
                 self.mixer = alsa.Mixer(control=self.get_mixers()[0], cardindex=self.card_index)
-            except Exception, e:
+            except Exception, err:
                 sys.stderr.write("%s.%s: can't open %s control for card %s\nerror: %s\nExiting\n" % (
-                    __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name(), str(e)))
+                    __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name(), str(err)))
                 sys.exit(1)
 
     def get_descriptors(self):
         try:
             return self.mixer.polldescriptors()[0]
-        except Exception, e:
-            sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+        except Exception, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
             return None
 
     def set_volume(self, volume):
         try:
             self.mixer.setvolume(volume, self.channel)
             return True
-        except alsa.ALSAAudioError, e:
-            sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+        except alsa.ALSAAudioError, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
             return False
 
     def get_volume(self):
         try:
             return self.mixer.getvolume()[0]
-        except alsa.ALSAAudioError, e:
-            sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+        except alsa.ALSAAudioError, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
 
     def set_mute(self, mute=0):
-        global _old_volume, _muted
+        global OLD_VOLUME, MUTED
         try:
             self.mixer.setmute(mute, self.channel)
             self.mute_switch = True
-        except alsa.ALSAAudioError, e:
+        except alsa.ALSAAudioError:
             # element has no mute switch
             self.mute_switch = False
             if mute == 1:
-                _old_volume = self.get_volume()
+                OLD_VOLUME = self.get_volume()
                 self.set_volume(0)
-                _muted = True
+                MUTED = True
             else:
-                self.set_volume(_old_volume)
-                _muted = False
+                self.set_volume(OLD_VOLUME)
+                MUTED = False
 
     def is_muted(self):
-        global _old_volume, _muted
+        global OLD_VOLUME, MUTED
         try:
             if self.mixer.getmute()[0] == 1:
                 return True
-        except alsa.ALSAAudioError, e:
-            if _muted:
+        except alsa.ALSAAudioError:
+            if MUTED:
                 return True
         return False
 
     def get_card_name(self):
         try:
             return alsa.cards()[self.card_index]
-        except IndexError, e:
-            sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+        except IndexError, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
 
     def get_mixer_name(self):
         try:
             return self.mixer.mixer()
-        except alsa.ALSAAudioError, e:
-            sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+        except alsa.ALSAAudioError, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
 
     def get_cards(self):
         cards = []
         acards = alsa.cards()
         for index in range(0, len(acards)):
             try:
-                mixer = alsa.mixers(index)[0]
-            except Exception, e:
+                alsa.mixers(index)[0]
+            except Exception, err:
                 # card has no mixer control
                 cards.append(None)
-                sys.stderr.write("%s.%s: %s %s\n" % (__name__, sys._getframe().f_code.co_name, type(e), str(e)))
+                sys.stderr.write("%s.%s: %s %s\n" % (
+                    __name__, sys._getframe().f_code.co_name, type(err), str(err)))
             else:
                 cards.append(acards[index])
         return cards
@@ -125,5 +131,6 @@ class AlsaControl():
     def get_mixers(self):
         try:
             return alsa.mixers(self.card_index)
-        except Exception, e:
-            sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(e)))
+        except Exception, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
