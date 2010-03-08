@@ -20,6 +20,7 @@ from threading import Thread
 import gtk
 
 class PopupMenu(gtk.Menu):
+    """ Popup menu """
 
     def __init__(self, main_instance):
         """ Constructor """

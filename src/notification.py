@@ -18,6 +18,7 @@
 import dbus
 
 class Notification:
+    """ Desktop notifications """
 
     def __init__(self, main_instance):
         """ Constructor """

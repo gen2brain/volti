@@ -22,6 +22,7 @@ OLD_VOLUME = 0
 MUTED = False
 
 class AlsaControl():
+    """ Interface to ALSA mixer API. """
 
     def __init__(self, prefs):
         """ Constructor """

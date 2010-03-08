@@ -21,6 +21,7 @@ import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 
 class DbusEvent:
+    """ Handle multimedia keys via dbus/hal """
 
     def __init__(self, main_instance):
         """ Constructor """

@@ -55,6 +55,7 @@ import __builtin__
 __builtin__._ = gettext.gettext
 
 class VolumeTray(gtk.StatusIcon):
+    """ GTK+ application for controlling audio volume from system tray/notification area """
 
     def __init__(self):
         """ Constructor """

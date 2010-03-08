@@ -19,6 +19,7 @@ import gtk
 import gobject
 
 class VolumeScale(gtk.VScale):
+    """ Volume scale/slider """
 
     def __init__(self, main_instance):
         """ Constructor """

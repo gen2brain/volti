@@ -40,6 +40,7 @@ PREFS = {
 _PREFERENCES = None
 
 class Preferences:
+    """ Preferences window """
 
     def __init__(self, main_instance):
         """ Constructor """

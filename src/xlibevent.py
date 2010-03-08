@@ -25,6 +25,8 @@ from Xlib import X, XK
 
 
 class XlibEvent(gobject.GObject, threading.Thread):
+    """ Handle multimedia keys via Xlib """
+
     __gsignals__ = {
             'volume-up': (gobject.SIGNAL_RUN_FIRST, None, ()),
             'volume-down': (gobject.SIGNAL_RUN_FIRST, None, ()),
