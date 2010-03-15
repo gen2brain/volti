@@ -77,6 +77,11 @@ class VolumeTray(gtk.StatusIcon):
         self.notify_position = bool(int(preferences.PREFS["notify_position"]))
         self.notify_body = preferences.PREFS["notify_body"]
 
+        if which("pidof"):
+            self.pid_app = "pidof -x"
+        elif which("pgrep"):
+            self.pid_app = "pgrep"
+
         self.alsactrl = AlsaControl(preferences.PREFS)
         self.menu = PopupMenu(self)
         self.scale = VolumeScale(self)
@@ -297,7 +302,7 @@ class VolumeTray(gtk.StatusIcon):
 
     def mixer_get_pid(self):
         """ Get process id of mixer application """
-        pid = Popen(["pidof", "-x", self.mixer], stdout=PIPE).communicate()[0]
+        pid = Popen(self.pid_app + " " + os.path.basename(self.mixer), stdout=PIPE, shell=True).communicate()[0]
         if pid:
             try:
                 return int(pid)
