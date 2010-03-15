@@ -39,7 +39,9 @@ except ImportError:
 try:
     from config import Config
     import preferences
+    from preferences import PREFS
     from alsactrl import AlsaControl
+    from dbusservice import DBusService
     from scale import VolumeScale
     from menu import PopupMenu
     from utils import which
@@ -60,39 +62,44 @@ class VolumeTray(gtk.StatusIcon):
     def __init__(self):
         """ Constructor """
         gtk.StatusIcon.__init__(self)
+        self.set_from_icon_name("audio-volume-high")
 
         self.config = config
         self.preferences = preferences.Preferences(self)
 
-        self.toggle = preferences.PREFS["toggle"]
-        self.mixer = preferences.PREFS["mixer"]
-        self.show_tooltip = bool(int(preferences.PREFS["show_tooltip"]))
-        self.run_in_terminal = bool(int(preferences.PREFS["run_in_terminal"]))
-        self.scale_increment = float(preferences.PREFS["scale_increment"])
-        self.scale_show_value = bool(int(preferences.PREFS["scale_show_value"]))
-        self.keys = bool(int(preferences.PREFS["keys"]))
-        self.keys_backend = preferences.PREFS["keys_backend"]
-        self.show_notify = bool(int(preferences.PREFS["show_notify"]))
-        self.notify_timeout = float(preferences.PREFS["notify_timeout"])
-        self.notify_position = bool(int(preferences.PREFS["notify_position"]))
-        self.notify_body = preferences.PREFS["notify_body"]
+        self.toggle = PREFS["toggle"]
+        self.mixer = PREFS["mixer"]
+        self.show_tooltip = bool(int(PREFS["show_tooltip"]))
+        self.run_in_terminal = bool(int(PREFS["run_in_terminal"]))
+        self.scale_increment = float(PREFS["scale_increment"])
+        self.scale_show_value = bool(int(PREFS["scale_show_value"]))
+        self.keys = bool(int(PREFS["keys"]))
+        self.keys_backend = PREFS["keys_backend"]
+        self.show_notify = bool(int(PREFS["show_notify"]))
+        self.notify_timeout = float(PREFS["notify_timeout"])
+        self.notify_position = bool(int(PREFS["notify_position"]))
+        self.notify_body = PREFS["notify_body"]
 
         if which("pidof"):
             self.pid_app = "pidof -x"
         elif which("pgrep"):
             self.pid_app = "pgrep"
 
-        self.alsactrl = AlsaControl(preferences.PREFS)
+        self.alsactrl = AlsaControl(PREFS)
         self.menu = PopupMenu(self)
         self.scale = VolumeScale(self)
+        self.dbus = DBusService(self)
 
         self.notify = None
         self.keys_events = None
         if self.keys:
+            try:
+                from Xlib import X
+                self.has_xlib = True
+            except ImportError:
+                self.has_xlib = False
             self.init_keys_events()
             self.init_notify()
-
-        self.set_from_icon_name("audio-volume-high")
 
         self.connect("button_press_event", self.on_button_press_event)
         self.connect("scroll_event", self.on_scroll_event)
@@ -116,28 +123,13 @@ class VolumeTray(gtk.StatusIcon):
         if not self.keys:
             return
 
-        try:
-            import dbus
-            self.has_dbus = True
-        except ImportError:
-            self.has_dbus = False
-        try:
-            from Xlib import X
-            self.has_xlib = True
-        except ImportError:
-            self.has_xlib = False
-
         self.key_press = False
         if self.keys_backend == "hal":
-            if self.has_dbus:
-                try:
-                    from dbusevent import DbusEvent
-                    self.keys_events = DbusEvent(self)
-                except Exception, err:
-                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
-                    self.keys_events = None
-            else:
-                sys.stderr.write("Hal backend needs python-dbus module\n")
+            try:
+                from dbusevent import DBusEvent
+                self.keys_events = DBusEvent(self)
+            except Exception, err:
+                sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
                 self.keys_events = None
         elif self.keys_backend == "xlib":
             if self.has_xlib:
@@ -163,15 +155,11 @@ class VolumeTray(gtk.StatusIcon):
             return
 
         if self.show_notify:
-            if self.has_dbus:
-                try:
-                    from notification import Notification
-                    self.notify = Notification(self)
-                except Exception, err:
-                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
-                    self.notify = None
-            else:
-                sys.stderr.write("Desktop notifications needs python-dbus module\n")
+            try:
+                from notification import Notification
+                self.notify = Notification(self)
+            except Exception, err:
+                sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
                 self.notify = None
 
     def on_button_press_event(self, widget, event, data=None):

@@ -20,7 +20,7 @@ import sys
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 
-class DbusEvent:
+class DBusEvent:
     """ Handle multimedia keys via dbus/hal """
 
     def __init__(self, main_instance):
