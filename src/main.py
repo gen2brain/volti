@@ -90,14 +90,15 @@ class VolumeTray(gtk.StatusIcon):
         self.scale = VolumeScale(self)
         self.dbus = DBusService(self)
 
+        try:
+            from Xlib import X
+            self.has_xlib = True
+        except ImportError:
+            self.has_xlib = False
+
         self.notify = None
         self.keys_events = None
         if self.keys:
-            try:
-                from Xlib import X
-                self.has_xlib = True
-            except ImportError:
-                self.has_xlib = False
             self.init_keys_events()
             self.init_notify()
 
