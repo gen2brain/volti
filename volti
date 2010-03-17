@@ -22,9 +22,11 @@ import sys
 
 try:
     import dbus
+    import dbus._version
     from dbus.mainloop.glib import DBusGMainLoop
-except ImportError:
-    sys.stderr.write("This program needs dbus-python\nExiting\n")
+    assert dbus.version >= (0, 80, 0)
+except ImportError, AssertionError:
+    sys.stderr.write("This program needs dbus-python 0.80.0 or later\nExiting\n")
     sys.exit(1)
 
 try:

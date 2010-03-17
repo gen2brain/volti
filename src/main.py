@@ -130,7 +130,8 @@ class VolumeTray(gtk.StatusIcon):
                 from dbusevent import DBusEvent
                 self.keys_events = DBusEvent(self)
             except Exception, err:
-                sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
+                sys.stderr.write("%s.%s: %s\n" % (
+                    __name__, sys._getframe().f_code.co_name, str(err)))
                 self.keys_events = None
         elif self.keys_backend == "xlib":
             if self.has_xlib:
@@ -139,7 +140,8 @@ class VolumeTray(gtk.StatusIcon):
                     self.keys_events = XlibEvent(self)
                     self.keys_events.start()
                 except Exception, err:
-                    sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
+                    sys.stderr.write("%s.%s: %s\n" % (
+                        __name__, sys._getframe().f_code.co_name, str(err)))
                     self.keys_events = None
             else:
                 sys.stderr.write("Xlib backend needs python-xlib 0.15rc1 or higher\n")
@@ -160,7 +162,8 @@ class VolumeTray(gtk.StatusIcon):
                 from notification import Notification
                 self.notify = Notification(self)
             except Exception, err:
-                sys.stderr.write("%s.%s: %s\n" % (__name__, sys._getframe().f_code.co_name, str(err)))
+                sys.stderr.write("%s.%s: %s\n" % (
+                    __name__, sys._getframe().f_code.co_name, str(err)))
                 self.notify = None
 
     def on_button_press_event(self, widget, event, data=None):
@@ -171,7 +174,8 @@ class VolumeTray(gtk.StatusIcon):
             if self.toggle == "mute":
                 self.change_volume("mute")
             elif self.toggle == "mixer":
-                self.menu.toggle_mixer.set_active(not self.menu.toggle_mixer.get_active())
+                self.menu.toggle_mixer.set_active(
+                        not self.menu.toggle_mixer.get_active())
 
     def on_scroll_event(self, widget, event):
         """ Callback for scroll_event """
@@ -206,7 +210,8 @@ class VolumeTray(gtk.StatusIcon):
             volume = max(0, volume - self.scale_increment)
 
         if event == "mute":
-            self.menu.toggle_mute.set_active(not self.menu.toggle_mute.get_active())
+            self.menu.toggle_mute.set_active(
+                    not self.menu.toggle_mute.get_active())
             if self.key_press and self.alsactrl.mute_switch:
                 self.scale.emit("value_changed")
         else:
@@ -291,7 +296,8 @@ class VolumeTray(gtk.StatusIcon):
 
     def mixer_get_pid(self):
         """ Get process id of mixer application """
-        pid = Popen(self.pid_app + " " + os.path.basename(self.mixer), stdout=PIPE, shell=True).communicate()[0]
+        pid = Popen(self.pid_app + " " + os.path.basename(self.mixer),
+                stdout=PIPE, shell=True).communicate()[0]
         if pid:
             try:
                 return int(pid)
@@ -316,7 +322,3 @@ class VolumeTray(gtk.StatusIcon):
     def quit(self, widget=None):
         """ Quit main loop """
         gtk.main_quit()
-
-if __name__ == "__main__":
-    volti = VolumeTray()
-    volti.main()

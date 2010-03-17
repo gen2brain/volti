@@ -1,29 +1,30 @@
 #!/bin/sh
 
 declare -r APP_NAME="${0##*/}"
-declare -r VERSION="0.1.8"
 
 print_usage() {
 cat << EOF
+Usage: $APP_NAME [OPTION]
 
-Usage: $APP_NAME [OPTIONS]
-
-  -V    show program's version number and exit
-  -h    show this help message and exit
-  -i    increase volume
-  -d    decrease volume
-  -m    mute volume
-
+Options:
+  -h    Show this help message and exit
+  -i    Increase volume
+  -d    Decrease volume
+  -m    Mute volume
 EOF
 }
 
-while getopts "Vhidm" opt; do
-  case $opt in
-    i) `dbus-send --type=method_call --dest=com.google.code.Volti /com/google/code/Volti com.google.code.Volti.emit string:'volume-up'`;;
-    d) `dbus-send --type=method_call --dest=com.google.code.Volti /com/google/code/Volti com.google.code.Volti.emit string:'volume-down'`;;
-    m) `dbus-send --type=method_call --dest=com.google.code.Volti /com/google/code/Volti com.google.code.Volti.emit string:'mute'`;;
-    h) print_usage;;
-    V) echo "${VERSION}";;
-    \?) print_usage;;
-  esac
+if test $? == 0; then
+    print_usage
+fi
+
+DBUS_SEND="dbus-send --type=method_call --dest=com.google.code.Volti /com/google/code/Volti com.google.code.Volti.emit"
+
+while getopts ":Vhidm" opt; do
+    case $opt in
+        i) `${DBUS_SEND} string:'volume-up'`;;
+        d) `${DBUS_SEND} string:'volume-down'`;;
+        m) `${DBUS_SEND} string:'mute'`;;
+        h) print_usage;;
+    esac
 done
