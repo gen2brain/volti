@@ -20,7 +20,7 @@ fi
 
 DBUS_SEND="dbus-send --type=method_call --dest=com.google.code.Volti /com/google/code/Volti com.google.code.Volti.emit"
 
-while getopts ":Vhidm" opt; do
+while getopts ":hidm" opt; do
     case $opt in
         i) `${DBUS_SEND} string:'volume-up'`;;
         d) `${DBUS_SEND} string:'volume-down'`;;
