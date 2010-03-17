@@ -14,7 +14,7 @@ Options:
 EOF
 }
 
-if test $? == 0; then
+if test $# == 0; then
     print_usage
 fi
 
