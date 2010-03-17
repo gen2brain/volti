@@ -26,7 +26,7 @@ class DBusService(dbus.service.Object):
 
     def __init__(self, main_instance):
         """ Constructor """
-        loop=DBusGMainLoop()
+        loop = DBusGMainLoop()
         self.main = main_instance
         session_bus = dbus.SessionBus(mainloop=loop)
         bus_name = dbus.service.BusName('com.google.code.Volti', bus=session_bus)
@@ -39,9 +39,9 @@ class DBusService(dbus.service.Object):
     @dbus.service.signal('com.google.code.Volti', signature='s')
     def signal(self, signal):
         """ DBus signal """
-        return signal
+        pass
 
-    @dbus.service.method('com.google.code.Volti', in_signature='s', out_signature=None)
+    @dbus.service.method('com.google.code.Volti', in_signature='s', out_signature='')
     def emit(self, signal):
         """ DBus method to emit signal """
         self.signal(signal)
