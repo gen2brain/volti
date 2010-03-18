@@ -82,10 +82,9 @@ class VolumeScale(gtk.VScale):
         if self.main.show_tooltip:
             self.main.update_tooltip(vol)
 
-        if self.main.keys:
-            if self.main.key_press:
-                if self.main.show_notify and self.main.notify:
-                    self.main.update_notify(vol)
+        if self.main.key_press:
+            if self.main.show_notify and self.main.notify:
+                self.main.update_notify(vol)
 
         self.lockid = gobject.timeout_add(10, self._unlock)
 

@@ -268,9 +268,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkAlignment" id="alignment10">
+                          <object class="GtkAlignment" id="alignment8">
                             <property name="visible">True</property>
-                            <property name="top_padding">5</property>
                             <property name="left_padding">10</property>
                             <child>
                               <object class="GtkVBox" id="vbox9">
@@ -303,6 +302,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="active">True</property>
                                         <property name="draw_indicator">True</property>
                                       </object>
                                       <packing>
@@ -339,82 +339,98 @@
                                     <property name="position">2</property>
                                   </packing>
                                 </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkVBox" id="vbox4">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkHSeparator" id="hseparator3">
+                                <property name="visible">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="padding">5</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkHBox" id="hbox12">
+                                <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkHSeparator" id="hseparator3">
+                                  <object class="GtkCheckButton" id="notify_checkbutton">
+                                    <property name="label" translatable="yes">Enable desktop notifications</property>
                                     <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkHBox" id="hbox13">
+                                <property name="visible">True</property>
+                                <child>
+                                  <object class="GtkLabel" id="label11">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Timeout:</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkSpinButton" id="timeout_spinbutton">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <property name="adjustment">adjustment1</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
                                     <property name="padding">5</property>
-                                    <property name="position">3</property>
+                                    <property name="position">1</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hbox12">
+                                  <object class="GtkLabel" id="label12">
                                     <property name="visible">True</property>
-                                    <child>
-                                      <object class="GtkCheckButton" id="notify_checkbutton">
-                                        <property name="label" translatable="yes">Enable desktop notifications</property>
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">False</property>
-                                        <property name="draw_indicator">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
+                                    <property name="label" translatable="yes">seconds</property>
                                   </object>
                                   <packing>
-                                    <property name="position">4</property>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">2</property>
                                   </packing>
                                 </child>
-                                <child>
-                                  <object class="GtkHBox" id="hbox13">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <object class="GtkLabel" id="label11">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Timeout:</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkSpinButton" id="timeout_spinbutton">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
-                                        <property name="adjustment">adjustment1</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="padding">5</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label12">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">seconds</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="position">5</property>
-                                  </packing>
-                                </child>
+                              </object>
+                              <packing>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkAlignment" id="alignment10">
+                                <property name="visible">True</property>
+                                <property name="top_padding">5</property>
+                                <property name="bottom_padding">5</property>
                                 <child>
                                   <object class="GtkHBox" id="hbox17">
                                     <property name="visible">True</property>
@@ -424,49 +440,44 @@
                                         <property name="can_focus">True</property>
                                         <property name="tooltip_text" translatable="yes">Fields of the form {field} are replaced by their corresponding value.
 
-Available fields are:
-{volume}
-{card}
-{mixer}
+Available fields are: {volume}, {card} and {mixer}
 
 You can use the Pango markup language to format the text.</property>
-                                        <property name="pixels_above_lines">2</property>
-                                        <property name="pixels_below_lines">2</property>
                                       </object>
                                       <packing>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
                                   </object>
-                                  <packing>
-                                    <property name="position">6</property>
-                                  </packing>
                                 </child>
+                              </object>
+                              <packing>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkHBox" id="hbox16">
+                                <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkHBox" id="hbox16">
+                                  <object class="GtkCheckButton" id="position_checkbutton">
+                                    <property name="label" translatable="yes">Position notification</property>
                                     <property name="visible">True</property>
-                                    <child>
-                                      <object class="GtkCheckButton" id="position_checkbutton">
-                                        <property name="label" translatable="yes">Position notification</property>
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">False</property>
-                                        <property name="draw_indicator">True</property>
-                                      </object>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
-                                    <property name="position">7</property>
+                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                               </object>
+                              <packing>
+                                <property name="position">4</property>
+                              </packing>
                             </child>
                           </object>
                           <packing>
-                            <property name="position">1</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                       </object>

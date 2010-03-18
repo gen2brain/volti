@@ -194,7 +194,8 @@ class Preferences:
         self.position_checkbutton.set_active(bool(int(PREFS["notify_position"])))
         self.position_checkbutton.handler_unblock(position_handler_id)
 
-        self.set_sensitive(bool(int(PREFS["keys"])))
+        self.set_keys_sensitive(bool(int(PREFS["keys"])))
+        self.set_notify_sensitive(bool(int(PREFS["show_notify"])))
 
     def init_combobox(self):
         """ Initialize combobox with audio cards """
@@ -258,8 +259,12 @@ class Preferences:
 
     def on_browse_button_clicked(self, widget=None):
         """ Callback for browse_button_clicked event """
-        buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK)
-        dialog = gtk.FileChooserDialog(title=_("Choose external mixer"), action=gtk.FILE_CHOOSER_ACTION_OPEN, buttons=buttons)
+        buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                gtk.STOCK_OPEN, gtk.RESPONSE_OK)
+        dialog = gtk.FileChooserDialog(
+                title=_("Choose external mixer"),
+                action=gtk.FILE_CHOOSER_ACTION_OPEN,
+                buttons=buttons)
         dialog.set_current_folder("/usr/bin")
         dialog.set_default_response(gtk.RESPONSE_OK)
         dialog.set_show_hidden(False)
@@ -289,7 +294,8 @@ class Preferences:
 
     def custom_mixer_filter(self, filter_info=None, data=None):
         """ Custom filter with names of common mixer apps """
-        mixers = ["aumix", "alsamixer", "alsamixergui", "gamix", "gmixer", "gnome-alsamixer", "gnome-volume-control"]
+        mixers = ["aumix", "alsamixer", "alsamixergui", "gamix",
+                "gmixer", "gnome-alsamixer", "gnome-volume-control"]
         if filter_info[2] in mixers:
             return True
         return False
@@ -389,30 +395,16 @@ class Preferences:
         PREFS["keys"] = int(active)
         self.main.keys = active
         self.main.init_keys_events()
-        self.main.init_notify()
-        self.set_sensitive(active)
+        self.set_keys_sensitive(active)
 
-    def set_sensitive(self, active):
+    def set_keys_sensitive(self, active):
         """ Set widgets sensitivity """
         if not active:
             self.hal_radiobutton.set_sensitive(False)
             self.xlib_radiobutton.set_sensitive(False)
-            self.notify_checkbutton.set_sensitive(False)
-            self.timeout_spinbutton.set_sensitive(False)
-            self.position_checkbutton.set_sensitive(False)
-            self.notify_body_text.set_sensitive(False)
         else:
             self.hal_radiobutton.set_sensitive(True)
             self.xlib_radiobutton.set_sensitive(True)
-            self.notify_checkbutton.set_sensitive(True)
-            if PREFS["show_notify"] and self.main.notify:
-                self.timeout_spinbutton.set_sensitive(True)
-                self.position_checkbutton.set_sensitive(True)
-                self.notify_body_text.set_sensitive(True)
-            else:
-                self.timeout_spinbutton.set_sensitive(False)
-                self.position_checkbutton.set_sensitive(False)
-                self.notify_body_text.set_sensitive(False)
 
     def on_notify_toggled(self, widget):
         """ Callback for notify_toggled event """
@@ -420,24 +412,31 @@ class Preferences:
         PREFS["show_notify"] = int(active)
         self.main.show_notify = active
         self.main.init_notify()
+        self.set_notify_sensitive(active)
         if active and self.main.notify:
-            self.timeout_spinbutton.set_sensitive(True)
-            self.position_checkbutton.set_sensitive(True)
-            self.notify_body_text.set_sensitive(True)
             volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
             self.main.update_notify(volume)
-        else:
+
+    def set_notify_sensitive(self, active):
+        """ Set widgets sensitivity """
+        if not active:
             self.timeout_spinbutton.set_sensitive(False)
             self.position_checkbutton.set_sensitive(False)
             self.notify_body_text.set_sensitive(False)
+        else:
+            self.timeout_spinbutton.set_sensitive(True)
+            self.position_checkbutton.set_sensitive(True)
+            self.notify_body_text.set_sensitive(True)
 
     def on_position_toggled(self, widget):
         """ Callback for position_toggled event """
         active = widget.get_active()
         PREFS["notify_position"] = int(active)
         self.main.notify_position = active
-        volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
-        self.main.update_notify(volume)
+        if self.main.notify:
+            self.main.notify.close()
+            volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
+            self.main.update_notify(volume)
 
     def on_timeout_spinbutton_changed(self, widget):
         """ Callback for spinbutton_changed event """

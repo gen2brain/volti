@@ -85,21 +85,24 @@ class VolumeTray(gtk.StatusIcon):
         elif which("pgrep"):
             self.pid_app = "pgrep"
 
-        self.alsactrl = AlsaControl(PREFS)
-        self.menu = PopupMenu(self)
-        self.scale = VolumeScale(self)
-        self.dbus = DBusService(self)
-
         try:
             from Xlib import X
             self.has_xlib = True
         except ImportError:
             self.has_xlib = False
 
+        self.alsactrl = AlsaControl(PREFS)
+        self.menu = PopupMenu(self)
+        self.scale = VolumeScale(self)
+        self.dbus = DBusService(self)
+
         self.notify = None
+        self.key_press = False
         self.keys_events = None
+
         if self.keys:
             self.init_keys_events()
+        if self.show_notify:
             self.init_notify()
 
         self.connect("button_press_event", self.on_button_press_event)
@@ -124,7 +127,6 @@ class VolumeTray(gtk.StatusIcon):
         if not self.keys:
             return
 
-        self.key_press = False
         if self.keys_backend == "hal":
             try:
                 from dbusevent import DBusEvent
@@ -154,9 +156,6 @@ class VolumeTray(gtk.StatusIcon):
             del self.notify
             self.notify = None
 
-        if not self.keys:
-            return
-
         if self.show_notify:
             try:
                 from notification import Notification
@@ -183,9 +182,8 @@ class VolumeTray(gtk.StatusIcon):
             self.change_volume("up")
         elif event.direction == gtk.gdk.SCROLL_DOWN:
             self.change_volume("down")
-        if self.keys:
-            if self.show_notify and self.notify:
-                self.notify.close()
+        if self.show_notify and self.notify:
+            self.notify.close()
 
     def on_popup_menu(self, status, button, time):
         """ Show popup menu """
