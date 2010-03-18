@@ -68,5 +68,5 @@ setup(name = config.app_name,
         cmdclass = {'build': BuildLocales, 'install_data': InstallLocales},
         data_files = [("share/volti", ["data/preferences.glade"]),
                     ("share/applications", ["data/volti.desktop"]),
-                    ("share/man/man1", ["doc/volti.1"])]
+                    ("share/man/man1", ["doc/volti.1", "doc/volti-remote.1"])]
         )

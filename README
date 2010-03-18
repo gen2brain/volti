@@ -10,13 +10,14 @@ Features:
 - nice tooltip with card and volume info
 - support multimedia keys on keyboard
 - support desktop notifications on keys events
+- control volti from command line or bind keys within your window manager
 
 Dependencies:
 
 - pygtk 2.16.0 or later
 - pyalsaaudio 0.6 or later
-- dbus-python (optional, used for keys events via hal and for notifications)
-- python-xlib 0.15rc1 or later (optional, used for keys events)
+- dbus-python 0.80.0 or later
+- python-xlib 0.15rc1 or later (optional, used for keys events as an alternative to hal)
 
 Install:
 
