@@ -76,7 +76,7 @@ class VolumeScale(gtk.VScale):
         self.lock = True
         volume = int(self.get_value())
         self.main.alsactrl.set_volume(volume)
-        vol = _("Muted") if self.main.alsactrl.is_muted() else volume
+        vol = self.main.get_volume()
 
         self.main.update_icon(vol)
         if self.main.show_tooltip:

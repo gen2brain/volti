@@ -54,7 +54,7 @@ class PopupMenu(gtk.Menu):
     def on_toggle_mute(self, widget=None):
         """ Toggles mute status """
         self.main.alsactrl.set_mute(widget.get_active())
-        volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
+        volume = self.main.get_volume()
         self.main.update_icon(volume)
         if self.main.show_tooltip:
             self.main.update_tooltip(volume)

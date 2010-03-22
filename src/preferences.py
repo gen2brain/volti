@@ -354,8 +354,7 @@ class Preferences:
         PREFS["show_tooltip"] = int(active)
         self.main.show_tooltip = active
         if active:
-            volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
-            self.main.update_tooltip(volume)
+            self.main.update_tooltip(self.main.get_volume())
         else:
             self.main.set_tooltip(None)
 
@@ -414,8 +413,7 @@ class Preferences:
         self.main.init_notify()
         self.set_notify_sensitive(active)
         if active and self.main.notify:
-            volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
-            self.main.update_notify(volume)
+            self.main.update_notify(self.main.get_volume())
 
     def set_notify_sensitive(self, active):
         """ Set widgets sensitivity """
@@ -435,8 +433,7 @@ class Preferences:
         self.main.notify_position = active
         if self.main.notify:
             self.main.notify.close()
-            volume = _("Muted") if self.main.alsactrl.is_muted() else self.main.alsactrl.get_volume()
-            self.main.update_notify(volume)
+            self.main.update_notify(self.main.get_volume())
 
     def on_timeout_spinbutton_changed(self, widget):
         """ Callback for spinbutton_changed event """

@@ -235,6 +235,12 @@ class VolumeTray(gtk.StatusIcon):
         mixer_name = self.alsactrl.get_mixer_name()
         return var, card_name, mixer_name
 
+    def get_volume(self):
+        if self.alsactrl.is_muted():
+            return _("Muted")
+        else:
+            return self.alsactrl.get_volume()
+
     def update_icon(self, volume):
         """ Update icon """
         self.set_from_icon_name(self.get_icon_name(volume))
