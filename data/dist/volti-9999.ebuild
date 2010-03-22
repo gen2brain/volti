@@ -19,15 +19,10 @@ IUSE="X hal libnotify"
 
 RDEPEND=">=dev-python/pygtk-2.16
 	>=dev-python/pyalsaaudio-0.6
+	dev-python/dbus-python
 	X? ( >=dev-python/python-xlib-0.15_rc1 )
-	hal? ( 
-	    sys-apps/hal
-	    dev-python/dbus-python 
-	)
-	libnotify? ( 
-	    x11-libs/libnotify
-	    dev-python/dbus-python 
-	)
+	hal? ( sys-apps/hal )
+	libnotify? ( x11-libs/libnotify )
 	x11-themes/gnome-icon-theme"
 
 DEPEND="${RDEPEND}"

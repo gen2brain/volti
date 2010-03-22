@@ -1,3 +1,10 @@
+v0.1.9 March 22, 2010:
+
+    * added volti-remote script, you can control volti from command line or bind keys within your wm
+    * dbus-python is no longer optional
+    * use pgrep if distribution installs pidof in /sbin
+    * minor fixes and cleanup
+
 v0.1.8 March 7, 2010:
 
     * notification message can now be formatted
