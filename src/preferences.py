@@ -24,6 +24,7 @@ PREFS = {
     "card_index": 0,
     "control": "Master",
     "mixer": "",
+    "icon_theme": "Default",
     "run_in_terminal": 0,
     "scale_increment": 1.0,
     "scale_show_value": 0,
@@ -85,8 +86,9 @@ class Preferences:
         if _PREFERENCES is None:
             _PREFERENCES = Preferences(self.main)
             _PREFERENCES.init_builder()
-            _PREFERENCES.init_combobox()
+            _PREFERENCES.init_card_combobox()
             _PREFERENCES.init_treeview()
+            _PREFERENCES.init_theme_combobox()
             _PREFERENCES.window.show_all()
         else:
             _PREFERENCES.window.present()
@@ -116,7 +118,15 @@ class Preferences:
         self.tree.add_from_file(self.glade)
 
         self.window = self.tree.get_object("window")
-        self.window.set_icon_name("multimedia-volume-control")
+
+        icon_theme = gtk.icon_theme_get_default()
+        if icon_theme.has_icon("multimedia-volume-control"):
+            self.window.set_icon_name("multimedia-volume-control")
+        else:
+            file = os.path.join(
+                    self.main.config.res_dir, "icons", "multimedia-volume-control.svg")
+            self.window.set_icon_from_file(file)
+
         self.window.connect("destroy", self.close)
 
         self.button_close = self.tree.get_object("button_close")
@@ -197,33 +207,40 @@ class Preferences:
         self.set_keys_sensitive(bool(int(PREFS["keys"])))
         self.set_notify_sensitive(bool(int(PREFS["show_notify"])))
 
-    def init_combobox(self):
-        """ Initialize combobox with audio cards """
+    def init_card_combobox(self):
+        """ Initialize combobox with list of audio cards """
         icon_theme = gtk.icon_theme_get_default()
-        icon = icon_theme.load_icon("audio-card", 18, flags=gtk.ICON_LOOKUP_FORCE_SVG)
+        if icon_theme.has_icon("audio-cards"):
+            icon = icon_theme.load_icon(
+                    "audio-card", 22, flags=gtk.ICON_LOOKUP_FORCE_SVG)
+        else:
+            file = os.path.join(
+                    self.main.config.res_dir, "icons", "audio-card.svg")
+            pixbuf = gtk.gdk.pixbuf_new_from_file(file)
+            icon = pixbuf.scale_simple(22, 22, gtk.gdk.INTERP_BILINEAR)
 
         self.combo_model = gtk.ListStore(int, gtk.gdk.Pixbuf, str)
         cards = self.main.alsactrl.get_cards()
-        for index in range(0, len(cards)):
-            if cards[index] is not None:
-                self.combo_model.append([index, icon, cards[index]])
+        for index, card in enumerate(cards):
+            if card is not None:
+                self.combo_model.append([index, icon, card])
 
-        self.combobox = self.tree.get_object("combobox")
-        self.combobox.set_model(self.combo_model)
-        self.combobox.set_active(int(PREFS["card_index"]))
+        card_combobox = self.tree.get_object("card_combobox")
+        card_combobox.set_model(self.combo_model)
+        card_combobox.set_active(int(PREFS["card_index"]))
 
         cell1 = gtk.CellRendererPixbuf()
         cell1.set_property("xalign", 0)
         cell1.set_property("xpad", 3)
-        self.combobox.pack_start(cell1, False)
-        self.combobox.add_attribute(cell1, "pixbuf", 1)
+        card_combobox.pack_start(cell1, False)
+        card_combobox.add_attribute(cell1, "pixbuf", 1)
 
         cell2 = gtk.CellRendererText()
         cell2.set_property("xpad", 10)
-        self.combobox.pack_start(cell2, True)
-        self.combobox.set_attributes(cell2, text=2)
+        card_combobox.pack_start(cell2, True)
+        card_combobox.set_attributes(cell2, text=2)
 
-        self.combobox.connect("changed", self.on_combobox_changed)
+        card_combobox.connect("changed", self.on_card_combobox_changed)
 
     def init_treeview(self):
         """ Initialize treeview with mixers """
@@ -257,6 +274,24 @@ class Preferences:
         scrolledwindow = self.tree.get_object("scrolledwindow")
         scrolledwindow.add(self.treeview)
 
+    def init_theme_combobox(self):
+        """ Initialize combobox with list of available themes """
+        model = gtk.ListStore(int, str)
+        theme_combobox = self.tree.get_object("theme_combobox")
+        theme_combobox.set_model(model)
+
+        self.themes = self.main.get_icon_themes()
+        for index, theme in enumerate(self.themes):
+            model.append([index, theme])
+            if theme == PREFS["icon_theme"]:
+                theme_combobox.set_active(index)
+
+        cell = gtk.CellRendererText()
+        theme_combobox.pack_start(cell, True)
+        theme_combobox.set_attributes(cell, text=1)
+
+        theme_combobox.connect("changed", self.on_theme_combobox_changed)
+
     def on_browse_button_clicked(self, widget=None):
         """ Callback for browse_button_clicked event """
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
@@ -270,7 +305,7 @@ class Preferences:
         dialog.set_show_hidden(False)
 
         file_filter_mixers = gtk.FileFilter()
-        file_filter_mixers.set_name(_("Audio Mixers"))
+        file_filter_mixers.set_name(_("Sound Mixers"))
         file_filter_mixers.add_custom(gtk.FILE_FILTER_FILENAME, self.custom_mixer_filter)
         file_filter_all = gtk.FileFilter()
         file_filter_all.set_name(_("All files"))
@@ -300,8 +335,8 @@ class Preferences:
             return True
         return False
 
-    def on_combobox_changed(self, widget=None):
-        """ Callback for combobox_changed event """
+    def on_card_combobox_changed(self, widget=None):
+        """ Callback for card_combobox_changed event """
         model = widget.get_model()
         iter = widget.get_active_iter()
         card_index = model.get_value(iter, 0)
@@ -334,6 +369,20 @@ class Preferences:
             PREFS["control"] = model.get_value(iter, 1)
             self.main.update()
             self.write_file()
+
+    def on_theme_combobox_changed(self, widget=None):
+        """ Callback for theme_combobox_changed event """
+        model = widget.get_model()
+        iter = widget.get_active_iter()
+        index = model.get_value(iter, 0)
+
+        icon_theme = self.themes[index]
+        PREFS["icon_theme"] = icon_theme
+        self.main.icon_theme = icon_theme
+
+        volume = self.main.get_volume()
+        icon = self.main.get_icon_name(volume)
+        self.main.update_icon(volume, icon)
 
     def radio_toggle(self, model, path, iter):
         """ Toggles radio buttons status """
@@ -413,7 +462,9 @@ class Preferences:
         self.main.init_notify()
         self.set_notify_sensitive(active)
         if active and self.main.notify:
-            self.main.update_notify(self.main.get_volume())
+            volume = self.main.get_volume()
+            icon = self.main.get_icon_name(volume)
+            self.main.update_notify(volume, icon)
 
     def set_notify_sensitive(self, active):
         """ Set widgets sensitivity """
@@ -425,6 +476,8 @@ class Preferences:
             self.timeout_spinbutton.set_sensitive(True)
             self.position_checkbutton.set_sensitive(True)
             self.notify_body_text.set_sensitive(True)
+            if not self.main.notify.check_capabilities():
+                self.position_checkbutton.set_sensitive(False)
 
     def on_position_toggled(self, widget):
         """ Callback for position_toggled event """
@@ -433,7 +486,9 @@ class Preferences:
         self.main.notify_position = active
         if self.main.notify:
             self.main.notify.close()
-            self.main.update_notify(self.main.get_volume())
+            volume = self.main.get_volume()
+            icon = self.main.get_icon_name(volume)
+            self.main.update_notify(volume, icon)
 
     def on_timeout_spinbutton_changed(self, widget):
         """ Callback for spinbutton_changed event """

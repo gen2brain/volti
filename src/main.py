@@ -62,13 +62,13 @@ class VolumeTray(gtk.StatusIcon):
     def __init__(self):
         """ Constructor """
         gtk.StatusIcon.__init__(self)
-        self.set_from_icon_name("audio-volume-high")
 
         self.config = config
         self.preferences = preferences.Preferences(self)
 
         self.toggle = PREFS["toggle"]
         self.mixer = PREFS["mixer"]
+        self.icon_theme = PREFS["icon_theme"]
         self.show_tooltip = bool(int(PREFS["show_tooltip"]))
         self.run_in_terminal = bool(int(PREFS["run_in_terminal"]))
         self.scale_increment = float(PREFS["scale_increment"])
@@ -91,14 +91,16 @@ class VolumeTray(gtk.StatusIcon):
         except ImportError:
             self.has_xlib = False
 
+        self.lock = False
+        self.lockid = None
+        self.notify = None
+        self.key_press = False
+        self.keys_events = None
+
         self.alsactrl = AlsaControl(PREFS)
         self.menu = PopupMenu(self)
         self.scale = VolumeScale(self)
         self.dbus = DBusService(self)
-
-        self.notify = None
-        self.key_press = False
-        self.keys_events = None
 
         if self.keys:
             self.init_keys_events()
@@ -165,6 +167,38 @@ class VolumeTray(gtk.StatusIcon):
                     __name__, sys._getframe().f_code.co_name, str(err)))
                 self.notify = None
 
+    def on_volume_changed(self, widget=None, data=None):
+        """ Callback for scale value_changed signal """
+        if self.lock:
+            return
+
+        if self.lockid:
+            gobject.source_remove(self.lockid)
+            self.lockid = None
+
+        self.lock = True
+        volume = int(self.scale.get_value())
+        self.alsactrl.set_volume(volume)
+        vol = self.get_volume()
+
+        icon = self.get_icon_name(vol)
+        self.update_icon(vol, icon)
+        if self.show_tooltip:
+            self.update_tooltip(vol)
+
+        if self.key_press:
+            if self.show_notify and self.notify:
+                self.update_notify(vol, icon)
+
+        self.lockid = gobject.timeout_add(10, self._unlock)
+
+    def _unlock(self):
+        """ Unlock scale """
+        self.lock = False
+        self.lockid = None
+        self.key_press = False
+        return False
+
     def on_button_press_event(self, widget, event, data=None):
         """ Callback for button_press_event """
         if event.button == 1:
@@ -210,8 +244,6 @@ class VolumeTray(gtk.StatusIcon):
         if event == "mute":
             self.menu.toggle_mute.set_active(
                     not self.menu.toggle_mute.get_active())
-            if self.key_press and self.alsactrl.mute_switch:
-                self.scale.emit("value_changed")
         else:
             self.menu.toggle_mute.set_active(False)
             self.scale.set_value(volume)
@@ -228,6 +260,14 @@ class VolumeTray(gtk.StatusIcon):
             icon = "audio-volume-high"
         return icon
 
+    def get_icon_themes(self):
+        themes = ["Default"]
+        icons_dir = os.path.join(config.res_dir, "icons")
+        for file in os.listdir(icons_dir):
+            if os.path.isdir(os.path.join(icons_dir, file)):
+                themes.append(file)
+        return themes
+
     def get_status_info(self, volume):
         """ Returns status information """
         var = "" if volume == _("Muted") else "%"
@@ -236,14 +276,20 @@ class VolumeTray(gtk.StatusIcon):
         return var, card_name, mixer_name
 
     def get_volume(self):
+        """ Get volume """
         if self.alsactrl.is_muted():
             return _("Muted")
         else:
             return self.alsactrl.get_volume()
 
-    def update_icon(self, volume):
+    def update_icon(self, volume, icon):
         """ Update icon """
-        self.set_from_icon_name(self.get_icon_name(volume))
+        if self.icon_theme != "Default":
+            icon = os.path.abspath(os.path.join(
+                    config.res_dir, "icons", self.icon_theme, "32x32", icon+".png"))
+            self.set_from_file(icon)
+        else:
+            self.set_from_icon_name(icon)
 
     def update_tooltip(self, volume):
         """ Update tooltip """
@@ -252,14 +298,16 @@ class VolumeTray(gtk.StatusIcon):
                 _("Output"), volume, var, _("Card"), card_name, _("Mixer"), mixer_name)
         self.set_tooltip_markup(tooltip)
 
-    def update_notify(self, volume):
+    def update_notify(self, volume, icon):
         """ Update notification """
-        icon = self.get_icon_name(volume)
+        if self.icon_theme != "Default":
+            icon = os.path.abspath(os.path.join(
+                    config.res_dir, "icons", self.icon_theme, "48x48", icon+".png"))
         self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
 
     def update(self, source=None, condition=None):
         """ Update volume """
-        if self.scale.lock:
+        if self.lock:
             return True
         try:
             self.alsactrl = AlsaControl(preferences.PREFS)

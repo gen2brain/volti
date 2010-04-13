@@ -48,7 +48,7 @@
                                   <object class="GtkHBox" id="hbox1">
                                     <property name="visible">True</property>
                                     <child>
-                                      <object class="GtkComboBox" id="combobox">
+                                      <object class="GtkComboBox" id="card_combobox">
                                         <property name="visible">True</property>
                                       </object>
                                       <packing>
@@ -98,7 +98,7 @@
                             <child type="label">
                               <object class="GtkLabel" id="label4">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Select a mixer to control:</property>
+                                <property name="label" translatable="yes">Select a channel to control:</property>
                               </object>
                             </child>
                           </object>
@@ -510,12 +510,50 @@ You can use the Pango markup language to format the text.</property>
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
+                          <object class="GtkHBox" id="hbox18">
+                            <property name="visible">True</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkLabel" id="label2">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Icon theme:</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBox" id="theme_combobox">
+                                <property name="visible">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHSeparator" id="hseparator4">
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkHBox" id="hbox14">
                             <property name="visible">True</property>
                             <child>
                               <object class="GtkLabel" id="label13">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Middle click toggles:</property>
+                                <property name="label" translatable="yes">Middle mouse button action:</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -526,7 +564,7 @@ You can use the Pango markup language to format the text.</property>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">0</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                         <child>
@@ -551,7 +589,7 @@ You can use the Pango markup language to format the text.</property>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">1</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                         <child>
@@ -576,7 +614,7 @@ You can use the Pango markup language to format the text.</property>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">2</property>
+                            <property name="position">4</property>
                           </packing>
                         </child>
                         <child>
@@ -584,10 +622,9 @@ You can use the Pango markup language to format the text.</property>
                             <property name="visible">True</property>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="padding">5</property>
-                            <property name="position">3</property>
+                            <property name="position">5</property>
                           </packing>
                         </child>
                         <child>
@@ -611,7 +648,7 @@ You can use the Pango markup language to format the text.</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="position">4</property>
+                            <property name="position">6</property>
                           </packing>
                         </child>
                         <child>
@@ -635,7 +672,7 @@ You can use the Pango markup language to format the text.</property>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">5</property>
+                            <property name="position">7</property>
                           </packing>
                         </child>
                         <child>
@@ -643,10 +680,9 @@ You can use the Pango markup language to format the text.</property>
                             <property name="visible">True</property>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="padding">5</property>
-                            <property name="position">6</property>
+                            <property name="position">8</property>
                           </packing>
                         </child>
                         <child>
@@ -656,7 +692,7 @@ You can use the Pango markup language to format the text.</property>
                             <child>
                               <object class="GtkLabel" id="label7">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Volume increment:</property>
+                                <property name="label" translatable="yes">Volume adjustment:</property>
                                 <property name="use_markup">True</property>
                               </object>
                               <packing>
@@ -691,7 +727,7 @@ You can use the Pango markup language to format the text.</property>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">7</property>
+                            <property name="position">9</property>
                           </packing>
                         </child>
                       </object>

@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-import gobject
 
 class VolumeScale(gtk.VScale):
     """ Volume scale/slider """
@@ -25,9 +24,6 @@ class VolumeScale(gtk.VScale):
         """ Constructor """
         gtk.VScale.__init__(self)
         self.main = main_instance
-
-        self.lock = False
-        self.lockid = None
 
         self.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self.set_draw_value(self.main.scale_show_value)
@@ -55,7 +51,7 @@ class VolumeScale(gtk.VScale):
         self.posx, self.posy = None, None
         self.screen, self.rectangle, self.orientation = self.main.get_geometry()
 
-        self.connect("value_changed", self.on_scale_value_changed)
+        self.connect("value_changed", self.main.on_volume_changed)
         self.connect("button_press_event", self.on_scale_button_press_event)
         self.connect("button_release_event", self.on_scale_button_release_event)
         self.connect("scroll_event", self.on_scale_scroll_event)
@@ -63,37 +59,6 @@ class VolumeScale(gtk.VScale):
         self.win.connect("key_release_event", self.on_window_key_release_event)
         self.win.connect("scroll_event", self.on_window_scroll_event)
         self.win.connect_after("realize", self.on_realize)
-
-    def on_scale_value_changed(self, widget=None, data=None):
-        """ Callback for value_changed signal """
-        if self.lock:
-            return
-
-        if self.lockid:
-            gobject.source_remove(self.lockid)
-            self.lockid = None
-
-        self.lock = True
-        volume = int(self.get_value())
-        self.main.alsactrl.set_volume(volume)
-        vol = self.main.get_volume()
-
-        self.main.update_icon(vol)
-        if self.main.show_tooltip:
-            self.main.update_tooltip(vol)
-
-        if self.main.key_press:
-            if self.main.show_notify and self.main.notify:
-                self.main.update_notify(vol)
-
-        self.lockid = gobject.timeout_add(10, self._unlock)
-
-    def _unlock(self):
-        """ Unlock scale """
-        self.lock = False
-        self.lockid = None
-        self.main.key_press = False
-        return False
 
     def on_scale_button_press_event(self, widget, event):
         """ Callback for button_press_event. We want the behaviour you get with the middle button """

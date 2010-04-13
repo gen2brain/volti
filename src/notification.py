@@ -26,13 +26,20 @@ class Notification:
         bus = dbus.SessionBus()
         obj = bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications')
         self.notify = dbus.Interface(obj, 'org.freedesktop.Notifications')
+        self.server_capable = self.check_capabilities()
         self.last_id = dbus.UInt32()
+
+    def check_capabilities(self):
+        info = self.notify.GetServerInformation()
+        if info[0] == "notify-osd":
+            return False
+        return True
 
     def show(self, icon, message, duration, volume):
         """ Show the notification """
         body = self.format(message, volume)
         hints = {"urgency": dbus.Byte(0), "desktop-entry": dbus.String("volti")}
-        if self.main.notify_position:
+        if self.main.notify_position and self.server_capable:
             hints["x"], hints["y"] = self.get_position()
         self.last_id = self.notify.Notify('audiovolume', self.last_id, icon, '', body, [], hints, duration * 1000)
 
