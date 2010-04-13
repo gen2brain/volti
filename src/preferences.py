@@ -210,7 +210,7 @@ class Preferences:
     def init_card_combobox(self):
         """ Initialize combobox with list of audio cards """
         icon_theme = gtk.icon_theme_get_default()
-        if icon_theme.has_icon("audio-cards"):
+        if icon_theme.has_icon("audio-card"):
             icon = icon_theme.load_icon(
                     "audio-card", 22, flags=gtk.ICON_LOOKUP_FORCE_SVG)
         else:
