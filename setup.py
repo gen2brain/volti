@@ -15,6 +15,7 @@ config = Config()
 
 PO_DIR = 'po'
 MO_DIR = os.path.join('build', 'mo')
+ICON_DIR = os.path.join("data", "icons")
 
 class BuildLocales(build):
   def run(self):
@@ -42,7 +43,7 @@ class BuildLocales(build):
 class InstallLocales(install_data):
   def run(self):
     self.data_files.extend(self._find_mo_files())
-    install_data.run (self)
+    install_data.run(self)
 
   def _find_mo_files(self):
     data_files = []
@@ -50,6 +51,33 @@ class InstallLocales(install_data):
         lang = os.path.basename(os.path.dirname(mo))
         dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
         data_files.append((dest, [mo]))
+    return data_files
+
+class InstallIcons(install_data):
+  def run(self):
+    self.data_files.extend(self._find_icons())
+    install_data.run(self)
+
+  def _find_icons(self):
+    data_files = []
+    for filepath in os.listdir(ICON_DIR):
+        filepath_full = os.path.join(ICON_DIR, filepath)
+        if os.path.isdir(filepath_full):
+            if not filepath.startswith("."):
+                for size in os.listdir(filepath_full):
+                    size_full = os.path.join(ICON_DIR, filepath, size)
+                    if os.path.isdir(size_full) and not size.startswith("."):
+                        icons = glob.glob(os.path.join(
+                            ICON_DIR, filepath, size, "*"))
+                        targetpath = os.path.join(
+                                "share", "volti", "icons", filepath, size)
+                        data_files.append((targetpath, icons))
+        else:
+            sourcepath = os.path.join(
+                    ICON_DIR, filepath)
+            targetpath = os.path.join(
+                    "share", "volti", "icons")
+            data_files.append((targetpath, [sourcepath]))
     return data_files
 
 setup(name = config.app_name,
@@ -65,7 +93,7 @@ setup(name = config.app_name,
         scripts = ["volti", "volti-remote"],
         requires = ["gtk", "gobject", "cairo", "alsaaudio", "dbus", "Xlib"],
         platforms = ["Linux"],
-        cmdclass = {'build': BuildLocales, 'install_data': InstallLocales},
+        cmdclass = {'build': BuildLocales, 'install_data': InstallLocales, 'install_data': InstallIcons},
         data_files = [("share/volti", ["data/preferences.glade"]),
                     ("share/applications", ["data/volti.desktop"]),
                     ("share/man/man1", ["doc/volti.1", "doc/volti-remote.1"])]

@@ -263,9 +263,13 @@ class VolumeTray(gtk.StatusIcon):
     def get_icon_themes(self):
         themes = ["Default"]
         icons_dir = os.path.join(config.res_dir, "icons")
-        for file in os.listdir(icons_dir):
-            if os.path.isdir(os.path.join(icons_dir, file)):
-                themes.append(file)
+        try:
+            for file in os.listdir(icons_dir):
+                if os.path.isdir(os.path.join(icons_dir, file)):
+                    if not file.startswith("."):
+                        themes.append(file)
+        except OSError:
+            pass
         return themes
 
     def get_status_info(self, volume):
