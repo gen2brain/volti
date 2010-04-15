@@ -1,3 +1,8 @@
+v0.2.0 April 15, 2010:
+
+    * icon themes combobox, choose your favourite theme beside system default
+    * minor fixes
+
 v0.1.9 March 22, 2010:
 
     * added volti-remote script, you can control volti from command line or bind keys within your wm
