@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 declare -r APP_NAME="${0##*/}"
 
