@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: volti\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-15 10:27+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Fomin Denis <fominde@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+
+#: ../src/menu.py:30
+#: ../data/preferences.glade.h:18
+msgid "Mute"
+msgstr "Приглушить"
+
+#: ../src/menu.py:35
+#: ../data/preferences.glade.h:23
+msgid "Show Mixer"
+msgstr "Показать микшер"
+
+#: ../src/notification.py:62
+#: ../src/main.py:302
+msgid "Card"
+msgstr "Звуковая карта"
+
+#: ../src/notification.py:63
+#: ../src/main.py:302
+#: ../data/preferences.glade.h:17
+msgid "Mixer"
+msgstr "Микшер"
+
+#: ../src/preferences.py:300
+msgid "Choose external mixer"
+msgstr "Выбирите внешний микшер"
+
+#: ../src/preferences.py:308
+msgid "Sound Mixers"
+msgstr "Звуковые микшеры"
+
+#: ../src/preferences.py:311
+msgid "All files"
+msgstr "Все файлы"
+
+#: ../src/main.py:253
+#: ../src/main.py:277
+#: ../src/main.py:285
+msgid "Muted"
+msgstr "Приглушено"
+
+#: ../src/main.py:302
+msgid "Output"
+msgstr "Выход"
+
+#: ../data/preferences.glade.h:1
+msgid "Backend:"
+msgstr ""
+
+#: ../data/preferences.glade.h:2
+msgid "Browse"
+msgstr "Просмотр"
+
+#: ../data/preferences.glade.h:3
+msgid "Close"
+msgstr "Закрыть"
+
+#: ../data/preferences.glade.h:4
+msgid "Enable desktop notifications"
+msgstr "Включить уведомления"
+
+#: ../data/preferences.glade.h:5
+msgid "Enable multimedia keys"
+msgstr "Использовать мультимедиа клавиши"
+
+#: ../data/preferences.glade.h:6
+msgid "External mixer:"
+msgstr "Внешний микшер:"
+
+#: ../data/preferences.glade.h:7
+msgid ""
+"Fields of the form {field} are replaced by their corresponding value.\n"
+"\n"
+"Available fields are: {volume}, {card} and {mixer}\n"
+"\n"
+"You can use the Pango markup language to format the text."
+msgstr ""
+"Поля формы {поле} будут заменены на сооьветствующее значение.\n"
+"\n"
+"Доступные поля: {volume}, {card} и {mixer}\n"
+"\n"
+"Можете использовать язык разметки Pango для форматирования текста."
+
+#: ../data/preferences.glade.h:12
+msgid "Hal"
+msgstr ""
+
+#: ../data/preferences.glade.h:13
+msgid "Hardware"
+msgstr "Устройства"
+
+#: ../data/preferences.glade.h:14
+msgid "Icon theme:"
+msgstr "тема иконок:"
+
+#: ../data/preferences.glade.h:15
+msgid "Keyboard"
+msgstr "Клавиатура"
+
+#: ../data/preferences.glade.h:16
+msgid "Middle mouse button action:"
+msgstr "При щелчке средней кнопкой мыши:"
+
+#: ../data/preferences.glade.h:19
+msgid "Position notification"
+msgstr "Привязать уведомления к системному лотку"
+
+#: ../data/preferences.glade.h:20
+msgid "Run in terminal"
+msgstr "Запустить в терминале"
+
+#: ../data/preferences.glade.h:21
+msgid "Select a channel to control:"
+msgstr "Выберите канал для управления:"
+
+#: ../data/preferences.glade.h:22
+msgid "Select audio card:"
+msgstr "Выберите звуковую карту:"
+
+#: ../data/preferences.glade.h:24
+msgid "Show scale value"
+msgstr "Показывать значение регулятора"
+
+#: ../data/preferences.glade.h:25
+msgid "Show tooltip"
+msgstr "Показывать всплывающие подсказки"
+
+#: ../data/preferences.glade.h:26
+msgid "Timeout:"
+msgstr "Время показа:"
+
+#: ../data/preferences.glade.h:27
+msgid "UI"
+msgstr "Интерфейс"
+
+#: ../data/preferences.glade.h:28
+msgid "Volti Preferences"
+msgstr "Настройки Volti"
+
+#: ../data/preferences.glade.h:29
+msgid "Volume adjustment:"
+msgstr "Шаг изменения громкости:"
+
+#: ../data/preferences.glade.h:30
+msgid "Xlib"
+msgstr ""
+
+#: ../data/preferences.glade.h:31
+msgid "seconds"
+msgstr "секунд(ы)"
+
