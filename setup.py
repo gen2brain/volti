@@ -40,9 +40,10 @@ class BuildLocales(build):
           print "%s: %s" % (type(e), str(e))
           sys.exit(1)
 
-class InstallLocales(install_data):
+class Install(install_data):
   def run(self):
     self.data_files.extend(self._find_mo_files())
+    self.data_files.extend(self._find_icons())
     install_data.run(self)
 
   def _find_mo_files(self):
@@ -52,11 +53,6 @@ class InstallLocales(install_data):
         dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
         data_files.append((dest, [mo]))
     return data_files
-
-class InstallIcons(install_data):
-  def run(self):
-    self.data_files.extend(self._find_icons())
-    install_data.run(self)
 
   def _find_icons(self):
     data_files = []
@@ -93,7 +89,7 @@ setup(name = config.app_name,
         scripts = ["volti", "volti-remote"],
         requires = ["gtk", "gobject", "cairo", "alsaaudio", "dbus", "Xlib"],
         platforms = ["Linux"],
-        cmdclass = {'build': BuildLocales, 'install_data': InstallLocales, 'install_data': InstallIcons},
+        cmdclass = {'build': BuildLocales, 'install_data': Install},
         data_files = [("share/volti", ["data/preferences.glade"]),
                     ("share/applications", ["data/volti.desktop"]),
                     ("share/man/man1", ["doc/volti.1", "doc/volti-remote.1"])]
