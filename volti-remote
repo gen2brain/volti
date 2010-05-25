@@ -26,5 +26,6 @@ while getopts ":hidm" opt; do
         d) `${DBUS_SEND} string:'volume-down'`;;
         m) `${DBUS_SEND} string:'mute'`;;
         h) print_usage;;
+        *) print_usage;;
     esac
 done
