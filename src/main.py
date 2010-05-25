@@ -246,7 +246,7 @@ class VolumeTray(gtk.StatusIcon):
                     not self.menu.toggle_mute.get_active())
         else:
             self.menu.toggle_mute.set_active(False)
-            self.scale.set_value(volume)
+            self.set_volume(volume)
 
     def get_icon_name(self, volume):
         """ Returns icon name for current volume """
@@ -278,6 +278,13 @@ class VolumeTray(gtk.StatusIcon):
         card_name = self.alsactrl.get_card_name()
         mixer_name = self.alsactrl.get_mixer_name()
         return var, card_name, mixer_name
+
+    def set_volume(self, volume):
+        """ Set volume """
+        if volume != self.scale.get_value():
+            self.scale.set_value(volume)
+        else:
+            self.scale.emit("value_changed")
 
     def get_volume(self):
         """ Get volume """
@@ -316,12 +323,8 @@ class VolumeTray(gtk.StatusIcon):
         try:
             self.alsactrl = AlsaControl(preferences.PREFS)
             volume = self.alsactrl.get_volume()
-            scale_value = self.scale.get_value()
             gtk.gdk.threads_enter()
-            if volume != scale_value:
-                self.scale.set_value(volume)
-            else:
-                self.scale.emit("value_changed")
+            self.set_volume(volume)
             gtk.gdk.threads_leave()
             return True
         except Exception, err:
