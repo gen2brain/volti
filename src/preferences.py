@@ -447,12 +447,8 @@ class Preferences:
 
     def set_keys_sensitive(self, active):
         """ Set widgets sensitivity """
-        if not active:
-            self.hal_radiobutton.set_sensitive(False)
-            self.xlib_radiobutton.set_sensitive(False)
-        else:
-            self.hal_radiobutton.set_sensitive(True)
-            self.xlib_radiobutton.set_sensitive(True)
+        self.hal_radiobutton.set_sensitive(active)
+        self.xlib_radiobutton.set_sensitive(active)
 
     def on_notify_toggled(self, widget):
         """ Callback for notify_toggled event """
@@ -468,16 +464,11 @@ class Preferences:
 
     def set_notify_sensitive(self, active):
         """ Set widgets sensitivity """
-        if not active:
-            self.timeout_spinbutton.set_sensitive(False)
+        self.timeout_spinbutton.set_sensitive(active)
+        self.position_checkbutton.set_sensitive(active)
+        self.notify_body_text.set_sensitive(active)
+        if active and not self.main.notify.check_capabilities():
             self.position_checkbutton.set_sensitive(False)
-            self.notify_body_text.set_sensitive(False)
-        else:
-            self.timeout_spinbutton.set_sensitive(True)
-            self.position_checkbutton.set_sensitive(True)
-            self.notify_body_text.set_sensitive(True)
-            if not self.main.notify.check_capabilities():
-                self.position_checkbutton.set_sensitive(False)
 
     def on_position_toggled(self, widget):
         """ Callback for position_toggled event """
