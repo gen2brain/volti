@@ -351,7 +351,7 @@ class VolumeTray(gtk.StatusIcon):
 
     def find_term(self):
         term = os.getenv("TERM")
-        if term == "linux":
+        if term == "linux" or "":
             if which("gconftool-2"):
                 term = Popen(["gconftool-2", "-g",
                     "/desktop/gnome/applications/terminal/exec"],
