@@ -469,6 +469,7 @@ class Preferences:
         self.notify_body_text.set_sensitive(active)
         if active and not self.main.notify.check_capabilities():
             self.position_checkbutton.set_sensitive(False)
+            self.timeout_spinbutton.set_sensitive(False)
 
     def on_position_toggled(self, widget):
         """ Callback for position_toggled event """
