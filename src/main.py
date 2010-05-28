@@ -340,18 +340,28 @@ class VolumeTray(gtk.StatusIcon):
                 os.kill(pid, SIGTERM)
             else:
                 if self.run_in_terminal:
-                    term = os.getenv("TERM")
-                    term_full = which(term)
-                    if term == "rxvt" and not term_full:
-                        term = "urxvt"
-                        term_full = which(term)
-                    cmd = [term_full, "-e", self.mixer]
+                    term = self.find_term()
+                    cmd = [term, "-e", self.mixer]
                 else:
                     cmd = which(self.mixer)
                 Popen(cmd, shell=False)
         except Exception, err:
             sys.stderr.write("%s.%s: %s\n" % (
                 __name__, sys._getframe().f_code.co_name, str(err)))
+
+    def find_term(self):
+        term = os.getenv("TERM")
+        if term == "linux":
+            if which("gconftool-2"):
+                term = Popen(["gconftool-2", "-g",
+                    "/desktop/gnome/applications/terminal/exec"],
+                        stdout=PIPE).communicate()[0].strip()
+            else:
+                term = 'xterm'
+        else:
+            if term == "rxvt" and not which(term):
+                term = "urxvt"
+        return term
 
     def mixer_get_pid(self):
         """ Get process id of mixer application """
