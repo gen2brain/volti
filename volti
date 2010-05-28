@@ -39,9 +39,13 @@ except ImportError:
     sys.exit(1)
 
 if __name__ == "__main__":
-    bus = dbus.SessionBus(mainloop = DBusGMainLoop())
+    try:
+        bus = dbus.SessionBus(mainloop = DBusGMainLoop())
+    except dbus.exceptions.DBusException:
+        sys.stderr.write("Couldn't connect to dbus.\nExiting\n")
+        sys.exit(1)
     if bus.request_name("com.google.code.Volti") != dbus.bus.REQUEST_NAME_REPLY_PRIMARY_OWNER:
-        sys.stderr.write("Only one instance is allowed\n")
+        sys.stderr.write("Only one instance is allowed\nExiting\n")
         sys.exit(1)
     else:
         volti = main.VolumeTray()
