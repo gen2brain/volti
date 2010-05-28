@@ -1,0 +1,23 @@
+Source: volti
+Section: sound
+Priority: optional
+Maintainer: Fomin Denis <fominde@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.8.4
+Homepage: http://code.google.com/p/volti/
+
+Package: volti
+Architecture: all
+Depends: python-gtk2(>=2.16), python-dbus, python-alsaaudio(>=0.5)
+Suggests: python-xlib
+Description: application for controlling audio volume from system tray/notification area.
+ Features:
+ - no pulseaudio, gstreamer, phonon etc. only alsa is needed
+ - uses external mixer that you can choose, it goes nicely with gnome-alsamixer
+ - left click opens volume scale (slider)
+ - scroll wheel on tray icon changes volume, increment in percents is configurable
+ - you can configure middle click to toggle 'mute' or 'show mixer'
+ - nice tooltip with card and volume info
+ - support multimedia keys on keyboard
+ - support desktop notifications on keys events
+ - control volti from command line or bind keys within your window manager

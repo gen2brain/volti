@@ -1,0 +1,4 @@
+?package(volti):needs="X11" section="Applications/Sound"\
+  title="volti" command="/usr/bin/volti"\
+  longtitle="controlling audio volume from system tray" \
+  icon="multimedia-volume-control.svg"
