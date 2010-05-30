@@ -1,3 +1,14 @@
+volti (0.2.1-1) unstable; urgency=low
+
+    * scale now behaves correctly on vertically oriented panel, thanks to Fomin Denis <fominde@gmail.com> for the patch
+    * added Russian translation
+    * Debian/Ubuntu package, thanks again to Fomin Denis <fominde@gmail.com>
+    * fix notifications in Ubuntu, also disable some features if we are dealing with notify-osd
+    * fix bug when "Run in terminal" option is used
+    * minor bug fixes and optimizations
+
+ -- Fomin Denis <fominde@gmail.com>  Sun, 30 May 2010 17:23:52 +0400
+
 volti (0.2.0-1) unstable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
