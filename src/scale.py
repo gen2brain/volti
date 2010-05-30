@@ -17,48 +17,65 @@
 
 import gtk
 
-class VolumeScale(gtk.VScale):
+class VolumeScale():
     """ Volume scale/slider """
 
     def __init__(self, main_instance):
         """ Constructor """
-        gtk.VScale.__init__(self)
         self.main = main_instance
+        self.screen, self.rectangle, self.orientation = self.main.get_geometry()
+        self.win = None
+        self.init_window()
 
-        self.set_update_policy(gtk.UPDATE_CONTINUOUS)
-        self.set_draw_value(self.main.scale_show_value)
-        self.set_value_pos(gtk.POS_BOTTOM)
-        self.set_inverted(True)
-        self.set_digits(0)
-        self.set_range(0, 100)
-        self.set_increments(self.main.scale_increment, 10)
-        self.add_events(gtk.gdk.SCROLL_MASK)
-        self.set_size_request(-1, 128)
+    def init_window(self):
+        if self.win:
+            self.win.unrealize()
 
         self.win = gtk.Window(type=gtk.WINDOW_POPUP)
         self.win.resize(1, 1)
-
-        align = gtk.Alignment()
-        align.set_padding(10, 10, 4, 4)
-
         frame = gtk.Frame()
         frame.set_shadow_type(gtk.SHADOW_OUT)
 
-        align.add(self)
-        frame.add(align)
+        self.init_slider()
+
+        self.align.add(self.slider)
+        frame.add(self.align)
         self.win.add(frame)
 
-        self.posx, self.posy = None, None
-        self.screen, self.rectangle, self.orientation = self.main.get_geometry()
-
-        self.connect("value_changed", self.main.on_volume_changed)
-        self.connect("button_press_event", self.on_scale_button_press_event)
-        self.connect("button_release_event", self.on_scale_button_release_event)
-        self.connect("scroll_event", self.on_scale_scroll_event)
         self.win.connect("button_press_event", self.on_window_button_press_event)
         self.win.connect("key_release_event", self.on_window_key_release_event)
         self.win.connect("scroll_event", self.on_window_scroll_event)
         self.win.connect_after("realize", self.on_realize)
+
+    def init_slider(self):
+        if self.orientation == gtk.ORIENTATION_VERTICAL:
+            self.slider = gtk.HScale()
+        else:
+            self.slider = gtk.VScale()
+
+        self.align = gtk.Alignment()
+
+        self.slider.set_update_policy(gtk.UPDATE_CONTINUOUS)
+        self.slider.set_draw_value(self.main.scale_show_value)
+        self.slider.set_digits(0)
+        self.slider.set_range(0, 100)
+        self.slider.set_increments(self.main.scale_increment, 10)
+        self.slider.add_events(gtk.gdk.SCROLL_MASK)
+
+        if isinstance(self.slider, gtk.VScale):
+            self.align.set_padding(10, 10, 4, 4)
+            self.slider.set_size_request(-1, 128)
+            self.slider.set_value_pos(gtk.POS_BOTTOM)
+            self.slider.set_inverted(True)
+        else:
+            self.align.set_padding(4, 4, 10, 10)
+            self.slider.set_size_request(128, -1)
+            self.slider.set_value_pos(gtk.POS_LEFT)
+
+        self.slider.connect("value_changed", self.main.on_volume_changed)
+        self.slider.connect("button_press_event", self.on_scale_button_press_event)
+        self.slider.connect("button_release_event", self.on_scale_button_release_event)
+        self.slider.connect("scroll_event", self.on_scale_scroll_event)
 
     def on_scale_button_press_event(self, widget, event):
         """ Callback for button_press_event. We want the behaviour you get with the middle button """
@@ -105,21 +122,22 @@ class VolumeScale(gtk.VScale):
         if self.win.get_property("visible"):
             self.release_grab()
         else:
+            screen, rectangle, orientation = self.main.get_geometry()
+            if orientation != self.orientation:
+                self.orientation = orientation
+                self.init_window()
+                self.main.scale = self
+                self.main.update()
+            if rectangle.x != self.rectangle.x or rectangle.y != self.rectangle.y:
+                self.rectangle = rectangle
+                self.win.unrealize()
             self.win.show_all()
-            self.move_window()
             self.grab_window()
 
     def move_window(self):
         """ Move scale window """
-        screen, rectangle, orientation = self.main.get_geometry()
-        if self.posx and rectangle.x == self.rectangle.x and rectangle.y == self.rectangle.y:
-            self.win.move(self.posx, self.posy)
-        else:
-            posx, posy = self.get_position()
-            self.win.move(posx, posy)
-            # save window position
-            self.rectangle = rectangle
-            self.posx, self.posy = posx, posy
+        posx, posy = self.get_position()
+        self.win.move(posx, posy)
 
     def grab_window(self):
         """ Grab and focus window """
@@ -158,14 +176,23 @@ class VolumeScale(gtk.VScale):
         monitor = screen.get_monitor_geometry(monitor_num)
         window = self.win.allocation
 
-        if (rectangle.y + rectangle.height + window.height <= monitor.y + monitor.height):
-            posy = rectangle.y + rectangle.height
+        if orientation == gtk.ORIENTATION_VERTICAL:
+            if monitor.width - rectangle.x == rectangle.width:
+                # right panel
+                posx = monitor.x + monitor.width - window.width - rectangle.width
+            else:
+                # left panel
+                posx = rectangle.x + rectangle.width
+            posy = rectangle.y
         else:
-            posy = rectangle.y - window.height
+            if (rectangle.y + rectangle.height + window.height <= monitor.y + monitor.height):
+                posy = rectangle.y + rectangle.height
+            else:
+                posy = rectangle.y - window.height
 
-        if (rectangle.x + window.width <= monitor.x + monitor.width):
-            posx = rectangle.x
-        else:
-            posx = monitor.x + monitor.width - window.width
+            if (rectangle.x + window.width <= monitor.x + monitor.width):
+                posx = rectangle.x
+            else:
+                posx = monitor.x + monitor.width - window.width
 
         return posx, posy

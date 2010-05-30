@@ -177,7 +177,7 @@ class VolumeTray(gtk.StatusIcon):
             self.lockid = None
 
         self.lock = True
-        volume = int(self.scale.get_value())
+        volume = int(self.scale.slider.get_value())
         self.alsactrl.set_volume(volume)
         vol = self.get_volume()
 
@@ -234,7 +234,7 @@ class VolumeTray(gtk.StatusIcon):
     def change_volume(self, event, key_press=False):
         """ Change volume """
         self.key_press = key_press
-        volume = self.scale.get_value()
+        volume = self.scale.slider.get_value()
 
         if event == "up":
             volume = min(100, volume + self.scale_increment)
@@ -281,10 +281,10 @@ class VolumeTray(gtk.StatusIcon):
 
     def set_volume(self, volume):
         """ Set volume """
-        if volume != self.scale.get_value():
-            self.scale.set_value(volume)
+        if volume != self.scale.slider.get_value():
+            self.scale.slider.set_value(volume)
         else:
-            self.scale.emit("value_changed")
+            self.scale.slider.emit("value_changed")
 
     def get_volume(self):
         """ Get volume """

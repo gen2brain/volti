@@ -417,7 +417,7 @@ class Preferences:
         """ Callback for draw_value_toggled event """
         active = widget.get_active()
         PREFS["scale_show_value"] = int(active)
-        self.main.scale.set_draw_value(active)
+        self.main.scale.slider.set_draw_value(active)
 
     def on_entry_changed(self, widget):
         """ Callback for entry_changed event """
