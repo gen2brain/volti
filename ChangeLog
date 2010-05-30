@@ -1,3 +1,12 @@
+v0.2.1 May 30, 2010:
+
+    * scale now behaves correctly on vertically oriented panel, thanks to Fomin Denis <fominde@gmail.com> for the patch
+    * added Russian translation
+    * Debian/Ubuntu package, thanks again to Fomin Denis <fominde@gmail.com>
+    * fix notifications in Ubuntu, also disable some features if we are	dealing with notify-osd
+    * fix bug when "Run in terminal" option is used
+    * minor bug fixes and optimizations
+
 v0.2.0 April 15, 2010:
 
     * icon themes combobox, choose your favourite theme beside system default

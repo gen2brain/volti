@@ -21,9 +21,18 @@ Dependencies:
 
 Install:
 
+- Manually
 Run 'python setup.py install'.
-You can also start application without installing, just run './volti'.
-Gentoo users can use ebuild provided in data/dist directory.
+You can also start application from source dir, just run ./volti.
+
+- Arch
+volti is in aur, check http://aur.archlinux.org/packages.php?ID=33525
+
+- Gentoo
+ebuild can be found at downloads page
+
+- Debian/Ubuntu
+deb package can be found at downloads page
 
 Usage:
 
