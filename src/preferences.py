@@ -35,7 +35,7 @@ PREFS = {
     "show_notify": 0,
     "notify_timeout": 2.0,
     "notify_position": 0,
-    "notify_body": '<span font_desc="14" weight="bold">{volume}</span>\n<small>{card}\n{mixer}</small>'
+    "notify_body": '<span font_desc="14" weight="bold">{volume}</span>\n<small>{card}</small>\n<small>{mixer}</small>'
     }
 
 _PREFERENCES = None
@@ -60,7 +60,6 @@ class Preferences:
         self.cp.read(self.main.config.config_file)
         for option in self.cp.options("global"):
             PREFS[option.lower()] = self.cp.get("global", option).strip()
-        self.set_section()
         PREFS["control"] = self.cp.get(self.section, "control").strip()
 
     def write_file(self):
@@ -220,8 +219,7 @@ class Preferences:
             icon = pixbuf.scale_simple(22, 22, gtk.gdk.INTERP_BILINEAR)
 
         self.combo_model = gtk.ListStore(int, gtk.gdk.Pixbuf, str)
-        cards = self.main.alsactrl.get_cards()
-        for index, card in enumerate(cards):
+        for index, card in enumerate(self.main.alsactrl.get_cards()):
             if card is not None:
                 self.combo_model.append([index, icon, card])
 
@@ -245,7 +243,7 @@ class Preferences:
     def init_treeview(self):
         """ Initialize treeview with mixers """
         self.liststore = gtk.ListStore(bool, str, int)
-        for mixer in self.main.alsactrl.get_mixers():
+        for mixer in self.main.alsactrl.get_mixers(int(PREFS["card_index"])):
             active = (mixer == PREFS["control"])
             if active:
                 self.liststore.append([active, mixer, pango.WEIGHT_BOLD])
@@ -341,16 +339,19 @@ class Preferences:
         iter = widget.get_active_iter()
         card_index = model.get_value(iter, 0)
         PREFS["card_index"] = card_index
+
+        mixers = self.main.alsactrl.get_mixers(card_index)
+
         self.set_section()
         if self.cp.has_section(self.section):
             PREFS["control"] = self.cp.get(self.section, "control").strip()
         else:
-            PREFS["control"] = self.main.alsactrl.get_mixers()[0]
+            PREFS["control"] = mixers[0]
 
         self.main.update()
         self.liststore.clear()
 
-        for mixer in self.main.alsactrl.get_mixers():
+        for mixer in mixers:
             active = (mixer == PREFS["control"])
             if active:
                 self.liststore.append([active, mixer, pango.WEIGHT_BOLD])

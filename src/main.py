@@ -334,6 +334,8 @@ class VolumeTray(gtk.StatusIcon):
 
     def toggle_mixer(self, widget=None):
         """ Toggle mixer application """
+        if not self.mixer:
+            return
         try:
             pid = self.mixer_get_pid()
             if pid:
@@ -358,9 +360,8 @@ class VolumeTray(gtk.StatusIcon):
                         stdout=PIPE).communicate()[0].strip()
             else:
                 term = 'xterm'
-        else:
-            if term == "rxvt" and not which(term):
-                term = "urxvt"
+        if term == "rxvt" and not which(term):
+            term = "urxvt"
         return term
 
     def mixer_get_pid(self):

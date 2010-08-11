@@ -44,10 +44,10 @@ class AlsaControl():
             sys.stderr.write("%s.%s: can't open %s control for card %s\nerror: %s\n" % (
                 __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name(), str(err)))
             try:
-                self.mixer = alsa.Mixer(control=self.get_mixers()[0], cardindex=self.card_index)
+                self.mixer = alsa.Mixer(control=self.get_mixers(self.card_index)[0], cardindex=self.card_index)
             except Exception, err:
-                sys.stderr.write("%s.%s: can't open %s control for card %s\nerror: %s\nExiting\n" % (
-                    __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name(), str(err)))
+                sys.stderr.write("%s.%s: can't open first available control for card %s\nerror: %s\nExiting\n" % (
+                    __name__, sys._getframe().f_code.co_name, self.get_card_name(), str(err)))
                 sys.exit(1)
 
     def get_descriptors(self):
@@ -125,20 +125,21 @@ class AlsaControl():
         acards = alsa.cards()
         for index, card in enumerate(acards):
             try:
-                alsa.mixers(index)[0]
-            except Exception, err:
-                # card doesn't have any mixer control
+                self.get_mixers(index)[0]
+            except IndexError:
                 cards.append(None)
-                sys.stderr.write("%s.%s: %s %s\n" % (
-                    __name__, sys._getframe().f_code.co_name, type(err), str(err)))
             else:
                 cards.append(acards[index])
         return cards
 
-    def get_mixers(self):
+    def get_mixers(self, card_index=0):
         """ Returns mixers list """
-        try:
-            return alsa.mixers(self.card_index)
-        except Exception, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+        mixers = []
+        for mixer in alsa.mixers(card_index):
+            try:
+                m = alsa.Mixer(control=mixer, cardindex=card_index)
+                if 'Playback Volume' in m.volumecap():
+                    mixers.append(mixer)
+            except alsa.ALSAAudioError:
+                pass
+        return mixers
