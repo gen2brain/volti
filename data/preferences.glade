@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="window">
-    <property name="width_request">400</property>
+    <property name="width_request">420</property>
     <property name="height_request">320</property>
     <property name="title" translatable="yes">Volti Preferences</property>
     <property name="window_position">center</property>
@@ -529,6 +529,7 @@ You can use the Pango markup language to format the text.</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
+                                <property name="fill">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -544,6 +545,9 @@ You can use the Pango markup language to format the text.</property>
                             <property name="visible">True</property>
                           </object>
                           <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="padding">5</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -622,6 +626,7 @@ You can use the Pango markup language to format the text.</property>
                             <property name="visible">True</property>
                           </object>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="padding">5</property>
                             <property name="position">5</property>
@@ -648,6 +653,7 @@ You can use the Pango markup language to format the text.</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="fill">False</property>
                             <property name="position">6</property>
                           </packing>
                         </child>
@@ -680,6 +686,7 @@ You can use the Pango markup language to format the text.</property>
                             <property name="visible">True</property>
                           </object>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="padding">5</property>
                             <property name="position">8</property>
@@ -716,7 +723,7 @@ You can use the Pango markup language to format the text.</property>
                             <child>
                               <object class="GtkLabel" id="label9">
                                 <property name="visible">True</property>
-                                <property name="label">%</property>
+                                <property name="label" translatable="no">%</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -744,6 +751,115 @@ You can use the Pango markup language to format the text.</property>
                   </object>
                   <packing>
                     <property name="position">3</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkAlignment" id="alignment11">
+                    <property name="visible">True</property>
+                    <property name="top_padding">10</property>
+                    <property name="bottom_padding">10</property>
+                    <property name="left_padding">10</property>
+                    <property name="right_padding">10</property>
+                    <child>
+                      <object class="GtkVBox" id="vbox10">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage" id="image1">
+                            <property name="visible">True</property>
+                            <property name="pixel_size">48</property>
+                            <property name="icon_name">multimedia-volume-control</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox19">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkLabel" id="version_label">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="no">Volti</property>
+                                <property name="track_visited_links">False</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox20">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkLinkButton" id="linkbutton1">
+                                <property name="label" translatable="no">http://code.google.com/p/volti/</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">none</property>
+                                <property name="uri">http://code.google.com/p/volti/</property>
+                              </object>
+                              <packing>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="scrolledwindow1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="hscrollbar_policy">automatic</property>
+                            <property name="vscrollbar_policy">automatic</property>
+                            <child>
+                              <object class="GtkTextView" id="textview1">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="editable">False</property>
+                                <property name="indent">5</property>
+                                <property name="cursor_visible">False</property>
+                                <property name="buffer">textbuffer1</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label15">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">About</property>
+                  </object>
+                  <packing>
+                    <property name="position">4</property>
                     <property name="tab_fill">False</property>
                   </packing>
                 </child>
@@ -791,5 +907,38 @@ You can use the Pango markup language to format the text.</property>
     <property name="lower">1</property>
     <property name="upper">10</property>
     <property name="step_increment">1</property>
+  </object>
+  <object class="GtkTextBuffer" id="textbuffer1">
+    <property name="text">Author:
+Milan Nikolic &lt;gen2brain@gmail.com&gt;
+
+Contributors:
+
+Jon Nettleton &lt;jon.nettleton@gmail.com&gt;
+	Multimedia keys via dbus/hal
+
+Fomin Denis &lt;fominde@gmail.com&gt;
+	Debian packaging, patches
+
+Translators:
+
+German (de) - Mario Bl&#xE4;ttermann &lt;mariobl@gnome.org&gt;
+French (fr) - Jean-Alexandre Angl&#xE8;s d'Auriac &lt;archidiacredusquig@gmail.com&gt;
+Russian (ru) - Fomin Denis &lt;fominde@mail.ru&gt;
+Turkish (tr) - G&#xFC;rkan G&#xFC;r &lt;seqizz@gmail.com&gt;
+Serbian (sr) - Milan Nikolic &lt;gen2brain@gmail.com&gt;
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</property>
   </object>
 </interface>

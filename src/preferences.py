@@ -118,6 +118,10 @@ class Preferences:
 
         self.window = self.tree.get_object("window")
 
+        self.version_label = self.tree.get_object("version_label")
+        self.version_label.set_text("%s %s" % (
+            self.main.config.app_name.capitalize(), self.main.config.app_version))
+
         icon_theme = gtk.icon_theme_get_default()
         if icon_theme.has_icon("multimedia-volume-control"):
             self.window.set_icon_name("multimedia-volume-control")
