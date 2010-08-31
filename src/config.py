@@ -22,15 +22,16 @@ class Config:
     def __init__(self):
         """ Constructor """
         self.app_name = "volti"
-        self.app_version = "0.2.1"
+        self.app_version = "0.2.2-svn"
         self.res_dir = None
         self.locale_dir = None
 
-        for base in ["/usr/share", "/usr/local/share"]:
-            if os.path.isdir(os.path.join(base, self.app_name)):
-                self.res_dir = os.path.join(base, self.app_name)
-                self.locale_dir = os.path.join(base, "locale")
-                break
+        if not os.path.isdir(os.path.join(".","src")):
+            for base in ["/usr/share", "/usr/local/share"]:
+                if os.path.isdir(os.path.join(base, self.app_name)):
+                    self.res_dir = os.path.join(base, self.app_name)
+                    self.locale_dir = os.path.join(base, "locale")
+                    break
 
         if not self.res_dir:
             self.res_dir = "data"

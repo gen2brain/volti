@@ -68,6 +68,7 @@ class VolumeTray(gtk.StatusIcon):
 
         self.toggle = PREFS["toggle"]
         self.mixer = PREFS["mixer"]
+        self.mixer_internal = PREFS["mixer_internal"]
         self.icon_theme = PREFS["icon_theme"]
         self.show_tooltip = bool(int(PREFS["show_tooltip"]))
         self.run_in_terminal = bool(int(PREFS["run_in_terminal"]))
@@ -116,7 +117,7 @@ class VolumeTray(gtk.StatusIcon):
 
         # watch for changes
         fd, eventmask = self.alsactrl.get_descriptors()
-        gobject.io_add_watch(fd, eventmask, self.update)
+        self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
 
     def init_keys_events(self):
         """ Initialize keys events """
@@ -319,7 +320,10 @@ class VolumeTray(gtk.StatusIcon):
     def update(self, source=None, condition=None):
         """ Update volume """
         if self.lock:
-            return True
+            gobject.source_remove(self.watchid)
+            fd, eventmask = self.alsactrl.get_descriptors()
+            self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
+            return False
         try:
             self.alsactrl = AlsaControl(preferences.PREFS)
             volume = self.alsactrl.get_volume()
@@ -334,18 +338,19 @@ class VolumeTray(gtk.StatusIcon):
 
     def toggle_mixer(self, widget=None):
         """ Toggle mixer application """
-        if not self.mixer:
+        mixer = "volti-mixer" if self.mixer_internal else self.mixer
+        if not mixer:
             return
         try:
             pid = self.mixer_get_pid()
             if pid:
                 os.kill(pid, SIGTERM)
             else:
-                if self.run_in_terminal:
+                if self.run_in_terminal and not self.mixer_internal:
                     term = self.find_term()
-                    cmd = [term, "-e", self.mixer]
+                    cmd = [term, "-e", mixer]
                 else:
-                    cmd = which(self.mixer)
+                    cmd = which(mixer)
                 Popen(cmd, shell=False)
         except Exception, err:
             sys.stderr.write("%s.%s: %s\n" % (
@@ -366,7 +371,8 @@ class VolumeTray(gtk.StatusIcon):
 
     def mixer_get_pid(self):
         """ Get process id of mixer application """
-        pid = Popen(self.pid_app + " " + os.path.basename(self.mixer),
+        mixer = "volti-mixer" if self.mixer_internal else self.mixer
+        pid = Popen(self.pid_app + " " + os.path.basename(mixer),
                 stdout=PIPE, shell=True).communicate()[0]
         if pid:
             try:

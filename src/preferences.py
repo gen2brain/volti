@@ -23,9 +23,11 @@ from ConfigParser import ConfigParser
 PREFS = {
     "card_index": 0,
     "control": "Master",
-    "mixer": "",
+    "mixer": "alsamixer",
+    "run_in_terminal": 1,
+    "mixer_internal": 1,
+    "mixer_show_values": 0,
     "icon_theme": "Default",
-    "run_in_terminal": 0,
     "scale_increment": 1.0,
     "scale_show_value": 0,
     "show_tooltip": 1,
@@ -116,12 +118,12 @@ class Preferences:
         self.tree.set_translation_domain(self.main.config.app_name)
         self.tree.add_from_file(self.glade)
 
-        self.window = self.tree.get_object("window")
-
         self.version_label = self.tree.get_object("version_label")
         self.version_label.set_text("%s %s" % (
             self.main.config.app_name.capitalize(), self.main.config.app_version))
 
+        self.window = self.tree.get_object("window")
+        self.window.connect("destroy", self.close)
         icon_theme = gtk.icon_theme_get_default()
         if icon_theme.has_icon("multimedia-volume-control"):
             self.window.set_icon_name("multimedia-volume-control")
@@ -129,8 +131,6 @@ class Preferences:
             file = os.path.join(
                     self.main.config.res_dir, "icons", "multimedia-volume-control.svg")
             self.window.set_icon_from_file(file)
-
-        self.window.connect("destroy", self.close)
 
         self.button_close = self.tree.get_object("button_close")
         self.button_close.connect("clicked", self.close)
@@ -158,57 +158,54 @@ class Preferences:
         self.draw_value_checkbutton.set_active(bool(int(PREFS["scale_show_value"])))
         self.draw_value_checkbutton.connect("toggled", self.on_draw_value_toggled)
 
-        self.mute_radiobutton = self.tree.get_object("radiobutton_mute")
-        self.mute_radiobutton.connect("toggled", self.on_radio_mute_toggled)
-        self.mixer_radiobutton = self.tree.get_object("radiobutton_mixer")
-        self.mixer_radiobutton.connect("toggled", self.on_radio_mixer_toggled)
+        self.notify_checkbutton = self.tree.get_object("notify_checkbutton")
+        self.notify_checkbutton.set_active(bool(int(PREFS["show_notify"])))
+        self.notify_checkbutton.connect("toggled", self.on_notify_toggled)
+
+        self.notify_body_text = self.tree.get_object("notify_body_text")
+        self.notify_body_text.get_buffer().set_text(PREFS["notify_body"])
+
+        self.position_checkbutton = self.tree.get_object("position_checkbutton")
+        self.position_checkbutton.set_active(bool(int(PREFS["notify_position"])))
+        self.position_checkbutton.connect("toggled", self.on_position_toggled)
+
+        self.timeout_spinbutton = self.tree.get_object("timeout_spinbutton")
+        self.timeout_spinbutton.set_value(float(PREFS["notify_timeout"]))
+        self.timeout_spinbutton.connect("value_changed", self.on_timeout_spinbutton_changed)
+
+        self.mixer_internal_checkbutton = self.tree.get_object("mixer_internal_checkbutton")
+        self.mixer_internal_checkbutton.set_active(bool(int(PREFS["mixer_internal"])))
+        self.mixer_internal_checkbutton.connect("toggled", self.on_mixer_internal_toggled)
+
+        self.mixer_values_checkbutton = self.tree.get_object("mixer_values_checkbutton")
+        self.mixer_values_checkbutton.set_active(bool(int(PREFS["mixer_show_values"])))
+        self.mixer_values_checkbutton.connect("toggled", self.on_mixer_values_toggled)
 
         self.keys_checkbutton = self.tree.get_object("keys_checkbutton")
         self.keys_checkbutton.set_active(bool(int(PREFS["keys"])))
         self.keys_checkbutton.connect("toggled", self.on_keys_toggled)
 
         self.hal_radiobutton = self.tree.get_object("radiobutton_hal")
-        hal_handler_id = self.hal_radiobutton.connect("toggled", self.on_radio_hal_toggled)
         self.xlib_radiobutton = self.tree.get_object("radiobutton_xlib")
-        xlib_handler_id = self.xlib_radiobutton.connect("toggled", self.on_radio_xlib_toggled)
+        if PREFS["keys_backend"] == "hal":
+            self.hal_radiobutton.set_active(True)
+        elif PREFS["keys_backend"] == "xlib":
+            self.xlib_radiobutton.set_active(True)
+        self.hal_radiobutton.connect("toggled", self.on_radio_hal_toggled)
+        self.xlib_radiobutton.connect("toggled", self.on_radio_xlib_toggled)
 
-        self.notify_checkbutton = self.tree.get_object("notify_checkbutton")
-        notify_handler_id = self.notify_checkbutton.connect("toggled", self.on_notify_toggled)
-
-        self.notify_body_text = self.tree.get_object("notify_body_text")
-        self.notify_body_text.get_buffer().set_text(PREFS["notify_body"])
-
-        self.position_checkbutton = self.tree.get_object("position_checkbutton")
-        position_handler_id = self.position_checkbutton.connect("toggled", self.on_position_toggled)
-
-        self.timeout_spinbutton = self.tree.get_object("timeout_spinbutton")
-        self.timeout_spinbutton.set_value(float(PREFS["notify_timeout"]))
-        self.timeout_spinbutton.connect("value_changed", self.on_timeout_spinbutton_changed)
-
+        self.mute_radiobutton = self.tree.get_object("radiobutton_mute")
+        self.mixer_radiobutton = self.tree.get_object("radiobutton_mixer")
         if PREFS["toggle"] == "mute":
             self.mute_radiobutton.set_active(True)
         elif PREFS["toggle"] == "mixer":
             self.mixer_radiobutton.set_active(True)
-
-        if PREFS["keys_backend"] == "hal":
-            self.hal_radiobutton.handler_block(hal_handler_id)
-            self.hal_radiobutton.set_active(True)
-            self.hal_radiobutton.handler_unblock(hal_handler_id)
-        elif PREFS["keys_backend"] == "xlib":
-            self.xlib_radiobutton.handler_block(xlib_handler_id)
-            self.xlib_radiobutton.set_active(True)
-            self.xlib_radiobutton.handler_unblock(xlib_handler_id)
-
-        self.notify_checkbutton.handler_block(notify_handler_id)
-        self.notify_checkbutton.set_active(bool(int(PREFS["show_notify"])))
-        self.notify_checkbutton.handler_unblock(notify_handler_id)
-
-        self.position_checkbutton.handler_block(position_handler_id)
-        self.position_checkbutton.set_active(bool(int(PREFS["notify_position"])))
-        self.position_checkbutton.handler_unblock(position_handler_id)
+        self.mute_radiobutton.connect("toggled", self.on_radio_mute_toggled)
+        self.mixer_radiobutton.connect("toggled", self.on_radio_mixer_toggled)
 
         self.set_keys_sensitive(bool(int(PREFS["keys"])))
         self.set_notify_sensitive(bool(int(PREFS["show_notify"])))
+        self.set_mixer_sensitive(bool(int(PREFS["mixer_internal"])))
 
     def init_card_combobox(self):
         """ Initialize combobox with list of audio cards """
@@ -412,23 +409,35 @@ class Preferences:
         else:
             self.main.set_tooltip(None)
 
-    def on_terminal_toggled(self, widget):
-        """ Callback for terminal_toggled event """
-        active = widget.get_active()
-        PREFS["run_in_terminal"] = int(active)
-        self.main.run_in_terminal = active
-
     def on_draw_value_toggled(self, widget):
         """ Callback for draw_value_toggled event """
         active = widget.get_active()
         PREFS["scale_show_value"] = int(active)
         self.main.scale.slider.set_draw_value(active)
 
+    def on_terminal_toggled(self, widget):
+        """ Callback for terminal_toggled event """
+        active = widget.get_active()
+        PREFS["run_in_terminal"] = int(active)
+        self.main.run_in_terminal = active
+
     def on_entry_changed(self, widget):
         """ Callback for entry_changed event """
         mixer = widget.get_text()
         PREFS["mixer"] = mixer
         self.main.mixer = mixer
+
+    def on_mixer_internal_toggled(self, widget):
+        """ Callback for mixer_internal_toggled event """
+        active = widget.get_active()
+        PREFS["mixer_internal"] = int(active)
+        self.main.mixer_internal = active
+        self.set_mixer_sensitive(active)
+
+    def on_mixer_values_toggled(self, widget):
+        """ Callback for mixer_values_toggled event """
+        active = widget.get_active()
+        PREFS["mixer_show_values"] = int(active)
 
     def on_radio_mute_toggled(self, widget):
         """ Callback for radio_mute_toggled event """
@@ -450,11 +459,6 @@ class Preferences:
         self.main.init_keys_events()
         self.set_keys_sensitive(active)
 
-    def set_keys_sensitive(self, active):
-        """ Set widgets sensitivity """
-        self.hal_radiobutton.set_sensitive(active)
-        self.xlib_radiobutton.set_sensitive(active)
-
     def on_notify_toggled(self, widget):
         """ Callback for notify_toggled event """
         active = widget.get_active()
@@ -466,15 +470,6 @@ class Preferences:
             volume = self.main.get_volume()
             icon = self.main.get_icon_name(volume)
             self.main.update_notify(volume, icon)
-
-    def set_notify_sensitive(self, active):
-        """ Set widgets sensitivity """
-        self.timeout_spinbutton.set_sensitive(active)
-        self.position_checkbutton.set_sensitive(active)
-        self.notify_body_text.set_sensitive(active)
-        if active and not self.main.notify.check_capabilities():
-            self.position_checkbutton.set_sensitive(False)
-            self.timeout_spinbutton.set_sensitive(False)
 
     def on_position_toggled(self, widget):
         """ Callback for position_toggled event """
@@ -506,3 +501,24 @@ class Preferences:
             PREFS["keys_backend"] = "xlib"
             self.main.keys_backend = "xlib"
             self.main.init_keys_events()
+
+    def set_mixer_sensitive(self, active):
+        """ Set widgets sensitivity """
+        self.mixer_values_checkbutton.set_sensitive(active)
+        self.mixer_entry.set_sensitive(not active)
+        self.button_browse.set_sensitive(not active)
+        self.terminal_checkbutton.set_sensitive(not active)
+
+    def set_keys_sensitive(self, active):
+        """ Set widgets sensitivity """
+        self.hal_radiobutton.set_sensitive(active)
+        self.xlib_radiobutton.set_sensitive(active)
+
+    def set_notify_sensitive(self, active):
+        """ Set widgets sensitivity """
+        self.timeout_spinbutton.set_sensitive(active)
+        self.position_checkbutton.set_sensitive(active)
+        self.notify_body_text.set_sensitive(active)
+        if active and not self.main.notify.check_capabilities():
+            self.position_checkbutton.set_sensitive(False)
+            self.timeout_spinbutton.set_sensitive(False)

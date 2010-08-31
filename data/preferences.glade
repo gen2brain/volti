@@ -131,6 +131,65 @@
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
+                          <object class="GtkHBox" id="hbox21">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkCheckButton" id="mixer_internal_checkbutton">
+                                <property name="label" translatable="yes">Use internal mixer</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkAlignment" id="alignment12">
+                            <property name="visible">True</property>
+                            <property name="left_padding">10</property>
+                            <child>
+                              <object class="GtkHBox" id="hbox22">
+                                <property name="visible">True</property>
+                                <child>
+                                  <object class="GtkCheckButton" id="mixer_values_checkbutton">
+                                    <property name="label" translatable="yes">Show values</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHSeparator" id="hseparator5">
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="padding">5</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkHBox" id="hbox15">
                             <property name="visible">True</property>
                             <child>
@@ -146,7 +205,7 @@
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="position">0</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                         <child>
@@ -214,7 +273,7 @@
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="position">1</property>
+                            <property name="position">4</property>
                           </packing>
                         </child>
                       </object>
@@ -783,7 +842,7 @@ You can use the Pango markup language to format the text.</property>
                             <child>
                               <object class="GtkLabel" id="version_label">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="no">Volti</property>
+                                <property name="label">Volti</property>
                                 <property name="track_visited_links">False</property>
                                 <attributes>
                                   <attribute name="weight" value="bold"/>

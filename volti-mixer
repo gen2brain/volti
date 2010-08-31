@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+# -*- coding: utf-8 -*-
+
+# Author: Milan Nikolic <gen2brain@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import os
+import sys
+
+try:
+    import gtk
+except ImportError:
+    sys.stderr.write("This program needs pygtk\nExiting\n")
+    sys.exit(1)
+
+try:
+    import alsaaudio as alsa
+except ImportError:
+    sys.stderr.write("This program needs pyalsaaudio 0.6 or higher\nExiting\n")
+    sys.exit(1)
+
+try:
+    if os.path.isdir(os.path.join(".","src")) and os.path.isfile(os.path.join(".","setup.py")):
+        from src.mixer import Mixer
+    else:
+        from volti.mixer import Mixer
+except ImportError:
+    sys.stderr.write("Can't import mixer module\nExiting\n")
+    sys.exit(1)
+
+if __name__ == "__main__":
+    mixer = Mixer()
+    try:
+        gtk.main()
+    except KeyboardInterrupt:
+        pass
