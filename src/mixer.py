@@ -70,7 +70,7 @@ class Mixer(gtk.Window):
 
         for card_index, card_name in enumerate(alsa.cards()):
             vbox = gtk.VBox()
-            hbox = gtk.HBox(True, 10)
+            hbox = gtk.HBox(False, 10)
             frame = gtk.Frame()
             label = gtk.Label(card_name)
 
