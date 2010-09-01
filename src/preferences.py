@@ -26,7 +26,7 @@ PREFS = {
     "mixer": "alsamixer",
     "run_in_terminal": 1,
     "mixer_internal": 1,
-    "mixer_show_values": 0,
+    "mixer_show_values": 1,
     "icon_theme": "Default",
     "scale_increment": 1.0,
     "scale_show_value": 0,

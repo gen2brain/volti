@@ -1,4 +1,4 @@
-include setup.py volti volti-remote AUTHORS README ChangeLog TODO COPYING
+include setup.py volti volti-remote AUTHORS README ChangeLog COPYING
 recursive-include src/ *.py
 recursive-include po/ *.po *.pot Makefile
 recursive-include data/ *.glade *.desktop

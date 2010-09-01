@@ -1,3 +1,9 @@
+v0.2.2 Sep 1, 2010:
+
+    * internal mixer application
+    * only show channels that have Playback Volume capability
+    * about page in preferences
+
 v0.2.1 May 30, 2010:
 
     * scale now behaves correctly on vertically oriented panel, thanks to Fomin Denis <fominde@gmail.com> for the patch

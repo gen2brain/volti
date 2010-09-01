@@ -7,142 +7,162 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-07 04:39+0000\n"
+"POT-Creation-Date: 2010-09-01 10:51+0200\n"
 "PO-Revision-Date: 2009-03-07 23:30+0200\n"
 "Last-Translator: Gürkan Gür <seqizz@gmail.com>\n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1\n"
 
-#: ../src/scale.py:79
-#: ../src/menu.py:53
-#: ../src/preferences.py:294
-#: ../src/main.py:207
-#: ../src/main.py:218
-msgid "Muted"
-msgstr "Ses Kapatıldı"
-
-#: ../src/menu.py:28
-#: ../data/preferences.glade.h:12
-msgid "Mute"
-msgstr "Sesi Kapat"
-
-#: ../src/menu.py:33
-#: ../data/preferences.glade.h:17
-msgid "Show Mixer"
-msgstr "Karıştırıcıyı Göster"
-
-#: ../src/preferences.py:210
+#: ../src/preferences.py:299
 msgid "Choose external mixer"
 msgstr "Harici karıştırıcıyı seç"
 
-#: ../src/preferences.py:216
-msgid "Audio Mixers"
+#: ../src/preferences.py:307
+msgid "Sound Mixers"
 msgstr "Ses Karıştırıcılar"
 
-#: ../src/preferences.py:219
+#: ../src/preferences.py:310
 msgid "All files"
 msgstr "Tüm Dosyalar"
 
-#: ../src/main.py:229
-msgid "Output"
-msgstr "Çıktı"
+#: ../src/menu.py:30 ../data/preferences.glade.h:19
+msgid "Mute"
+msgstr "Sesi Kapat"
 
-#: ../src/main.py:229
-#: ../src/main.py:236
+#: ../src/menu.py:35 ../data/preferences.glade.h:24
+msgid "Show Mixer"
+msgstr "Karıştırıcıyı Göster"
+
+#: ../src/notification.py:63 ../src/main.py:310
 msgid "Card"
 msgstr "Kart"
 
-#: ../src/main.py:229
-#: ../src/main.py:236
-#: ../data/preferences.glade.h:11
+#: ../src/notification.py:64 ../src/main.py:310 ../data/preferences.glade.h:18
 msgid "Mixer"
 msgstr "Karıştırıcı"
 
+#: ../src/main.py:254 ../src/main.py:278 ../src/main.py:293
+msgid "Muted"
+msgstr "Ses Kapatıldı"
+
+#: ../src/main.py:310
+msgid "Output"
+msgstr "Çıktı"
+
 #: ../data/preferences.glade.h:1
+msgid "About"
+msgstr ""
+
+#: ../data/preferences.glade.h:2
 msgid "Backend:"
 msgstr "Arkaplan:"
 
-#: ../data/preferences.glade.h:2
+#: ../data/preferences.glade.h:3
 msgid "Browse"
 msgstr "Dolaş"
 
-#: ../data/preferences.glade.h:3
+#: ../data/preferences.glade.h:4
 msgid "Close"
 msgstr "Kapat"
 
-#: ../data/preferences.glade.h:4
+#: ../data/preferences.glade.h:5
 msgid "Enable desktop notifications"
 msgstr "Masaüstü bildirimlerini etkinleştir"
 
-#: ../data/preferences.glade.h:5
+#: ../data/preferences.glade.h:6
 msgid "Enable multimedia keys"
 msgstr "Çokluortam tuşlarını etkinleştir"
 
-#: ../data/preferences.glade.h:6
+#: ../data/preferences.glade.h:7
 msgid "External mixer:"
 msgstr "Harici karıştırıcı:"
 
-#: ../data/preferences.glade.h:7
+#: ../data/preferences.glade.h:8
+msgid ""
+"Fields of the form {field} are replaced by their corresponding value.\n"
+"\n"
+"Available fields are: {volume}, {card} and {mixer}\n"
+"\n"
+"You can use the Pango markup language to format the text."
+msgstr ""
+
+#: ../data/preferences.glade.h:13
 msgid "Hal"
 msgstr "Hal"
 
-#: ../data/preferences.glade.h:8
+#: ../data/preferences.glade.h:14
 msgid "Hardware"
 msgstr "Donanım"
 
-#: ../data/preferences.glade.h:9
+#: ../data/preferences.glade.h:15
+msgid "Icon theme:"
+msgstr ""
+
+#: ../data/preferences.glade.h:16
 msgid "Keyboard"
 msgstr "Klavye"
 
-#: ../data/preferences.glade.h:10
-msgid "Middle click toggles:"
+#: ../data/preferences.glade.h:17
+msgid "Middle mouse button action:"
 msgstr "Orta tuş hareketi:"
 
-#: ../data/preferences.glade.h:13
-msgid "Notification timeout:"
-msgstr "Bildiri zaman aşımı:"
+#: ../data/preferences.glade.h:20
+msgid "Position notification"
+msgstr "Masaüstü bildirimlerini etkinleştir"
 
-#: ../data/preferences.glade.h:14
+#: ../data/preferences.glade.h:21
 msgid "Run in terminal"
 msgstr "Terminalde çalıştır"
 
-#: ../data/preferences.glade.h:15
-msgid "Select a mixer to control:"
+#: ../data/preferences.glade.h:22
+msgid "Select a channel to control:"
 msgstr "Kontrol edilecek karıştırıcıyı seçin:"
 
-#: ../data/preferences.glade.h:16
+#: ../data/preferences.glade.h:23
 msgid "Select audio card:"
 msgstr "Ses kartını seçin:"
 
-#: ../data/preferences.glade.h:18
+#: ../data/preferences.glade.h:25
 msgid "Show scale value"
 msgstr "Değiştirme değerini göster"
 
-#: ../data/preferences.glade.h:19
+#: ../data/preferences.glade.h:26
 msgid "Show tooltip"
 msgstr "İpucu göster"
 
-#: ../data/preferences.glade.h:20
+#: ../data/preferences.glade.h:27
+msgid "Show values"
+msgstr "Değiştirme değerini göster"
+
+#: ../data/preferences.glade.h:28
+msgid "Timeout:"
+msgstr "Bildiri zaman aşımı:"
+
+#: ../data/preferences.glade.h:29
 msgid "UI"
 msgstr "Arayüz"
 
-#: ../data/preferences.glade.h:21
+#: ../data/preferences.glade.h:30
+msgid "Use internal mixer"
+msgstr ""
+
+#: ../data/preferences.glade.h:31
 msgid "Volti Preferences"
 msgstr "Volti Seçenekleri"
 
-#: ../data/preferences.glade.h:22
-msgid "Volume increment:"
+#: ../data/preferences.glade.h:32
+msgid "Volume adjustment:"
 msgstr "Ses Artırma:"
 
-#: ../data/preferences.glade.h:23
+#: ../data/preferences.glade.h:33
 msgid "Xlib"
 msgstr "Xlib"
 
-#: ../data/preferences.glade.h:24
+#: ../data/preferences.glade.h:34
 msgid "seconds"
 msgstr "saniye"
-

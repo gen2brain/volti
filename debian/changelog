@@ -1,3 +1,11 @@
+volti (0.2.2-1) unstable; urgency=low
+
+    * internal mixer application
+    * only show channels that have Playback Volume capability
+    * about page in preferences
+
+ -- Milan Nikolic <gen2brain@gmail.com>  Wed, 1 Sep 2010 11:23:52 +0100
+
 volti (0.2.1-1) unstable; urgency=low
 
     * scale now behaves correctly on vertically oriented panel, thanks to Fomin Denis <fominde@gmail.com> for the patch

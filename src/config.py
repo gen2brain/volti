@@ -22,7 +22,7 @@ class Config:
     def __init__(self):
         """ Constructor """
         self.app_name = "volti"
-        self.app_version = "0.2.2-svn"
+        self.app_version = "0.2.2"
         self.res_dir = None
         self.locale_dir = None
 

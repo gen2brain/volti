@@ -13,7 +13,7 @@ Suggests: python-xlib
 Description: application for controlling audio volume from system tray/notification area.
  Features:
  - no pulseaudio, gstreamer, phonon etc. only alsa is needed
- - uses external mixer that you can choose, it goes nicely with gnome-alsamixer
+ - internal mixer application, but you can choose any mixer app you prefer
  - left click opens volume scale (slider)
  - scroll wheel on tray icon changes volume, increment in percents is configurable
  - you can configure middle click to toggle 'mute' or 'show mixer'
