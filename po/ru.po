@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-01 10:51+0200\n"
+"POT-Creation-Date: 2010-09-02 01:49+0400\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Fomin Denis <fominde@mail.ru>\n"
 "Language-Team: \n"
@@ -12,6 +12,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Russian\n"
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
+
+#: ../src/notification.py:63
+#: ../src/main.py:310
+msgid "Card"
+msgstr "Звуковая карта"
+
+#: ../src/notification.py:64
+#: ../src/main.py:310
+#: ../data/preferences.glade.h:18
+msgid "Mixer"
+msgstr "Микшер"
+
+#: ../src/menu.py:30
+#: ../data/preferences.glade.h:19
+msgid "Mute"
+msgstr "Приглушить"
+
+#: ../src/menu.py:35
+#: ../data/preferences.glade.h:24
+msgid "Show Mixer"
+msgstr "Показать микшер"
+
+#: ../src/main.py:254
+#: ../src/main.py:278
+#: ../src/main.py:293
+msgid "Muted"
+msgstr "Приглушено"
+
+#: ../src/main.py:310
+msgid "Output"
+msgstr "Выход"
 
 #: ../src/preferences.py:299
 msgid "Choose external mixer"
@@ -25,33 +56,9 @@ msgstr "Звуковые микшеры"
 msgid "All files"
 msgstr "Все файлы"
 
-#: ../src/menu.py:30 ../data/preferences.glade.h:19
-msgid "Mute"
-msgstr "Приглушить"
-
-#: ../src/menu.py:35 ../data/preferences.glade.h:24
-msgid "Show Mixer"
-msgstr "Показать микшер"
-
-#: ../src/notification.py:63 ../src/main.py:310
-msgid "Card"
-msgstr "Звуковая карта"
-
-#: ../src/notification.py:64 ../src/main.py:310 ../data/preferences.glade.h:18
-msgid "Mixer"
-msgstr "Микшер"
-
-#: ../src/main.py:254 ../src/main.py:278 ../src/main.py:293
-msgid "Muted"
-msgstr "Приглушено"
-
-#: ../src/main.py:310
-msgid "Output"
-msgstr "Выход"
-
 #: ../data/preferences.glade.h:1
 msgid "About"
-msgstr ""
+msgstr "О программе"
 
 #: ../data/preferences.glade.h:2
 msgid "Backend:"
@@ -149,7 +156,7 @@ msgstr "Интерфейс"
 
 #: ../data/preferences.glade.h:30
 msgid "Use internal mixer"
-msgstr ""
+msgstr "Использовать встроенный микшер"
 
 #: ../data/preferences.glade.h:31
 msgid "Volti Preferences"
@@ -166,3 +173,4 @@ msgstr ""
 #: ../data/preferences.glade.h:34
 msgid "seconds"
 msgstr "секунд(ы)"
+
