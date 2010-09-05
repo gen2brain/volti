@@ -68,7 +68,7 @@ class VolumeTray(gtk.StatusIcon):
 
         self.toggle = PREFS["toggle"]
         self.mixer = PREFS["mixer"]
-        self.mixer_internal = PREFS["mixer_internal"]
+        self.mixer_internal = bool(int(PREFS["mixer_internal"]))
         self.icon_theme = PREFS["icon_theme"]
         self.show_tooltip = bool(int(PREFS["show_tooltip"]))
         self.run_in_terminal = bool(int(PREFS["run_in_terminal"]))
