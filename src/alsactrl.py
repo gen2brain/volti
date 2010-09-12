@@ -138,8 +138,10 @@ class AlsaControl():
         for mixer in alsa.mixers(card_index):
             try:
                 m = alsa.Mixer(control=mixer, cardindex=card_index)
-                if 'Playback Volume' in m.volumecap():
-                    mixers.append(mixer)
+                cap = m.volumecap()
+                if 'Playback Volume' in cap or 'Joined Volume' in cap:
+                    if mixer not in mixers:
+                        mixers.append(mixer)
             except alsa.ALSAAudioError:
                 pass
         return mixers
