@@ -93,7 +93,7 @@ class Mixer(gtk.Window):
             for channel, id in self.alsa_channels[card_index]:
                 mixer = alsa.Mixer(channel, id, card_index)
 
-                option_mask = option_value = 0
+                option_mask = option_value = _LOCK
 
                 if not len(mixer.volumecap()):
                     continue
@@ -129,6 +129,8 @@ class Mixer(gtk.Window):
                 hbox.pack_start(volume, True, True)
                 n += 1
 
+        card_index = int(self.cp.get("global", "card_index"))
+        notebook.set_current_page(card_index)
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.connect('delete_event', self.quit)
         self.show_all()
