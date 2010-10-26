@@ -11,6 +11,8 @@ Features:
 - support multimedia keys on keyboard
 - support desktop notifications on keys events
 - you can control volti from command line or bind keys within your window manager
+- support soundcards with split master channel such as M-Audio 2496
+
 
 Dependencies:
 
@@ -29,7 +31,7 @@ You can also start application from source dir, just run ./volti.
 volti is in aur, see http://aur.archlinux.org/packages.php?ID=33525
 
 - Gentoo
-ebuild can be found at downloads page
+volti is in portage, see http://packages.gentoo.org/package/media-sound/volti
 
 - Debian/Ubuntu
 deb package can be found at downloads page

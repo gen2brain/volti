@@ -32,7 +32,33 @@ class AlsaControl():
             self.card_index = int(self.prefs["card_index"])
             self.control = self.prefs["control"]
             self.channel = alsa.MIXER_CHANNEL_ALL
-            self.mixer = alsa.Mixer(control=self.control, cardindex=self.card_index)
+            self.mixerlist=[]
+
+            fullmixerlist = []
+            for mixer in alsa.mixers(self.card_index):
+                try:
+                    # Assumption: The following generates sequence numbers for
+		    # the mixers. It does assume that mixers with equal names
+                    # (e.g. DAC on M-Audio 2496) are grouped together.
+                    if mixer not in fullmixerlist:
+                        fullmixerlist.append(mixer)
+                        seq = 0
+                    else:
+                        seq += 1
+
+                    m = alsa.Mixer(control=mixer, cardindex=self.card_index, id=seq)
+                    if self.control == mixer:
+                        # if multiple mixer channels share the same name, all
+                        # will be controlled here.
+                        self.mixerlist.append(m)
+
+                except alsa.ALSAAudioError:
+                    pass
+
+            if self.mixerlist:
+                self.mixer = self.mixerlist[0]
+            else:
+                self.mixer = None
 
             try:
                 assert hasattr(self.mixer, "polldescriptors")
@@ -53,16 +79,19 @@ class AlsaControl():
     def get_descriptors(self):
         """ Returns file descriptors """
         try:
+            if not hasattr(self, 'mixer'):
+                return (None, None)
             return self.mixer.polldescriptors()[0]
         except Exception, err:
             sys.stderr.write("%s.%s: %s\n" % (
                 __name__, sys._getframe().f_code.co_name, str(err)))
-            return None
+            return (None, None)
 
     def set_volume(self, volume):
         """ Set mixer volume """
         try:
-            self.mixer.setvolume(volume, self.channel)
+            for mixer in self.mixerlist:
+                mixer.setvolume(volume, self.channel)
             return True
         except alsa.ALSAAudioError, err:
             sys.stderr.write("%s.%s: %s\n" % (
@@ -72,7 +101,9 @@ class AlsaControl():
     def get_volume(self):
         """ Get mixer volume """
         try:
-            return self.mixer.getvolume()[0]
+            if not self.mixerlist:
+                return 0
+            return self.mixerlist[0].getvolume()[0]
         except alsa.ALSAAudioError, err:
             sys.stderr.write("%s.%s: %s\n" % (
                 __name__, sys._getframe().f_code.co_name, str(err)))
@@ -81,7 +112,8 @@ class AlsaControl():
         """ Set mixer mute status """
         global OLD_VOLUME, MUTED
         try:
-            self.mixer.setmute(mute, self.channel)
+            for mixer in self.mixerlist:
+                mixer.setmute(mute, self.channel)
         except alsa.ALSAAudioError:
             # mixer doesn't have mute switch
             if mute == 1:
@@ -96,6 +128,8 @@ class AlsaControl():
         """ Returns mixer mute status """
         global OLD_VOLUME, MUTED
         try:
+            if not hasattr(self, "mixer"):
+                return True
             if self.mixer.getmute()[0] == 1:
                 return True
         except alsa.ALSAAudioError:
@@ -114,7 +148,9 @@ class AlsaControl():
     def get_mixer_name(self):
         """ Returns mixer name """
         try:
-            return self.mixer.mixer()
+            if not self.mixerlist:
+                return ''
+            return self.mixerlist[0].mixer()
         except alsa.ALSAAudioError, err:
             sys.stderr.write("%s.%s: %s\n" % (
                 __name__, sys._getframe().f_code.co_name, str(err)))
