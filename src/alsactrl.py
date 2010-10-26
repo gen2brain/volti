@@ -38,7 +38,7 @@ class AlsaControl():
             for mixer in alsa.mixers(self.card_index):
                 try:
                     # Assumption: The following generates sequence numbers for
-		    # the mixers. It does assume that mixers with equal names
+                    # the mixers. It does assume that mixers with equal names
                     # (e.g. DAC on M-Audio 2496) are grouped together.
                     if mixer not in fullmixerlist:
                         fullmixerlist.append(mixer)
@@ -67,10 +67,11 @@ class AlsaControl():
                 sys.exit(1)
 
         except Exception, err:
-            sys.stderr.write("%s.%s: can't open %s control for card %s\nerror: %s\n" % (
+            sys.stderr.write("%s.%s: can't open %s control for card %s, trying to select first available mixer channel \nerror: %s\n" % (
                 __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name(), str(err)))
             try:
-                self.mixer = alsa.Mixer(control=self.get_mixers(self.card_index)[0], cardindex=self.card_index)
+                self.control = self.get_mixers(self.card_index)[0]
+                self.mixer = alsa.Mixer(control=self.control, cardindex=self.card_index)
             except Exception, err:
                 sys.stderr.write("%s.%s: can't open first available control for card %s\nerror: %s\nExiting\n" % (
                     __name__, sys._getframe().f_code.co_name, self.get_card_name(), str(err)))
