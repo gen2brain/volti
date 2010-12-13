@@ -23,6 +23,12 @@ from subprocess import Popen, PIPE
 from signal import SIGTERM
 
 try:
+    from dbus.exceptions import DBusException
+except ImportError, AssertionError:
+    sys.stderr.write("This program needs dbus-python 0.80.0 or later\nExiting\n")
+    sys.exit(1)
+
+try:
     import gtk
     import gobject
     assert gtk.pygtk_version >= (2, 16, 0)
@@ -315,7 +321,13 @@ class VolumeTray(gtk.StatusIcon):
         if self.icon_theme != "Default":
             icon = os.path.abspath(os.path.join(
                     config.res_dir, "icons", self.icon_theme, "48x48", icon+".png"))
-        self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
+        try:
+            self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
+        except DBusException:
+            del self.notify
+            self.notify = None
+            self.init_notify()
+            self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
 
     def update(self, source=None, condition=None):
         """ Update volume """
