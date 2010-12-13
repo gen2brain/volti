@@ -33,7 +33,7 @@ PREFS = {
     "show_tooltip": 1,
     "toggle": "mute",
     "keys": 0,
-    "keys_backend": "hal",
+    "keys_backend": "xlib",
     "show_notify": 0,
     "notify_timeout": 2.0,
     "notify_position": 0,
@@ -105,6 +105,7 @@ class Preferences:
         self.write_file()
         if _PREFERENCES is not None:
             _PREFERENCES.window.destroy()
+            del _PREFERENCES
             _PREFERENCES = None
 
     def set_section(self):
@@ -113,10 +114,15 @@ class Preferences:
 
     def init_builder(self):
         """ Initialize gtk.Builder """
-        self.glade = os.path.join(self.main.config.res_dir, "preferences.glade")
-        self.tree = gtk.Builder()
-        self.tree.set_translation_domain(self.main.config.app_name)
-        self.tree.add_from_file(self.glade)
+        try:
+            glade_file = os.path.join(
+                    self.main.config.res_dir, "preferences.glade")
+            self.tree = gtk.Builder()
+            self.tree.set_translation_domain(self.main.config.app_name)
+            self.tree.add_from_file(glade_file)
+        except Exception, err:
+            sys.stderr.write("%s.%s: %s\n" % (
+                __name__, sys._getframe().f_code.co_name, str(err)))
 
         self.version_label = self.tree.get_object("version_label")
         self.version_label.set_text("%s %s" % (

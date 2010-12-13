@@ -26,15 +26,15 @@ class Config:
         self.res_dir = None
         self.locale_dir = None
 
-        if not os.path.isdir(os.path.join(".","src")):
-            for base in ["/usr/share", "/usr/local/share"]:
-                if os.path.isdir(os.path.join(base, self.app_name)):
-                    self.res_dir = os.path.join(base, self.app_name)
-                    self.locale_dir = os.path.join(base, "locale")
-                    break
+        for base in ["/usr/share", "/usr/local/share"]:
+            if os.path.isdir(os.path.join(base, self.app_name)):
+                self.res_dir = os.path.join(base, self.app_name)
+                self.locale_dir = os.path.join(base, "locale")
+                break
 
         if not self.res_dir:
             self.res_dir = "data"
 
-        self.config_dir = os.path.expanduser(os.path.join("~", ".config", self.app_name))
+        self.config_dir = os.path.expanduser(
+                os.path.join("~", ".config", self.app_name))
         self.config_file = os.path.join(self.config_dir, "config")

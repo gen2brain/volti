@@ -24,8 +24,8 @@ from signal import SIGTERM
 
 try:
     from dbus.exceptions import DBusException
-except ImportError, AssertionError:
-    sys.stderr.write("This program needs dbus-python 0.80.0 or later\nExiting\n")
+except ImportError:
+    sys.stderr.write("This program needs dbus-python 0.80.0 or higher\nExiting\n")
     sys.exit(1)
 
 try:
@@ -337,6 +337,8 @@ class VolumeTray(gtk.StatusIcon):
             self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
             return False
         try:
+            del self.alsactrl
+            self.alsactrl = None
             self.alsactrl = AlsaControl(preferences.PREFS)
             volume = self.alsactrl.get_volume()
             gtk.gdk.threads_enter()
@@ -347,6 +349,15 @@ class VolumeTray(gtk.StatusIcon):
             sys.stderr.write("%s.%s: %s\n" % (
                 __name__, sys._getframe().f_code.co_name, str(err)))
             return False
+
+    def toggle_mute(self, widget=None):
+        """ Toggle mute status """
+        self.alsactrl.set_mute(widget.get_active())
+        volume = self.get_volume()
+        icon = self.get_icon_name(volume)
+        self.update_icon(volume, icon)
+        if self.show_tooltip:
+            self.update_tooltip(volume)
 
     def toggle_mixer(self, widget=None):
         """ Toggle mixer application """

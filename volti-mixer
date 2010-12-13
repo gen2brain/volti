@@ -33,16 +33,17 @@ except ImportError:
     sys.exit(1)
 
 try:
-    if os.path.isdir(os.path.join(".","src")) and os.path.isfile(os.path.join(".","setup.py")):
-        from src.mixer import Mixer
+    if os.path.isdir(os.path.join(".","src")) and os.path.isfile(
+            os.path.join(".","setup.py")):
+        from src import mixer
     else:
-        from volti.mixer import Mixer
-except ImportError:
-    sys.stderr.write("Can't import mixer module\nExiting\n")
+        from volti import mixer
+except ImportError, err:
+    sys.stderr.write("Can't import mixer module: %s\nExiting\n" % str(err))
     sys.exit(1)
 
 if __name__ == "__main__":
-    mixer = Mixer()
+    mix = mixer.Mixer()
     try:
         gtk.main()
     except KeyboardInterrupt:

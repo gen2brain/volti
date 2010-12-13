@@ -53,12 +53,7 @@ class PopupMenu(gtk.Menu):
 
     def on_toggle_mute(self, widget=None):
         """ Toggles mute status """
-        self.main.alsactrl.set_mute(widget.get_active())
-        volume = self.main.get_volume()
-        icon = self.main.get_icon_name(volume)
-        self.main.update_icon(volume, icon)
-        if self.main.show_tooltip:
-            self.main.update_tooltip(volume)
+        self.main.toggle_mute(widget)
 
     def on_toggle_mixer(self, widget=None):
         """ Start mixer app in new thread """

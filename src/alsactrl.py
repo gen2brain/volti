@@ -37,9 +37,7 @@ class AlsaControl():
             fullmixerlist = []
             for mixer in alsa.mixers(self.card_index):
                 try:
-                    # Assumption: The following generates sequence numbers for
-                    # the mixers. It does assume that mixers with equal names
-                    # (e.g. DAC on M-Audio 2496) are grouped together.
+                    # mixers with equal names are grouped together.
                     if mixer not in fullmixerlist:
                         fullmixerlist.append(mixer)
                         seq = 0
