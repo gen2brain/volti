@@ -50,7 +50,7 @@ try:
     from dbusservice import DBusService
     from scale import VolumeScale
     from menu import PopupMenu
-    from utils import which
+    from utils import which, find_term, get_pid_app
 except ImportError:
     sys.stderr.write("Can't import application modules\nExiting\n")
     sys.exit(1)
@@ -87,11 +87,6 @@ class VolumeTray(gtk.StatusIcon):
         self.notify_position = bool(int(PREFS["notify_position"]))
         self.notify_body = PREFS["notify_body"]
 
-        if which("pidof"):
-            self.pid_app = "pidof -x"
-        elif which("pgrep"):
-            self.pid_app = "pgrep"
-
         try:
             from Xlib import X
             self.has_xlib = True
@@ -103,6 +98,7 @@ class VolumeTray(gtk.StatusIcon):
         self.notify = None
         self.key_press = False
         self.keys_events = None
+        self.pid_app = get_pid_app()
 
         self.alsactrl = AlsaControl(PREFS)
         self.menu = PopupMenu(self)
@@ -370,7 +366,7 @@ class VolumeTray(gtk.StatusIcon):
                 os.kill(pid, SIGTERM)
             else:
                 if self.run_in_terminal and not self.mixer_internal:
-                    term = self.find_term()
+                    term = find_term()
                     cmd = [term, "-e", mixer]
                 else:
                     cmd = which(mixer)
@@ -378,19 +374,6 @@ class VolumeTray(gtk.StatusIcon):
         except Exception, err:
             sys.stderr.write("%s.%s: %s\n" % (
                 __name__, sys._getframe().f_code.co_name, str(err)))
-
-    def find_term(self):
-        term = os.getenv("TERM")
-        if term == "linux" or term is None:
-            if which("gconftool-2"):
-                term = Popen(["gconftool-2", "-g",
-                    "/desktop/gnome/applications/terminal/exec"],
-                        stdout=PIPE).communicate()[0].strip()
-            else:
-                term = 'xterm'
-        if term == "rxvt" and not which(term):
-            term = "urxvt"
-        return term
 
     def mixer_get_pid(self):
         """ Get process id of mixer application """

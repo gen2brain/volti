@@ -97,16 +97,18 @@ class Preferences:
     def close(self, widget=None):
         """ Close preferences window """
         global _PREFERENCES
-        start, end = self.notify_body_text.get_buffer().get_bounds()
-        body = self.notify_body_text.get_buffer().get_text(start, end)
-        PREFS["notify_body"] = body
-        self.main.notify_body = body
-
+        self._set_body()
         self.write_file()
         if _PREFERENCES is not None:
             _PREFERENCES.window.destroy()
             del _PREFERENCES
             _PREFERENCES = None
+
+    def _set_body(self):
+        start, end = self.notify_body_text.get_buffer().get_bounds()
+        body = self.notify_body_text.get_buffer().get_text(start, end)
+        PREFS["notify_body"] = body
+        self.main.notify_body = body
 
     def set_section(self):
         """ Set section name """
@@ -376,6 +378,8 @@ class Preferences:
 
             PREFS["control"] = model.get_value(iter, 1)
             self.main.update()
+            self.main.menu.toggle_mute.set_active(
+                    self.main.alsactrl.is_muted())
             self.write_file()
 
     def on_theme_combobox_changed(self, widget=None):

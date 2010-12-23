@@ -28,7 +28,6 @@ class AlsaControl():
         """ Constructor """
         try:
             self.prefs = prefs
-            self.muted = False
             self.card_index = int(self.prefs["card_index"])
             self.control = self.prefs["control"]
             self.channel = alsa.MIXER_CHANNEL_ALL
@@ -74,6 +73,13 @@ class AlsaControl():
                 sys.stderr.write("%s.%s: can't open first available control for card %s\nerror: %s\nExiting\n" % (
                     __name__, sys._getframe().f_code.co_name, self.get_card_name(), str(err)))
                 sys.exit(1)
+
+    def __del__(self):
+        for mixer in self.mixerlist:
+            if hasattr(mixer, 'close'):
+                mixer.close()
+        self.mixer = None
+        self.mixerlist = []
 
     def get_descriptors(self):
         """ Returns file descriptors """

@@ -30,6 +30,9 @@ class Notification:
         self.title = '' if self.server_capable else 'volume'
         self.last_id = dbus.UInt32()
 
+    def __del__(self):
+        self.close()
+
     def check_capabilities(self):
         info = self.notify.GetServerInformation()
         if info[0] == "notify-osd":

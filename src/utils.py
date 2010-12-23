@@ -15,3 +15,25 @@ def which(prog):
             if is_exe(filename):
                 return filename
     return None
+
+def find_term():
+    term = os.getenv("TERM")
+    if term == "linux" or term is None:
+        if which("gconftool-2"):
+            term = Popen(["gconftool-2", "-g",
+                "/desktop/gnome/applications/terminal/exec"],
+                    stdout=PIPE).communicate()[0].strip()
+        else:
+            term = 'xterm'
+    if term == "rxvt" and not which(term):
+        term = "urxvt"
+    return term
+
+def get_pid_app():
+    if which("pidof"):
+        pid_app = "pidof -x"
+    elif which("pgrep"):
+        pid_app = "pgrep"
+    else:
+        pid_app = None
+    return pid_app
