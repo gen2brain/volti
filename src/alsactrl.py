@@ -55,20 +55,18 @@ class AlsaControl():
             if self.mixerlist:
                 self.mixer = self.mixerlist[0]
             else:
-                self.mixer = None
+                raise Exception
 
-            try:
-                assert hasattr(self.mixer, "polldescriptors")
-            except AssertionError:
-                sys.stderr.write("This program needs pyalsaaudio 0.6 or higher\nExiting\n")
-                sys.exit(1)
+            self._check_version()
 
         except Exception, err:
-            sys.stderr.write("%s.%s: can't open %s control for card %s, trying to select first available mixer channel \nerror: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name(), str(err)))
+            sys.stderr.write("%s.%s: can't open %s control for card %s, trying to select first available mixer channel \n" % (
+                __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name()))
             try:
                 self.control = self.get_mixers(self.card_index)[0]
                 self.mixer = alsa.Mixer(control=self.control, cardindex=self.card_index)
+                self.mixerlist.append(self.mixer)
+                self._check_version()
             except Exception, err:
                 sys.stderr.write("%s.%s: can't open first available control for card %s\nerror: %s\nExiting\n" % (
                     __name__, sys._getframe().f_code.co_name, self.get_card_name(), str(err)))
@@ -80,6 +78,13 @@ class AlsaControl():
                 mixer.close()
         self.mixer = None
         self.mixerlist = []
+
+    def _check_version(self):
+        try:
+            assert hasattr(self.mixer, "polldescriptors")
+        except AssertionError:
+            sys.stderr.write("This program needs pyalsaaudio 0.6 or higher\nExiting\n")
+            sys.exit(1)
 
     def get_descriptors(self):
         """ Returns file descriptors """

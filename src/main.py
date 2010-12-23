@@ -115,7 +115,7 @@ class VolumeTray(gtk.StatusIcon):
         self.connect("popup_menu", self.on_popup_menu)
 
         # set current volume
-        self.update()
+        self.update(instantiate=False)
 
         # watch for changes
         fd, eventmask = self.alsactrl.get_descriptors()
@@ -325,7 +325,7 @@ class VolumeTray(gtk.StatusIcon):
             self.init_notify()
             self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
 
-    def update(self, source=None, condition=None):
+    def update(self, source=None, condition=None, instantiate=True):
         """ Update volume """
         if self.lock:
             gobject.source_remove(self.watchid)
@@ -333,9 +333,10 @@ class VolumeTray(gtk.StatusIcon):
             self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
             return False
         try:
-            del self.alsactrl
-            self.alsactrl = None
-            self.alsactrl = AlsaControl(preferences.PREFS)
+            if instantiate:
+                del self.alsactrl
+                self.alsactrl = None
+                self.alsactrl = AlsaControl(preferences.PREFS)
             volume = self.alsactrl.get_volume()
             gtk.gdk.threads_enter()
             self.set_volume(volume)
