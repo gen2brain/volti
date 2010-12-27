@@ -29,6 +29,12 @@ import alsaaudio as alsa
 from config import Config
 CONFIG = Config()
 
+gettext.bindtextdomain(CONFIG.app_name, CONFIG.locale_dir)
+gettext.textdomain(CONFIG.app_name)
+
+import __builtin__
+__builtin__._ = gettext.gettext
+
 CHANNEL_LEFT  = 0
 CHANNEL_RIGHT = 1
 CHANNEL_MONO  = 2
@@ -51,6 +57,11 @@ class Mixer(gtk.Window):
 
         self.set_title("Volti Mixer")
         self.set_resizable(True)
+        self.set_border_width(5)
+        self.set_position(gtk.WIN_POS_CENTER)
+        self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self.connect('delete_event', self.quit)
+
         icon_theme = gtk.icon_theme_get_default()
         if icon_theme.has_icon("multimedia-volume-control"):
             self.set_icon_name("multimedia-volume-control")
@@ -59,18 +70,36 @@ class Mixer(gtk.Window):
                     CONFIG.res_dir, "icons", "multimedia-volume-control.svg")
             self.set_icon_from_file(file)
 
-        notebook = gtk.Notebook()
-        notebook.set_tab_pos(gtk.POS_TOP)
-        self.add(notebook)
+        vbox = gtk.VBox()
+        self.notebook = gtk.Notebook()
+        self.notebook.set_tab_pos(gtk.POS_TOP)
+        vbox.add(self.notebook)
+        self.add(vbox)
 
+        align = gtk.Alignment(xscale=1, yscale=1)
+        align.set_padding(5, 0, 0, 0)
+
+        bbox = self.create_bbox()
+        align.add(bbox)
+        vbox.add(align)
+
+        self.init_elements()
+
+        card_index = int(self.cp.get("global", "card_index"))
+        self.notebook.set_current_page(card_index)
+
+        self.show_all()
+
+    def init_elements(self):
         try:
-            show_values = bool(int(self.cp.get("global", "mixer_show_values")))
+            show_values = bool(int(
+                self.cp.get("global", "mixer_show_values")))
         except:
             show_values = False
 
         for card_index, card_name in enumerate(alsa.cards()):
             vbox = gtk.VBox()
-            hbox = gtk.HBox(False, 10)
+            hbox = gtk.HBox(True, 10)
             frame = gtk.Frame()
             label = gtk.Label(card_name)
 
@@ -80,7 +109,7 @@ class Mixer(gtk.Window):
             align.add(hbox)
             vbox.add(align)
             frame.add(vbox)
-            notebook.append_page(frame, label)
+            self.notebook.append_page(frame, label)
 
             try:
                 self.lock_mask[card_index] = int(
@@ -128,12 +157,6 @@ class Mixer(gtk.Window):
                 volume.connect("volume_setting_toggled", self.setting_toggled)
                 hbox.pack_start(volume, True, True)
                 n += 1
-
-        card_index = int(self.cp.get("global", "card_index"))
-        notebook.set_current_page(card_index)
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self.connect('delete_event', self.quit)
-        self.show_all()
 
     def get_channels(self, card_index):
         try:
@@ -188,16 +211,108 @@ class Mixer(gtk.Window):
             return (vol[0], vol[0])
         return (vol[0], vol[1])
 
-    def quit(self, element=None, event=None):
-        """ Exit main loop """
+    def create_bbox(self):
+        bbox = gtk.HButtonBox()
+        bbox.set_layout(gtk.BUTTONBOX_EDGE)
+        button = gtk.Button(label='Select Controls...')
+        button.connect("clicked", SelectControls, self)
+        bbox.add(button)
+        button = gtk.Button(stock=gtk.STOCK_QUIT)
+        button.connect("clicked", self.quit)
+        bbox.add(button)
+        return bbox
+
+    def write_config(self):
         for card_index, card_name in enumerate(alsa.cards()):
             section = "card-%d" % card_index
             if not self.cp.has_section(section):
                 self.cp.add_section(section)
             self.cp.set(section, "mask_lock", self.lock_mask[card_index])
         self.cp.write(open(CONFIG.config_file, "w"))
+
+    def quit(self, element=None, event=None):
+        """ Exit main loop """
+        self.write_config()
         gtk.main_quit()
 
+class SelectControls(gtk.Window):
+    """ Select controls dialog """
+    def __init__(self, widget=None, parent=None):
+        gtk.Window.__init__(self)
+        self.connect('destroy', lambda *w: self.destroy())
+        self.set_title('Select Controls')
+        self.set_transient_for(parent)
+        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_border_width(10)
+        self.set_default_size(200, 300)
+
+        self.card_index = 0
+
+        icon_theme = gtk.icon_theme_get_default()
+        self.set_icon_name("preferences-desktop")
+
+        vbox = gtk.VBox(False, 8)
+        self.add(vbox)
+
+        hbox = gtk.HBox(False, 5)
+        label = gtk.Label()
+        label.set_markup('<b>%s</b>' % _('Select which controls should be visible'))
+        image = gtk.image_new_from_icon_name('preferences-desktop', gtk.ICON_SIZE_DIALOG)
+        hbox.pack_start(image, False, False)
+        hbox.pack_start(label, False, False)
+        vbox.pack_start(hbox, False, False)
+
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        vbox.pack_start(sw)
+
+        bbox = gtk.HButtonBox()
+        bbox.set_layout(gtk.BUTTONBOX_END)
+        button = gtk.Button(stock=gtk.STOCK_CLOSE)
+        button.connect('clicked', lambda *w: self.destroy())
+        bbox.add(button)
+        vbox.pack_start(bbox, False, False)
+
+        model = self._create_model()
+        treeview = gtk.TreeView(model)
+        treeview.set_headers_visible(False)
+
+        sw.add(treeview)
+        self._add_columns(treeview)
+        self.show_all()
+
+    def _create_model(self):
+        lstore = gtk.ListStore(
+            gobject.TYPE_BOOLEAN,
+            gobject.TYPE_STRING)
+
+        for mixer in alsa.mixers(self.card_index):
+            iter = lstore.append()
+            lstore.set(iter,
+                0, True,
+                1, mixer)
+        return lstore
+
+    def _add_columns(self, treeview):
+        model = treeview.get_model()
+
+        renderer = gtk.CellRendererToggle()
+        renderer.connect('toggled', self.control_toggled, model)
+
+        column = gtk.TreeViewColumn('Checkbox', renderer, active=0)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column.set_fixed_width(30)
+        treeview.append_column(column)
+
+        column = gtk.TreeViewColumn('Mixer', gtk.CellRendererText(), text=1)
+        treeview.append_column(column)
+
+    def control_toggled(self, cell, path, model):
+        iter = model.get_iter((int(path),))
+        control = model.get_value(iter, 0)
+        control = not control
+        model.set(iter, 0, control)
 
 class MixerControl(gtk.Frame):
     """

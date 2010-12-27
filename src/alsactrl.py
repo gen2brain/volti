@@ -70,7 +70,8 @@ class AlsaControl():
             log.Error("This program needs pyalsaaudio 0.6 or higher")
 
     def get_mixer_list(self):
-        """ Append to mixer list, mixers with equal names are grouped together. """
+        """ Append to mixer list, mixers with equal names
+        are grouped and controlled together. """
         mixerlist = []
         for mixer in alsa.mixers(self.card_index):
             try:
@@ -79,11 +80,8 @@ class AlsaControl():
                     seq = 0
                 else:
                     seq += 1
-
                 m = alsa.Mixer(control=mixer, cardindex=self.card_index, id=seq)
                 if self.control == mixer:
-                    # if multiple mixer channels share the same name, all
-                    # will be controlled here.
                     self.mixerlist.append(m)
             except alsa.ALSAAudioError:
                 pass
