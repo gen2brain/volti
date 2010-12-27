@@ -18,6 +18,8 @@
 import sys
 import alsaaudio as alsa
 
+from debug import log
+
 OLD_VOLUME = 0
 MUTED = False
 
@@ -43,17 +45,16 @@ class AlsaControl():
             self._check_version()
 
         except Exception, err:
-            sys.stderr.write("%s.%s: can't open %s control for card %s, trying to select first available mixer channel \n" % (
-                __name__, sys._getframe().f_code.co_name, self.control, self.get_card_name()))
+            log.Warn("can't open %s control for card %s, trying to select first available mixer channel\n" % (
+                self.control, self.get_card_name()))
             try:
                 self.control = self.get_mixers(self.card_index)[0]
                 self.mixer = alsa.Mixer(control=self.control, cardindex=self.card_index)
                 self.mixerlist.append(self.mixer)
                 self._check_version()
             except Exception, err:
-                sys.stderr.write("%s.%s: can't open first available control for card %s\nerror: %s\nExiting\n" % (
-                    __name__, sys._getframe().f_code.co_name, self.get_card_name(), str(err)))
-                sys.exit(1)
+                log.Error("can't open first available control for card %s\nerror: %s" % (
+                    self.get_card_name(), str(err)))
 
     def __del__(self):
         for mixer in self.mixerlist:
@@ -66,8 +67,7 @@ class AlsaControl():
         try:
             assert hasattr(self.mixer, "polldescriptors")
         except AssertionError:
-            sys.stderr.write("This program needs pyalsaaudio 0.6 or higher\nExiting\n")
-            sys.exit(1)
+            log.Error("This program needs pyalsaaudio 0.6 or higher")
 
     def get_mixer_list(self):
         """ Append to mixer list, mixers with equal names are grouped together. """
@@ -95,8 +95,7 @@ class AlsaControl():
                 return (None, None)
             return self.mixer.polldescriptors()[0]
         except Exception, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+            log.Warn(str(err))
             return (None, None)
 
     def set_volume(self, volume):
@@ -106,8 +105,7 @@ class AlsaControl():
                 mixer.setvolume(volume, self.channel)
             return True
         except alsa.ALSAAudioError, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+            log.Warn(str(err))
             return False
 
     def get_volume(self):
@@ -117,8 +115,7 @@ class AlsaControl():
                 return 0
             return self.mixerlist[0].getvolume()[0]
         except alsa.ALSAAudioError, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+            log.Warn(str(err))
 
     def set_mute(self, mute=0):
         """ Set mixer mute status """
@@ -154,8 +151,7 @@ class AlsaControl():
         try:
             return alsa.cards()[self.card_index]
         except IndexError, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+            log.Warn(str(err))
 
     def get_mixer_name(self):
         """ Returns mixer name """
@@ -164,8 +160,7 @@ class AlsaControl():
                 return ''
             return self.mixerlist[0].mixer()
         except alsa.ALSAAudioError, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+            log.Warn(str(err))
 
     def get_cards(self):
         """ Returns cards list """

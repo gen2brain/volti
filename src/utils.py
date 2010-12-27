@@ -31,9 +31,7 @@ def find_term():
 
 def get_pid_app():
     if which("pidof"):
-        pid_app = "pidof -x"
+        return "pidof -x"
     elif which("pgrep"):
-        pid_app = "pgrep"
-    else:
-        pid_app = None
-    return pid_app
+        return "pgrep"
+    return None

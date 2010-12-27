@@ -20,6 +20,8 @@ import gtk
 import pango
 from ConfigParser import ConfigParser
 
+from debug import log
+
 PREFS = {
     "card_index": 0,
     "control": "Master",
@@ -123,8 +125,7 @@ class Preferences:
             self.tree.set_translation_domain(self.main.config.app_name)
             self.tree.add_from_file(glade_file)
         except Exception, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+            log.Warn(str(err))
 
         self.version_label = self.tree.get_object("version_label")
         self.version_label.set_text("%s %s" % (

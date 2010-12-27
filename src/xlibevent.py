@@ -23,6 +23,7 @@ import gobject
 from Xlib.display import Display
 from Xlib import X, XK
 
+from debug import log
 
 class XlibEvent(gobject.GObject, threading.Thread):
     """ Handle multimedia keys via Xlib """
@@ -44,7 +45,7 @@ class XlibEvent(gobject.GObject, threading.Thread):
         try:
             XK.load_keysym_group("xf86")
         except ImportError, err:
-            sys.stderr.write("Xlib backend needs python-xlib 0.15rc1 or higher\n")
+            log.Warn("Xlib backend needs python-xlib 0.15rc1 or higher\n")
             raise ImportError(str(err))
 
         self.display = Display()

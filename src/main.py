@@ -51,6 +51,7 @@ try:
     from scale import VolumeScale
     from menu import PopupMenu
     from utils import which, find_term, get_pid_app
+    from debug import log
 except ImportError:
     sys.stderr.write("Can't import application modules\nExiting\n")
     sys.exit(1)
@@ -137,8 +138,7 @@ class VolumeTray(gtk.StatusIcon):
                 from dbusevent import DBusEvent
                 self.keys_events = DBusEvent(self)
             except Exception, err:
-                sys.stderr.write("%s.%s: %s\n" % (
-                    __name__, sys._getframe().f_code.co_name, str(err)))
+                log.Warn(str(err))
                 self.keys_events = None
         elif self.keys_backend == "xlib":
             if self.has_xlib:
@@ -147,11 +147,10 @@ class VolumeTray(gtk.StatusIcon):
                     self.keys_events = XlibEvent(self)
                     self.keys_events.start()
                 except Exception, err:
-                    sys.stderr.write("%s.%s: %s\n" % (
-                        __name__, sys._getframe().f_code.co_name, str(err)))
+                    log.Warn(str(err))
                     self.keys_events = None
             else:
-                sys.stderr.write("Xlib backend needs python-xlib 0.15rc1 or higher\n")
+                log.Warn("Xlib backend needs python-xlib 0.15rc1 or higher\n")
                 self.keys_events = None
 
     def init_notify(self):
@@ -166,8 +165,7 @@ class VolumeTray(gtk.StatusIcon):
                 from notification import Notification
                 self.notify = Notification(self)
             except Exception, err:
-                sys.stderr.write("%s.%s: %s\n" % (
-                    __name__, sys._getframe().f_code.co_name, str(err)))
+                log.Warn(str(err))
                 self.notify = None
 
     def on_volume_changed(self, widget=None, data=None):
@@ -343,8 +341,7 @@ class VolumeTray(gtk.StatusIcon):
             gtk.gdk.threads_leave()
             return True
         except Exception, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+            log.Warn(str(err))
             return False
 
     def toggle_mute(self, widget=None):
@@ -373,8 +370,7 @@ class VolumeTray(gtk.StatusIcon):
                     cmd = which(mixer)
                 Popen(cmd, shell=False)
         except Exception, err:
-            sys.stderr.write("%s.%s: %s\n" % (
-                __name__, sys._getframe().f_code.co_name, str(err)))
+            log.Warn(str(err))
 
     def mixer_get_pid(self):
         """ Get process id of mixer application """
