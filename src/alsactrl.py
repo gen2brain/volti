@@ -70,12 +70,12 @@ class AlsaControl():
             sys.exit(1)
 
     def get_mixer_list(self):
-        fullmixerlist = []
+        """ Append to mixer list, mixers with equal names are grouped together. """
+        mixerlist = []
         for mixer in alsa.mixers(self.card_index):
             try:
-                # mixers with equal names are grouped together.
-                if mixer not in fullmixerlist:
-                    fullmixerlist.append(mixer)
+                if mixer not in mixerlist:
+                    mixerlist.append(mixer)
                     seq = 0
                 else:
                     seq += 1
@@ -85,7 +85,6 @@ class AlsaControl():
                     # if multiple mixer channels share the same name, all
                     # will be controlled here.
                     self.mixerlist.append(m)
-
             except alsa.ALSAAudioError:
                 pass
 
