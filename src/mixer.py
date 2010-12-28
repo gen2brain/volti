@@ -53,6 +53,8 @@ class Mixer(gtk.Window):
         self.cp.read(CONFIG.config_file)
 
         self.lock_mask = {}
+        self.control_mask = {}
+        self.card_hbox = {}
         self.alsa_channels = {}
 
         self.set_title("Volti Mixer")
@@ -70,38 +72,50 @@ class Mixer(gtk.Window):
                     CONFIG.res_dir, "icons", "multimedia-volume-control.svg")
             self.set_icon_from_file(file)
 
-        vbox = gtk.VBox()
-        self.notebook = gtk.Notebook()
-        self.notebook.set_tab_pos(gtk.POS_TOP)
-        vbox.add(self.notebook)
-        self.add(vbox)
-
-        align = gtk.Alignment(xscale=1, yscale=1)
-        align.set_padding(5, 0, 0, 0)
-
-        bbox = self.create_bbox()
-        align.add(bbox)
-        vbox.add(align)
-
-        self.init_elements()
+        self.acards = alsa.cards()
+        self.set_layout()
+        self.init_controls()
+        self.show()
 
         card_index = int(self.cp.get("global", "card_index"))
         self.notebook.set_current_page(card_index)
 
-        self.show_all()
+    def set_layout(self):
+        self.notebook = gtk.Notebook()
+        self.notebook.set_tab_pos(gtk.POS_TOP)
+        self.notebook.show()
 
-    def init_elements(self):
+        vbox = gtk.VBox()
+        vbox.add(self.notebook)
+        self.add(vbox)
+
+        bbox = gtk.HButtonBox()
+        bbox.set_layout(gtk.BUTTONBOX_EDGE)
+        button1 = gtk.Button(label=_('_Select Controls...'))
+        button1.connect("clicked", self.on_select_controls)
+        bbox.add(button1)
+        button2 = gtk.Button(stock=gtk.STOCK_QUIT)
+        button2.connect("clicked", self.quit)
+        bbox.add(button2)
+
+        align = gtk.Alignment(xscale=1, yscale=1)
+        align.set_padding(5, 0, 0, 0)
+
+        align.add(bbox)
+        vbox.pack_start(align, False, False)
+        vbox.show_all()
+
+    def init_controls(self):
         try:
             show_values = bool(int(
                 self.cp.get("global", "mixer_show_values")))
         except:
             show_values = False
 
-        for card_index, card_name in enumerate(alsa.cards()):
+        for card_index, card_name in enumerate(self.acards):
             vbox = gtk.VBox()
-            hbox = gtk.HBox(True, 10)
             frame = gtk.Frame()
-            label = gtk.Label(card_name)
+            hbox = gtk.HBox(True, 10)
 
             align = gtk.Alignment(xscale=1, yscale=1)
             align.set_padding(10, 10, 10, 10)
@@ -109,7 +123,9 @@ class Mixer(gtk.Window):
             align.add(hbox)
             vbox.add(align)
             frame.add(vbox)
-            self.notebook.append_page(frame, label)
+
+            self.card_hbox[card_index] = hbox
+            self.notebook.insert_page(frame, gtk.Label(card_name), card_index)
 
             try:
                 self.lock_mask[card_index] = int(
@@ -117,12 +133,19 @@ class Mixer(gtk.Window):
             except:
                 self.lock_mask[card_index] = 0
 
+            try:
+                self.control_mask[card_index] = int(
+                        self.cp.get("card-%d" % card_index, "mask_control"))
+            except:
+                self.control_mask[card_index] = 0
+                for count, mixer in enumerate(alsa.mixers(card_index)):
+                    self.control_mask[card_index] |= (1 << count)
+
             n = 0
             self.get_channels(card_index)
             for channel, id in self.alsa_channels[card_index]:
-                mixer = alsa.Mixer(channel, id, card_index)
-
                 option_mask = option_value = _LOCK
+                mixer = alsa.Mixer(channel, id, card_index)
 
                 if not len(mixer.volumecap()):
                     continue
@@ -139,16 +162,15 @@ class Mixer(gtk.Window):
                         option_mask |= _REC
                     if mixer.getrec()[0]:
                         option_value |= _REC
-                except:
-                    pass
-
-                try:
                     if mixer.getmute():
                         option_mask |= _MUTE
                     if mixer.getmute()[0]:
                         option_value |= _MUTE
                 except:
                     pass
+
+                for el in hbox, align, vbox, frame:
+                    el.show()
 
                 volume = MixerControl(n, option_mask, option_value,
                         show_values, card_index, channel)
@@ -157,6 +179,8 @@ class Mixer(gtk.Window):
                 volume.connect("volume_setting_toggled", self.setting_toggled)
                 hbox.pack_start(volume, True, True)
                 n += 1
+
+            self.show_hide_controls(card_index)
 
     def get_channels(self, card_index):
         try:
@@ -211,19 +235,20 @@ class Mixer(gtk.Window):
             return (vol[0], vol[0])
         return (vol[0], vol[1])
 
-    def create_bbox(self):
-        bbox = gtk.HButtonBox()
-        bbox.set_layout(gtk.BUTTONBOX_EDGE)
-        button = gtk.Button(label='Select Controls...')
-        button.connect("clicked", SelectControls, self)
-        bbox.add(button)
-        button = gtk.Button(stock=gtk.STOCK_QUIT)
-        button.connect("clicked", self.quit)
-        bbox.add(button)
-        return bbox
+    def on_select_controls(self, widget=None):
+        card_index = self.notebook.get_current_page()
+        dialog = SelectControls(self, self.cp, card_index)
+
+    def show_hide_controls(self, card_index):
+        controls = self.card_hbox[card_index].get_children()
+        for control in controls:
+            if self.control_mask[card_index] & (1 << control.channel):
+                control.show()
+            else:
+                control.hide()
 
     def write_config(self):
-        for card_index, card_name in enumerate(alsa.cards()):
+        for card_index, card_name in enumerate(self.acards):
             section = "card-%d" % card_index
             if not self.cp.has_section(section):
                 self.cp.add_section(section)
@@ -237,20 +262,34 @@ class Mixer(gtk.Window):
 
 class SelectControls(gtk.Window):
     """ Select controls dialog """
-    def __init__(self, widget=None, parent=None):
+    def __init__(self, parent=None, cp=None, card_index=0):
         gtk.Window.__init__(self)
-        self.connect('destroy', lambda *w: self.destroy())
+        self.connect('destroy', self.close)
         self.set_title('Select Controls')
         self.set_transient_for(parent)
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         self.set_border_width(10)
         self.set_default_size(200, 300)
 
-        self.card_index = 0
-
         icon_theme = gtk.icon_theme_get_default()
         self.set_icon_name("preferences-desktop")
 
+        self.cp = cp
+        self.main = parent
+        self.card_index = card_index
+        self.mixers = alsa.mixers(self.card_index)
+
+        try:
+            self.main.control_mask[self.card_index] = int(
+                    self.cp.get("card-%d" % self.card_index, "mask_control"))
+        except:
+            self.main.control_mask[self.card_index] = 0
+            for count, mixer in enumerate(self.mixers):
+                self.main.control_mask[self.card_index] |= (1 << count)
+
+        self.set_layout()
+
+    def set_layout(self):
         vbox = gtk.VBox(False, 8)
         self.add(vbox)
 
@@ -270,7 +309,7 @@ class SelectControls(gtk.Window):
         bbox = gtk.HButtonBox()
         bbox.set_layout(gtk.BUTTONBOX_END)
         button = gtk.Button(stock=gtk.STOCK_CLOSE)
-        button.connect('clicked', lambda *w: self.destroy())
+        button.connect('clicked', self.close)
         bbox.add(button)
         vbox.pack_start(bbox, False, False)
 
@@ -287,10 +326,14 @@ class SelectControls(gtk.Window):
             gobject.TYPE_BOOLEAN,
             gobject.TYPE_STRING)
 
-        for mixer in alsa.mixers(self.card_index):
+        for count, mixer in enumerate(self.mixers):
+            if (self.main.control_mask[self.card_index] & (1 << count)):
+                show = True
+            else:
+                show = False
             iter = lstore.append()
             lstore.set(iter,
-                0, True,
+                0, show,
                 1, mixer)
         return lstore
 
@@ -298,7 +341,7 @@ class SelectControls(gtk.Window):
         model = treeview.get_model()
 
         renderer = gtk.CellRendererToggle()
-        renderer.connect('toggled', self.control_toggled, model)
+        renderer.connect('toggled', self.on_control_toggled, model)
 
         column = gtk.TreeViewColumn('Checkbox', renderer, active=0)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
@@ -308,11 +351,31 @@ class SelectControls(gtk.Window):
         column = gtk.TreeViewColumn('Mixer', gtk.CellRendererText(), text=1)
         treeview.append_column(column)
 
-    def control_toggled(self, cell, path, model):
+    def _calc_mask(self, model, path, iter):
+        active = model.get(iter, 0)
+        if active[0]:
+            self.main.control_mask[self.card_index] |= (1 << path[0])
+
+    def on_control_toggled(self, cell, path, model):
         iter = model.get_iter((int(path),))
         control = model.get_value(iter, 0)
         control = not control
         model.set(iter, 0, control)
+
+        self.main.control_mask[self.card_index] = 0
+        model.foreach(self._calc_mask)
+
+    def write_config(self):
+        section = "card-%d" % self.card_index
+        if not self.cp.has_section(section):
+            self.cp.add_section(section)
+        self.cp.set(section, "mask_control", str(self.main.control_mask[self.card_index]))
+        self.cp.write(open(CONFIG.config_file, "w"))
+
+    def close(self, widget=None):
+        self.write_config()
+        self.main.show_hide_controls(self.card_index)
+        self.destroy()
 
 class MixerControl(gtk.Frame):
     """
