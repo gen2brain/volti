@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volti 0.1.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-01 10:51+0200\n"
+"POT-Creation-Date: 2010-12-29 21:00+0100\n"
 "PO-Revision-Date: 2010-02-09 12:34+0100\n"
 "Last-Translator: Milan Nikolic <gen2brain@gmail.com>\n"
 "Language-Team: Serbian\n"
@@ -18,15 +18,23 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../src/preferences.py:299
+#: ../src/mixer.py:95
+msgid "_Select Controls..."
+msgstr ""
+
+#: ../src/mixer.py:300
+msgid "Select which controls should be visible"
+msgstr ""
+
+#: ../src/preferences.py:309
 msgid "Choose external mixer"
 msgstr "Odaberi spoljni mikser"
 
-#: ../src/preferences.py:307
+#: ../src/preferences.py:317
 msgid "Sound Mixers"
 msgstr "Audio Mikseri"
 
-#: ../src/preferences.py:310
+#: ../src/preferences.py:320
 msgid "All files"
 msgstr "Sve datoteke"
 
@@ -38,19 +46,19 @@ msgstr "Mutiraj"
 msgid "Show Mixer"
 msgstr "Prikaži Mikser"
 
-#: ../src/notification.py:63 ../src/main.py:310
+#: ../src/notification.py:68 ../src/main.py:311
 msgid "Card"
 msgstr "Karta"
 
-#: ../src/notification.py:64 ../src/main.py:310 ../data/preferences.glade.h:18
+#: ../src/notification.py:69 ../src/main.py:311 ../data/preferences.glade.h:18
 msgid "Mixer"
 msgstr "Mikser"
 
-#: ../src/main.py:254 ../src/main.py:278 ../src/main.py:293
+#: ../src/main.py:255 ../src/main.py:279 ../src/main.py:294
 msgid "Muted"
 msgstr "Mutirano"
 
-#: ../src/main.py:310
+#: ../src/main.py:311
 msgid "Output"
 msgstr "Izlaz"
 

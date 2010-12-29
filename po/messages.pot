@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-01 10:51+0200\n"
+"POT-Creation-Date: 2010-12-29 21:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,23 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/preferences.py:299
+#: ../src/mixer.py:95
+msgid "_Select Controls..."
+msgstr ""
+
+#: ../src/mixer.py:300
+msgid "Select which controls should be visible"
+msgstr ""
+
+#: ../src/preferences.py:309
 msgid "Choose external mixer"
 msgstr ""
 
-#: ../src/preferences.py:307
+#: ../src/preferences.py:317
 msgid "Sound Mixers"
 msgstr ""
 
-#: ../src/preferences.py:310
+#: ../src/preferences.py:320
 msgid "All files"
 msgstr ""
 
@@ -37,19 +45,19 @@ msgstr ""
 msgid "Show Mixer"
 msgstr ""
 
-#: ../src/notification.py:63 ../src/main.py:310
+#: ../src/notification.py:68 ../src/main.py:311
 msgid "Card"
 msgstr ""
 
-#: ../src/notification.py:64 ../src/main.py:310 ../data/preferences.glade.h:18
+#: ../src/notification.py:69 ../src/main.py:311 ../data/preferences.glade.h:18
 msgid "Mixer"
 msgstr ""
 
-#: ../src/main.py:254 ../src/main.py:278 ../src/main.py:293
+#: ../src/main.py:255 ../src/main.py:279 ../src/main.py:294
 msgid "Muted"
 msgstr ""
 
-#: ../src/main.py:310
+#: ../src/main.py:311
 msgid "Output"
 msgstr ""
 

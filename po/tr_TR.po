@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-01 10:51+0200\n"
+"POT-Creation-Date: 2010-12-29 21:00+0100\n"
 "PO-Revision-Date: 2009-03-07 23:30+0200\n"
 "Last-Translator: Gürkan Gür <seqizz@gmail.com>\n"
 "Language-Team: \n"
@@ -18,15 +18,23 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1\n"
 
-#: ../src/preferences.py:299
+#: ../src/mixer.py:95
+msgid "_Select Controls..."
+msgstr ""
+
+#: ../src/mixer.py:300
+msgid "Select which controls should be visible"
+msgstr ""
+
+#: ../src/preferences.py:309
 msgid "Choose external mixer"
 msgstr "Harici karıştırıcıyı seç"
 
-#: ../src/preferences.py:307
+#: ../src/preferences.py:317
 msgid "Sound Mixers"
 msgstr "Ses Karıştırıcılar"
 
-#: ../src/preferences.py:310
+#: ../src/preferences.py:320
 msgid "All files"
 msgstr "Tüm Dosyalar"
 
@@ -38,19 +46,19 @@ msgstr "Sesi Kapat"
 msgid "Show Mixer"
 msgstr "Karıştırıcıyı Göster"
 
-#: ../src/notification.py:63 ../src/main.py:310
+#: ../src/notification.py:68 ../src/main.py:311
 msgid "Card"
 msgstr "Kart"
 
-#: ../src/notification.py:64 ../src/main.py:310 ../data/preferences.glade.h:18
+#: ../src/notification.py:69 ../src/main.py:311 ../data/preferences.glade.h:18
 msgid "Mixer"
 msgstr "Karıştırıcı"
 
-#: ../src/main.py:254 ../src/main.py:278 ../src/main.py:293
+#: ../src/main.py:255 ../src/main.py:279 ../src/main.py:294
 msgid "Muted"
 msgstr "Ses Kapatıldı"
 
-#: ../src/main.py:310
+#: ../src/main.py:311
 msgid "Output"
 msgstr "Çıktı"
 
