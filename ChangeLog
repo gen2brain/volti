@@ -1,3 +1,10 @@
+v0.2.3 Dec 29, 2010:
+
+    * select visible controls in mixer application
+    * support for soundcards with split master channel such as M-Audio 2496, thanks to Marc Brevoort <kleinebre@hotmail.com>
+    * fix issue with awesome window manager
+    * bug fixes
+
 v0.2.2 Sep 1, 2010:
 
     * internal mixer application
