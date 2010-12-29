@@ -1,5 +1,5 @@
 import os
-from subprocess import Popen
+from subprocess import Popen, PIPE
 
 def which(prog):
     """ Equivalent of unix which command """
