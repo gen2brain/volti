@@ -18,6 +18,7 @@ def which(prog):
     return None
 
 def find_term():
+    """ Find terminal application """
     term = os.getenv("TERM")
     if term == "linux" or term is None:
         if which("gconftool-2"):
@@ -31,6 +32,7 @@ def find_term():
     return term
 
 def get_pid_app():
+    """ Returns application that can find pid by name """
     if which("pidof"):
         return "pidof -x"
     elif which("pgrep"):

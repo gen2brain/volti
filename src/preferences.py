@@ -107,6 +107,7 @@ class Preferences:
             _PREFERENCES = None
 
     def _set_body(self):
+        """ Set notification body """
         start, end = self.notify_body_text.get_buffer().get_bounds()
         body = self.notify_body_text.get_buffer().get_text(start, end)
         PREFS["notify_body"] = body
@@ -336,7 +337,7 @@ class Preferences:
             return None
 
     def custom_mixer_filter(self, filter_info=None, data=None):
-        """ Custom filter with names of common mixer apps """
+        """ Custom file filter with names of common mixer apps """
         mixers = ["aumix", "alsamixer", "alsamixergui", "gamix",
                 "gmixer", "gnome-alsamixer", "gnome-volume-control"]
         if filter_info[2] in mixers:

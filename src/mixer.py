@@ -81,6 +81,7 @@ class Mixer(gtk.Window):
         self.notebook.set_current_page(card_index)
 
     def set_layout(self):
+        """ Gui layout """
         self.notebook = gtk.Notebook()
         self.notebook.set_tab_pos(gtk.POS_TOP)
         self.notebook.show()
@@ -290,6 +291,7 @@ class SelectControls(gtk.Window):
         self.set_layout()
 
     def set_layout(self):
+        """ Gui layout """
         vbox = gtk.VBox(False, 8)
         self.add(vbox)
 

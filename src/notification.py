@@ -31,9 +31,11 @@ class Notification:
         self.last_id = dbus.UInt32()
 
     def __del__(self):
+        """ Destructor """
         self.close()
 
     def check_capabilities(self):
+        """ Check server capabilities """
         info = self.notify.GetServerInformation()
         if info[0] == "notify-osd":
             return False

@@ -28,6 +28,7 @@ class VolumeScale():
         self.init_window()
 
     def init_window(self):
+        """ Initialize scale window """
         if self.win:
             self.win.unrealize()
 
@@ -48,6 +49,7 @@ class VolumeScale():
         self.win.connect_after("realize", self.on_realize)
 
     def init_slider(self):
+        """ Initialize volume scale """
         if self.orientation == gtk.ORIENTATION_VERTICAL:
             self.slider = gtk.HScale()
         else:

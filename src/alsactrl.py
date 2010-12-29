@@ -49,15 +49,18 @@ class AlsaControl():
                     self.get_card_name(), str(err)))
 
     def __del__(self):
+        """ Destructor """
         self.close()
 
     def _check_version(self):
+        """ Check pyalsaaudio version """
         try:
             assert hasattr(self.mixer, "polldescriptors")
         except AssertionError:
             log.Error("This program needs pyalsaaudio 0.6 or higher")
 
     def open(self):
+        """ Open mixer """
         self.get_mixer_list()
         if self.mixerlist:
             self.mixer = self.mixerlist[0]
@@ -65,6 +68,7 @@ class AlsaControl():
             raise Exception
 
     def close(self):
+        """ Close mixer """
         for mixer in self.mixerlist:
             if hasattr(mixer, 'close'):
                 mixer.close()
@@ -72,6 +76,7 @@ class AlsaControl():
         self.mixerlist = []
 
     def reopen(self, card_index, control):
+        """ Reopen mixer """
         self.close()
         self.card_index = card_index
         self.control = control
