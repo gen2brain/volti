@@ -44,8 +44,7 @@ except ImportError:
 
 try:
     from config import Config
-    import preferences
-    from preferences import PREFS
+    from preferences import Preferences, PREFS
     from alsactrl import AlsaControl
     from dbusservice import DBusService
     from scale import VolumeScale
@@ -71,8 +70,10 @@ class VolumeTray(gtk.StatusIcon):
         gtk.StatusIcon.__init__(self)
 
         self.config = config
-        self.preferences = preferences.Preferences(self)
+        self.preferences = Preferences(self)
 
+        self.card_index = int(PREFS["card_index"])
+        self.control = PREFS["control"]
         self.toggle = PREFS["toggle"]
         self.mixer = PREFS["mixer"]
         self.mixer_internal = bool(int(PREFS["mixer_internal"]))
@@ -101,7 +102,7 @@ class VolumeTray(gtk.StatusIcon):
         self.keys_events = None
         self.pid_app = get_pid_app()
 
-        self.alsactrl = AlsaControl(PREFS)
+        self.alsactrl = AlsaControl(self.card_index, self.control, self)
         self.menu = PopupMenu(self)
         self.scale = VolumeScale(self)
         self.dbus = DBusService(self)
@@ -116,7 +117,7 @@ class VolumeTray(gtk.StatusIcon):
         self.connect("popup_menu", self.on_popup_menu)
 
         # set current volume
-        self.update(instantiate=False)
+        self.update(reopen=False)
 
         # watch for changes
         fd, eventmask = self.alsactrl.get_descriptors()
@@ -323,18 +324,13 @@ class VolumeTray(gtk.StatusIcon):
             self.init_notify()
             self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
 
-    def update(self, source=None, condition=None, instantiate=True):
+    def update(self, source=None, condition=None, reopen=True):
         """ Update volume """
         if self.lock:
-            gobject.source_remove(self.watchid)
-            fd, eventmask = self.alsactrl.get_descriptors()
-            self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
-            return False
+            return True
         try:
-            if instantiate:
-                del self.alsactrl
-                self.alsactrl = None
-                self.alsactrl = AlsaControl(preferences.PREFS)
+            if reopen:
+                self.alsactrl.reopen(self.card_index, self.control)
             volume = self.alsactrl.get_volume()
             gtk.gdk.threads_enter()
             self.set_volume(volume)

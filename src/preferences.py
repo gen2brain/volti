@@ -378,6 +378,7 @@ class Preferences:
             model.set(iter, 2, pango.WEIGHT_BOLD)
 
             PREFS["control"] = model.get_value(iter, 1)
+            self.main.control = PREFS["control"]
             self.main.update()
             self.main.menu.toggle_mute.set_active(
                     self.main.alsactrl.is_muted())

@@ -26,48 +26,56 @@ MUTED = False
 class AlsaControl():
     """ Interface to ALSA mixer API. """
 
-    def __init__(self, prefs):
+    def __init__(self, card_index, control, main_instance):
         """ Constructor """
         try:
-            self.prefs = prefs
-            self.card_index = int(self.prefs["card_index"])
-            self.control = self.prefs["control"]
+            self.main = main_instance
+            self.card_index = card_index
+            self.control = control
             self.channel = alsa.MIXER_CHANNEL_ALL
             self.mixerlist=[]
-
-            self.get_mixer_list()
-
-            if self.mixerlist:
-                self.mixer = self.mixerlist[0]
-            else:
-                raise Exception
-
+            self.open()
             self._check_version()
-
         except Exception, err:
             log.Warn("can't open %s control for card %s, trying to select first available mixer channel\n" % (
                 self.control, self.get_card_name()))
             try:
-                self.control = self.get_mixers(self.card_index)[0]
-                self.mixer = alsa.Mixer(control=self.control, cardindex=self.card_index)
-                self.mixerlist.append(self.mixer)
+                control = self.get_mixers(self.card_index)[0]
+                self.main.control = control
+                self.reopen(self.card_index, control)
                 self._check_version()
             except Exception, err:
                 log.Error("can't open first available control for card %s\nerror: %s" % (
                     self.get_card_name(), str(err)))
 
     def __del__(self):
-        for mixer in self.mixerlist:
-            if hasattr(mixer, 'close'):
-                mixer.close()
-        self.mixer = None
-        self.mixerlist = []
+        self.close()
 
     def _check_version(self):
         try:
             assert hasattr(self.mixer, "polldescriptors")
         except AssertionError:
             log.Error("This program needs pyalsaaudio 0.6 or higher")
+
+    def open(self):
+        self.get_mixer_list()
+        if self.mixerlist:
+            self.mixer = self.mixerlist[0]
+        else:
+            raise Exception
+
+    def close(self):
+        for mixer in self.mixerlist:
+            if hasattr(mixer, 'close'):
+                mixer.close()
+        self.mixer = None
+        self.mixerlist = []
+
+    def reopen(self, card_index, control):
+        self.close()
+        self.card_index = card_index
+        self.control = control
+        self.open()
 
     def get_mixer_list(self):
         """ Append to mixer list, mixers with equal names
@@ -80,10 +88,10 @@ class AlsaControl():
                     seq = 0
                 else:
                     seq += 1
-                m = alsa.Mixer(control=mixer, cardindex=self.card_index, id=seq)
                 if self.control == mixer:
+                    m = alsa.Mixer(control=mixer, cardindex=self.card_index, id=seq)
                     self.mixerlist.append(m)
-            except alsa.ALSAAudioError:
+            except alsa.ALSAAudioError, err:
                 pass
 
     def get_descriptors(self):
