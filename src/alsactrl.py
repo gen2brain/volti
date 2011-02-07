@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
 import alsaaudio as alsa
 
 from debug import log
@@ -190,7 +189,7 @@ class AlsaControl():
         """ Returns mixers list """
         mixers = []
         amixers = []
-        try :
+        try:
             amixers = alsa.mixers(card_index)
         except alsa.ALSAAudioError:
             pass
