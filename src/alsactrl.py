@@ -189,7 +189,12 @@ class AlsaControl():
     def get_mixers(self, card_index=0):
         """ Returns mixers list """
         mixers = []
-        for mixer in alsa.mixers(card_index):
+        amixers = []
+        try :
+            amixers = alsa.mixers(card_index)
+        except alsa.ALSAAudioError:
+            pass
+        for mixer in amixers:
             try:
                 m = alsa.Mixer(control=mixer, cardindex=card_index)
                 cap = m.volumecap()

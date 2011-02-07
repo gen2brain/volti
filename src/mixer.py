@@ -139,7 +139,12 @@ class Mixer(gtk.Window):
                         self.cp.get("card-%d" % card_index, "mask_control"))
             except:
                 self.control_mask[card_index] = 0
-                for count, mixer in enumerate(alsa.mixers(card_index)):
+                amixers = []
+                try:
+                    amixers = alsa.mixers(card_index)
+                except alsa.ALSAAudioError:
+                    pass
+                for count, mixer in enumerate(amixers):
                     self.control_mask[card_index] |= (1 << count)
 
             n = 0
