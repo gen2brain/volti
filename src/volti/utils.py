@@ -43,6 +43,31 @@ def get_pid_app():
         return "pgrep"
     return None
 
+def get_icon_name(volume):
+    """ Returns icon name for current volume """
+    if volume == 0 or volume == _("Muted"):
+        icon = "audio-volume-muted"
+    elif volume <= 33:
+        icon = "audio-volume-low"
+    elif volume <= 66:
+        icon = "audio-volume-medium"
+    elif volume > 66:
+        icon = "audio-volume-high"
+    return icon
+
+def get_icon_themes(res_dir):
+    """ Returns list of icon themes """
+    themes = ["Default"]
+    icons_dir = os.path.join(res_dir, "icons")
+    try:
+        for file in os.listdir(icons_dir):
+            if os.path.isdir(os.path.join(icons_dir, file)):
+                if not file.startswith("."):
+                    themes.append(file)
+    except OSError:
+        pass
+    return themes
+
 class Logger():
     def __init__(self):
         log_format = '%(levelname)s: %(message)s'

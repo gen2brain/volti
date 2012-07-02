@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volti 0.1.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-29 21:00+0100\n"
+"POT-Creation-Date: 2012-07-02 18:44+0200\n"
 "PO-Revision-Date: 2010-02-12 01:12+0100\n"
 "Last-Translator: Jean-Alexandre Anglès d'Auriac <archidiacredusquig@gmail."
 "com>\n"
@@ -18,159 +18,158 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../src/mixer.py:95
+#: ../src/volti/gtk2/mixer.py:93
 msgid "_Select Controls..."
 msgstr ""
 
-#: ../src/mixer.py:300
+#: ../src/volti/gtk2/mixer.py:303
 msgid "Select which controls should be visible"
 msgstr ""
 
-#: ../src/preferences.py:309
+#: ../src/volti/gtk2/preferences.py:284
 msgid "Choose external mixer"
 msgstr "Choisissez un mixeur externe"
 
-#: ../src/preferences.py:317
+#: ../src/volti/gtk2/preferences.py:292
 msgid "Sound Mixers"
 msgstr "Mixeurs audio"
 
-#: ../src/preferences.py:320
+#: ../src/volti/gtk2/preferences.py:295
 msgid "All files"
 msgstr "Tous les fichiers"
 
-#: ../src/menu.py:30 ../data/preferences.glade.h:19
+#: ../src/volti/gtk2/menu.py:30 ../data/preferences.glade.h:24
 msgid "Mute"
 msgstr "Rendre muêt"
 
-#: ../src/menu.py:35 ../data/preferences.glade.h:24
+#: ../src/volti/gtk2/menu.py:35 ../data/preferences.glade.h:25
 msgid "Show Mixer"
 msgstr "Montrer le mixeur"
 
-#: ../src/notification.py:68 ../src/main.py:311
-msgid "Card"
-msgstr "Carte"
-
-#: ../src/notification.py:69 ../src/main.py:311 ../data/preferences.glade.h:18
-msgid "Mixer"
-msgstr "Mixeur"
-
-#: ../src/main.py:255 ../src/main.py:279 ../src/main.py:294
+#: ../src/volti/gtk2/main.py:217 ../src/volti/gtk2/main.py:232
+#: ../src/volti/utils.py:48
 msgid "Muted"
 msgstr "Muêt"
 
-#: ../src/main.py:311
+#: ../src/volti/gtk2/main.py:249
 msgid "Output"
 msgstr "Sortie"
 
+#: ../src/volti/gtk2/main.py:249 ../src/volti/notification.py:68
+msgid "Card"
+msgstr "Carte"
+
+#: ../src/volti/gtk2/main.py:249 ../src/volti/notification.py:69
+#: ../data/preferences.glade.h:10
+msgid "Mixer"
+msgstr "Mixeur"
+
 #: ../data/preferences.glade.h:1
-msgid "About"
-msgstr ""
+msgid "Volti Preferences"
+msgstr "Préférences de Volti"
 
 #: ../data/preferences.glade.h:2
-msgid "Backend:"
-msgstr "Arrière-plan :"
+msgid "Select audio card:"
+msgstr "Choisissez une carte son :"
 
 #: ../data/preferences.glade.h:3
-msgid "Browse"
-msgstr "Naviguer"
+msgid "Select a channel to control:"
+msgstr "Choisissez le mixeur à contrôler :"
 
 #: ../data/preferences.glade.h:4
-msgid "Close"
-msgstr "Fermer"
+msgid "Hardware"
+msgstr "Matériel"
 
 #: ../data/preferences.glade.h:5
-msgid "Enable desktop notifications"
-msgstr "Activer les notifications"
+msgid "Use internal mixer"
+msgstr ""
 
 #: ../data/preferences.glade.h:6
-msgid "Enable multimedia keys"
-msgstr "Activer les touches multimédia"
+msgid "Show values"
+msgstr ""
 
 #: ../data/preferences.glade.h:7
 msgid "External mixer:"
 msgstr "Mixeurs externes :"
 
 #: ../data/preferences.glade.h:8
-msgid ""
-"Fields of the form {field} are replaced by their corresponding value.\n"
-"\n"
-"Available fields are: {volume}, {card} and {mixer}\n"
-"\n"
-"You can use the Pango markup language to format the text."
-msgstr ""
+msgid "Browse"
+msgstr "Naviguer"
+
+#: ../data/preferences.glade.h:9
+msgid "Run in terminal"
+msgstr "Lancer dans un terminal"
+
+#: ../data/preferences.glade.h:11
+msgid "Enable multimedia keys"
+msgstr "Activer les touches multimédia"
+
+#: ../data/preferences.glade.h:12
+msgid "Enable desktop notifications"
+msgstr "Activer les notifications"
 
 #: ../data/preferences.glade.h:13
-msgid "Hal"
-msgstr "HAL"
+msgid "Timeout:"
+msgstr "Délai d'expiration des notifications :"
 
 #: ../data/preferences.glade.h:14
-msgid "Hardware"
-msgstr "Matériel"
+msgid "seconds"
+msgstr "secondes"
 
 #: ../data/preferences.glade.h:15
-msgid "Icon theme:"
+msgid ""
+"Fields of the form {field} are replaced by their corresponding value.\n"
+"Available fields are: {volume}, {card} and {mixer} . \n"
+"\n"
+"If your notification daemon has support,\n"
+"you can use the Pango markup language for formating."
 msgstr ""
-
-#: ../data/preferences.glade.h:16
-msgid "Keyboard"
-msgstr "Clavier"
-
-#: ../data/preferences.glade.h:17
-msgid "Middle mouse button action:"
-msgstr "Clic roulette pour basculer :"
 
 #: ../data/preferences.glade.h:20
 msgid "Position notification"
 msgstr ""
 
 #: ../data/preferences.glade.h:21
-msgid "Run in terminal"
-msgstr "Lancer dans un terminal"
+msgid "Keyboard"
+msgstr "Clavier"
 
 #: ../data/preferences.glade.h:22
-msgid "Select a channel to control:"
-msgstr "Choisissez le mixeur à contrôler :"
+msgid "Icon theme:"
+msgstr ""
 
 #: ../data/preferences.glade.h:23
-msgid "Select audio card:"
-msgstr "Choisissez une carte son :"
-
-#: ../data/preferences.glade.h:25
-msgid "Show scale value"
-msgstr "Montre la valeur de mise à l'échelle"
+msgid "Middle mouse button action:"
+msgstr "Clic roulette pour basculer :"
 
 #: ../data/preferences.glade.h:26
 msgid "Show tooltip"
 msgstr "Montre l'infobulle"
 
 #: ../data/preferences.glade.h:27
-msgid "Show values"
-msgstr ""
+msgid "Show scale value"
+msgstr "Montre la valeur de mise à l'échelle"
 
 #: ../data/preferences.glade.h:28
-msgid "Timeout:"
-msgstr "Délai d'expiration des notifications :"
+msgid "Volume adjustment:"
+msgstr "Pas d'augmentation du volume :"
 
 #: ../data/preferences.glade.h:29
 msgid "UI"
 msgstr "Interface"
 
 #: ../data/preferences.glade.h:30
-msgid "Use internal mixer"
+msgid "About"
 msgstr ""
 
 #: ../data/preferences.glade.h:31
-msgid "Volti Preferences"
-msgstr "Préférences de Volti"
+msgid "Close"
+msgstr "Fermer"
 
-#: ../data/preferences.glade.h:32
-msgid "Volume adjustment:"
-msgstr "Pas d'augmentation du volume :"
+#~ msgid "Backend:"
+#~ msgstr "Arrière-plan :"
 
-#: ../data/preferences.glade.h:33
-msgid "Xlib"
-msgstr "Xlib"
+#~ msgid "Hal"
+#~ msgstr "HAL"
 
-#: ../data/preferences.glade.h:34
-msgid "seconds"
-msgstr "secondes"
+#~ msgid "Xlib"
+#~ msgstr "Xlib"

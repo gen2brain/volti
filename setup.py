@@ -10,8 +10,8 @@ from distutils.command.build import build
 from distutils.dep_util import newer
 from distutils.log import info
 
-from src.config import Config
-config = Config()
+sys.path.append(os.path.realpath("src"))
+from volti.defs import APP_NAME, APP_VERSION
 
 PO_DIR = 'po'
 MO_DIR = os.path.join('build', 'mo')
@@ -23,7 +23,7 @@ class BuildLocales(build):
 
     for po in glob.glob(os.path.join(PO_DIR, '*.po')):
       lang = os.path.basename(po[:-3])
-      mo = os.path.join(MO_DIR, lang, config.app_name + '.mo')
+      mo = os.path.join(MO_DIR, lang, APP_NAME + '.mo')
 
       directory = os.path.dirname(mo)
       if not os.path.exists(directory):
@@ -48,7 +48,7 @@ class Install(install_data):
 
   def _find_mo_files(self):
     data_files = []
-    for mo in glob.glob(os.path.join(MO_DIR, '*', config.app_name + '.mo')):
+    for mo in glob.glob(os.path.join(MO_DIR, '*', APP_NAME + '.mo')):
         lang = os.path.basename(os.path.dirname(mo))
         dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
         data_files.append((dest, [mo]))
@@ -76,14 +76,14 @@ class Install(install_data):
             data_files.append((targetpath, [sourcepath]))
     return data_files
 
-setup(name = config.app_name,
-        version = config.app_version,
+setup(name = APP_NAME,
+        version = APP_VERSION,
         description = "GTK+ application for controlling audio volume from system tray/notification area",
         author = "Milan Nikolic",
         author_email = "gen2brain@gmail.com",
         license = "GNU GPLv3",
         url = "http://code.google.com/p/volti/",
-        download_url = "http://volti.googlecode.com/files/%s-%s.tar.gz " % (config.app_name, config.app_version),
+        download_url = "http://volti.googlecode.com/files/%s-%s.tar.gz " % (APP_NAME, APP_VERSION),
         packages = ["volti"],
         package_dir = {"volti": "src"},
         scripts = ["volti", "volti-mixer", "volti-remote"],

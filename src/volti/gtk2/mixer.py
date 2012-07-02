@@ -25,11 +25,10 @@ import gtk
 import gobject
 import alsaaudio as alsa
 
-from volti.config import Config
-CONFIG = Config()
+from volti.defs import *
 
-gettext.bindtextdomain(CONFIG.app_name, CONFIG.locale_dir)
-gettext.textdomain(CONFIG.app_name)
+gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
+gettext.textdomain(APP_NAME)
 
 import __builtin__
 __builtin__._ = gettext.gettext
@@ -49,7 +48,7 @@ class Mixer(gtk.Window):
         gtk.Window.__init__(self)
 
         self.cp = ConfigParser()
-        self.cp.read(CONFIG.config_file)
+        self.cp.read(CONFIG_FILE)
 
         self.lock_mask = {}
         self.control_mask = {}
@@ -67,8 +66,8 @@ class Mixer(gtk.Window):
         if icon_theme.has_icon("multimedia-volume-control"):
             self.set_icon_name("multimedia-volume-control")
         else:
-            file = os.path.join(
-                    CONFIG.res_dir, "icons", "multimedia-volume-control.svg")
+            file = os.path.join(RES_DIR,
+                    "icons", "multimedia-volume-control.svg")
             self.set_icon_from_file(file)
 
         self.acards = alsa.cards()
@@ -258,7 +257,7 @@ class Mixer(gtk.Window):
             if not self.cp.has_section(section):
                 self.cp.add_section(section)
             self.cp.set(section, "mask_lock", self.lock_mask[card_index])
-        self.cp.write(open(CONFIG.config_file, "w"))
+        self.cp.write(open(CONFIG_FILE, "w"))
 
     def quit(self, element=None, event=None):
         """ Exit main loop """
@@ -376,7 +375,7 @@ class SelectControls(gtk.Window):
         if not self.cp.has_section(section):
             self.cp.add_section(section)
         self.cp.set(section, "mask_control", str(self.main.control_mask[self.card_index]))
-        self.cp.write(open(CONFIG.config_file, "w"))
+        self.cp.write(open(CONFIG_FILE, "w"))
 
     def close(self, widget=None):
         self.write_config()
@@ -578,7 +577,7 @@ class MixerControl(gtk.Frame):
         elif id == _REC:
             icon = "mixer-record.png" if active else "mixer-no-record.png"
         image = gtk.Image()
-        image.set_from_file(os.path.join(CONFIG.res_dir, "icons", icon))
+        image.set_from_file(os.path.join(RES_DIR, "icons", icon))
         image.show()
         return image
 

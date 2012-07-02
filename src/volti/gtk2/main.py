@@ -18,7 +18,6 @@
 
 import os
 import sys
-import gettext
 from subprocess import Popen, PIPE
 from signal import SIGTERM
 
@@ -27,29 +26,16 @@ import gobject
 from dbus.exceptions import DBusException
 
 try:
-    from volti.config import Config
+    from volti.defs import *
     from volti.alsactrl import AlsaControl
     from volti.dbusservice import DBusService
-    from volti.utils import log, which, find_term, get_pid_app
+    from volti.utils import log, which, find_term, get_pid_app, get_icon_name
     from volti.gtk2.scale import VolumeScale
     from volti.gtk2.menu import PopupMenu
-    from volti.gtk2.preferences import Preferences, PREFS
+    from volti.gtk2.preferences import Preferences
 except ImportError:
     sys.stderr.write("Can't import application modules\nExiting\n")
     sys.exit(1)
-
-try:
-    from Xlib import X
-    HAS_XLIB = True
-except ImportError:
-    HAS_XLIB = False
-
-CONFIG = Config()
-gettext.bindtextdomain(CONFIG.app_name, CONFIG.locale_dir)
-gettext.textdomain(CONFIG.app_name)
-
-import __builtin__
-__builtin__._ = gettext.gettext
 
 class VolumeTray(gtk.StatusIcon):
     """ GTK+ application for controlling audio volume
@@ -59,25 +45,7 @@ class VolumeTray(gtk.StatusIcon):
         """ Constructor """
         gtk.StatusIcon.__init__(self)
 
-        self.config = CONFIG
-        self.preferences = Preferences(self)
-
-        self.card_index = int(PREFS["card_index"])
-        self.control = PREFS["control"]
-        self.toggle = PREFS["toggle"]
-        self.mixer = PREFS["mixer"]
-        self.mixer_internal = bool(int(PREFS["mixer_internal"]))
-        self.icon_theme = PREFS["icon_theme"]
-        self.show_tooltip = bool(int(PREFS["show_tooltip"]))
-        self.run_in_terminal = bool(int(PREFS["run_in_terminal"]))
-        self.scale_increment = float(PREFS["scale_increment"])
-        self.scale_show_value = bool(int(PREFS["scale_show_value"]))
-        self.keys = bool(int(PREFS["keys"]))
-        self.show_notify = bool(int(PREFS["show_notify"]))
-        self.notify_timeout = float(PREFS["notify_timeout"])
-        self.notify_position = bool(int(PREFS["notify_position"]))
-        self.notify_body = PREFS["notify_body"]
-
+        self.init_prefs()
         self.lock = False
         self.lockid = None
         self.notify = None
@@ -105,6 +73,25 @@ class VolumeTray(gtk.StatusIcon):
         # watch for changes
         fd, eventmask = self.alsactrl.get_descriptors()
         self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
+
+    def init_prefs(self):
+        """ Initialize preferences """
+        self.preferences = Preferences(self)
+        self.card_index = int(PREFS["card_index"])
+        self.control = PREFS["control"]
+        self.toggle = PREFS["toggle"]
+        self.mixer = PREFS["mixer"]
+        self.mixer_internal = bool(int(PREFS["mixer_internal"]))
+        self.icon_theme = PREFS["icon_theme"]
+        self.show_tooltip = bool(int(PREFS["show_tooltip"]))
+        self.run_in_terminal = bool(int(PREFS["run_in_terminal"]))
+        self.scale_increment = float(PREFS["scale_increment"])
+        self.scale_show_value = bool(int(PREFS["scale_show_value"]))
+        self.keys = bool(int(PREFS["keys"]))
+        self.show_notify = bool(int(PREFS["show_notify"]))
+        self.notify_timeout = float(PREFS["notify_timeout"])
+        self.notify_position = bool(int(PREFS["notify_position"]))
+        self.notify_body = PREFS["notify_body"]
 
     def init_keys_events(self):
         """ Initialize keys events """
@@ -138,7 +125,7 @@ class VolumeTray(gtk.StatusIcon):
 
         if self.show_notify:
             try:
-                from notification import Notification
+                from volti.notification import Notification
                 self.notify = Notification(self)
             except Exception, err:
                 log.exception(str(err))
@@ -158,7 +145,7 @@ class VolumeTray(gtk.StatusIcon):
         self.alsactrl.set_volume(volume)
         vol = self.get_volume()
 
-        icon = self.get_icon_name(vol)
+        icon = get_icon_name(vol)
         self.update_icon(vol, icon)
         if self.show_tooltip:
             self.update_tooltip(vol)
@@ -225,30 +212,6 @@ class VolumeTray(gtk.StatusIcon):
             self.menu.toggle_mute.set_active(False)
             self.set_volume(volume)
 
-    def get_icon_name(self, volume):
-        """ Returns icon name for current volume """
-        if volume == 0 or volume == _("Muted"):
-            icon = "audio-volume-muted"
-        elif volume <= 33:
-            icon = "audio-volume-low"
-        elif volume <= 66:
-            icon = "audio-volume-medium"
-        elif volume > 66:
-            icon = "audio-volume-high"
-        return icon
-
-    def get_icon_themes(self):
-        themes = ["Default"]
-        icons_dir = os.path.join(CONFIG.res_dir, "icons")
-        try:
-            for file in os.listdir(icons_dir):
-                if os.path.isdir(os.path.join(icons_dir, file)):
-                    if not file.startswith("."):
-                        themes.append(file)
-        except OSError:
-            pass
-        return themes
-
     def get_status_info(self, volume):
         """ Returns status information """
         var = "" if volume == _("Muted") else "%"
@@ -273,8 +236,8 @@ class VolumeTray(gtk.StatusIcon):
     def update_icon(self, volume, icon):
         """ Update icon """
         if self.icon_theme != "Default":
-            icon = os.path.abspath(os.path.join(
-                    CONFIG.res_dir, "icons", self.icon_theme, "32x32", icon+".png"))
+            icon = os.path.abspath(os.path.join(RES_DIR, "icons",
+                self.icon_theme, "32x32", icon+".png"))
             self.set_from_file(icon)
         else:
             self.set_from_icon_name(icon)
@@ -289,8 +252,8 @@ class VolumeTray(gtk.StatusIcon):
     def update_notify(self, volume, icon):
         """ Update notification """
         if self.icon_theme != "Default":
-            icon = os.path.abspath(os.path.join(
-                    CONFIG.res_dir, "icons", self.icon_theme, "48x48", icon+".png"))
+            icon = os.path.abspath(os.path.join(RES_DIR, "icons",
+                self.icon_theme, "48x48", icon+".png"))
         try:
             self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
         except DBusException:
@@ -319,7 +282,7 @@ class VolumeTray(gtk.StatusIcon):
         """ Toggle mute status """
         self.alsactrl.set_mute(widget.get_active())
         volume = self.get_volume()
-        icon = self.get_icon_name(volume)
+        icon = get_icon_name(volume)
         self.update_icon(volume, icon)
         if self.show_tooltip:
             self.update_tooltip(volume)

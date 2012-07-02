@@ -20,27 +20,8 @@ import gtk
 import pango
 from ConfigParser import ConfigParser
 
-from volti.utils import log
-
-PREFS = {
-    "card_index": 0,
-    "control": "Master",
-    "mixer": "alsamixer",
-    "run_in_terminal": 1,
-    "mixer_internal": 1,
-    "mixer_show_values": 1,
-    "icon_theme": "Default",
-    "scale_increment": 1.0,
-    "scale_show_value": 0,
-    "show_tooltip": 1,
-    "toggle": "mute",
-    "keys": 0,
-    "keys_backend": "xlib",
-    "show_notify": 0,
-    "notify_timeout": 2.0,
-    "notify_position": 0,
-    "notify_body": '<span font_desc="14" weight="bold">{volume}</span>\n<small>{card}</small>\n<small>{mixer}</small>'
-    }
+from volti.defs import *
+from volti.utils import log, get_icon_name, get_icon_themes
 
 _PREFERENCES = None
 
@@ -54,23 +35,23 @@ class Preferences:
         self.cp = ConfigParser()
         self.set_section()
 
-        if not os.path.isfile(self.main.config.config_file):
+        if not os.path.isfile(CONFIG_FILE):
             self.write_file()
 
         self.read_file()
 
     def read_file(self):
         """ Read config file """
-        self.cp.read(self.main.config.config_file)
+        self.cp.read(CONFIG_FILE)
         for option in self.cp.options("global"):
             PREFS[option.lower()] = self.cp.get("global", option).strip()
         PREFS["control"] = self.cp.get(self.section, "control").strip()
 
     def write_file(self):
         """ Write config file """
-        if not os.path.isdir(self.main.config.config_dir):
+        if not os.path.isdir(CONFIG_DIR):
             try:
-                os.makedirs(self.main.config.config_dir)
+                os.makedirs(CONFIG_DIR)
             except OSError:
                 pass
         for section in self.section, "global":
@@ -81,7 +62,7 @@ class Preferences:
                 self.cp.set(self.section, key, val)
             else:
                 self.cp.set("global", key, val)
-        self.cp.write(open(self.main.config.config_file, "w"))
+        self.cp.write(open(CONFIG_FILE, "w"))
 
     def open(self, widget=None, data=None):
         """ Open preferences window """
@@ -120,17 +101,17 @@ class Preferences:
     def init_builder(self):
         """ Initialize gtk.Builder """
         try:
-            glade_file = os.path.join(
-                    self.main.config.res_dir, "preferences.glade")
+            glade_file = os.path.join(RES_DIR,
+                    "preferences.glade")
             self.tree = gtk.Builder()
-            self.tree.set_translation_domain(self.main.config.app_name)
+            self.tree.set_translation_domain(APP_NAME)
             self.tree.add_from_file(glade_file)
         except Exception, err:
             log.exception(str(err))
 
         self.version_label = self.tree.get_object("version_label")
         self.version_label.set_text("%s %s" % (
-            self.main.config.app_name.capitalize(), self.main.config.app_version))
+            APP_NAME.capitalize(), APP_VERSION))
 
         self.window = self.tree.get_object("window")
         self.window.connect("destroy", self.close)
@@ -138,8 +119,8 @@ class Preferences:
         if icon_theme.has_icon("multimedia-volume-control"):
             self.window.set_icon_name("multimedia-volume-control")
         else:
-            file = os.path.join(
-                    self.main.config.res_dir, "icons", "multimedia-volume-control.svg")
+            file = os.path.join(RES_DIR,
+                    "icons", "multimedia-volume-control.svg")
             self.window.set_icon_from_file(file)
 
         self.button_close = self.tree.get_object("button_close")
@@ -192,7 +173,11 @@ class Preferences:
         self.mixer_values_checkbutton.connect("toggled", self.on_mixer_values_toggled)
 
         self.keys_checkbutton = self.tree.get_object("keys_checkbutton")
-        self.keys_checkbutton.set_active(bool(int(PREFS["keys"])))
+        if not HAS_XLIB:
+            self.keys_checkbutton.set_sensitive(False)
+            self.keys_checkbutton.set_active(False)
+        else:
+            self.keys_checkbutton.set_active(bool(int(PREFS["keys"])))
         self.keys_checkbutton.connect("toggled", self.on_keys_toggled)
 
         self.mute_radiobutton = self.tree.get_object("radiobutton_mute")
@@ -214,8 +199,8 @@ class Preferences:
             icon = icon_theme.load_icon(
                     "audio-card", 22, flags=gtk.ICON_LOOKUP_FORCE_SVG)
         else:
-            file = os.path.join(
-                    self.main.config.res_dir, "icons", "audio-card.svg")
+            file = os.path.join(RES_DIR,
+                    "icons", "audio-card.svg")
             pixbuf = gtk.gdk.pixbuf_new_from_file(file)
             icon = pixbuf.scale_simple(22, 22, gtk.gdk.INTERP_BILINEAR)
 
@@ -279,7 +264,7 @@ class Preferences:
         theme_combobox = self.tree.get_object("theme_combobox")
         theme_combobox.set_model(model)
 
-        self.themes = self.main.get_icon_themes()
+        self.themes = get_icon_themes(RES_DIR)
         for index, theme in enumerate(self.themes):
             model.append([index, theme])
             if theme == PREFS["icon_theme"]:
@@ -386,7 +371,7 @@ class Preferences:
         self.main.icon_theme = icon_theme
 
         volume = self.main.get_volume()
-        icon = self.main.get_icon_name(volume)
+        icon = get_icon_name(volume)
         self.main.update_icon(volume, icon)
 
     def radio_toggle(self, model, path, iter):
@@ -470,7 +455,7 @@ class Preferences:
         self.set_notify_sensitive(active)
         if active and self.main.notify:
             volume = self.main.get_volume()
-            icon = self.main.get_icon_name(volume)
+            icon = get_icon_name(volume)
             self.main.update_notify(volume, icon)
 
     def on_position_toggled(self, widget):
@@ -481,7 +466,7 @@ class Preferences:
         if self.main.notify:
             self.main.notify.close()
             volume = self.main.get_volume()
-            icon = self.main.get_icon_name(volume)
+            icon = get_icon_name(volume)
             self.main.update_notify(volume, icon)
 
     def on_timeout_spinbutton_changed(self, widget):
