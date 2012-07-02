@@ -217,13 +217,17 @@ class PyAlsaControl():
 
     def get_mixers(self, card_index=0):
         """ Returns mixers list """
-        controls = []
+        mixers = []
         try:
             mixer = alsamixer.Mixer()
             mixer.attach("hw:%d" % card_index)
             mixer.load()
-            for mixer in mixer.list():
-                controls.append(mixer[0])
+            for mix in mixer.list():
+                m = alsamixer.Element(mixer=mixer,
+                        name=mix[0], index=0)
+                if m.has_volume():
+                    if mix[0] not in mixers:
+                        mixers.append(mix[0])
         except Exception, err:
             log.exception(str(err))
-        return controls
+        return mixers
