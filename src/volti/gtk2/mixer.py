@@ -25,7 +25,7 @@ import gtk
 import gobject
 import alsaaudio as alsa
 
-from config import Config
+from volti.config import Config
 CONFIG = Config()
 
 gettext.bindtextdomain(CONFIG.app_name, CONFIG.locale_dir)

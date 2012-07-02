@@ -22,42 +22,25 @@ import gettext
 from subprocess import Popen, PIPE
 from signal import SIGTERM
 
-try:
-    from dbus.exceptions import DBusException
-except ImportError:
-    sys.stderr.write("This program needs dbus-python 0.80.0 or higher\nExiting\n")
-    sys.exit(1)
+import gtk
+import gobject
+from dbus.exceptions import DBusException
 
 try:
-    import gtk
-    import gobject
-    assert gtk.pygtk_version >= (2, 16, 0)
-except ImportError, AssertionError:
-    sys.stderr.write("This program needs pygtk 2.16 or higher\nExiting\n")
-    sys.exit(1)
-
-try:
-    import alsaaudio as alsa
-except ImportError:
-    sys.stderr.write("This program needs pyalsaaudio 0.6 or higher\nExiting\n")
-    sys.exit(1)
-
-try:
-    from config import Config
-    from preferences import Preferences, PREFS
-    from alsactrl import AlsaControl
-    from dbusservice import DBusService
-    from scale import VolumeScale
-    from menu import PopupMenu
-    from utils import which, find_term, get_pid_app
-    from debug import log
+    from volti.config import Config
+    from volti.alsactrl import AlsaControl
+    from volti.dbusservice import DBusService
+    from volti.utils import log, which, find_term, get_pid_app
+    from volti.gtk2.scale import VolumeScale
+    from volti.gtk2.menu import PopupMenu
+    from volti.gtk2.preferences import Preferences, PREFS
 except ImportError:
     sys.stderr.write("Can't import application modules\nExiting\n")
     sys.exit(1)
 
-config = Config()
-gettext.bindtextdomain(config.app_name, config.locale_dir)
-gettext.textdomain(config.app_name)
+CONFIG = Config()
+gettext.bindtextdomain(CONFIG.app_name, CONFIG.locale_dir)
+gettext.textdomain(CONFIG.app_name)
 
 import __builtin__
 __builtin__._ = gettext.gettext
@@ -69,7 +52,7 @@ class VolumeTray(gtk.StatusIcon):
         """ Constructor """
         gtk.StatusIcon.__init__(self)
 
-        self.config = config
+        self.config = CONFIG
         self.preferences = Preferences(self)
 
         self.card_index = int(PREFS["card_index"])
@@ -139,7 +122,7 @@ class VolumeTray(gtk.StatusIcon):
                 from dbusevent import DBusEvent
                 self.keys_events = DBusEvent(self)
             except Exception, err:
-                log.Warn(str(err))
+                log.exception(str(err))
                 self.keys_events = None
         elif self.keys_backend == "xlib":
             if self.has_xlib:
@@ -148,10 +131,10 @@ class VolumeTray(gtk.StatusIcon):
                     self.keys_events = XlibEvent(self)
                     self.keys_events.start()
                 except Exception, err:
-                    log.Warn(str(err))
+                    log.exception(str(err))
                     self.keys_events = None
             else:
-                log.Warn("Xlib backend needs python-xlib 0.15rc1 or higher\n")
+                log.warn("Xlib backend needs python-xlib 0.15rc1 or higher\n")
                 self.keys_events = None
 
     def init_notify(self):
@@ -166,7 +149,7 @@ class VolumeTray(gtk.StatusIcon):
                 from notification import Notification
                 self.notify = Notification(self)
             except Exception, err:
-                log.Warn(str(err))
+                log.exception(str(err))
                 self.notify = None
 
     def on_volume_changed(self, widget=None, data=None):
@@ -264,7 +247,7 @@ class VolumeTray(gtk.StatusIcon):
 
     def get_icon_themes(self):
         themes = ["Default"]
-        icons_dir = os.path.join(config.res_dir, "icons")
+        icons_dir = os.path.join(CONFIG.res_dir, "icons")
         try:
             for file in os.listdir(icons_dir):
                 if os.path.isdir(os.path.join(icons_dir, file)):
@@ -299,7 +282,7 @@ class VolumeTray(gtk.StatusIcon):
         """ Update icon """
         if self.icon_theme != "Default":
             icon = os.path.abspath(os.path.join(
-                    config.res_dir, "icons", self.icon_theme, "32x32", icon+".png"))
+                    CONFIG.res_dir, "icons", self.icon_theme, "32x32", icon+".png"))
             self.set_from_file(icon)
         else:
             self.set_from_icon_name(icon)
@@ -315,7 +298,7 @@ class VolumeTray(gtk.StatusIcon):
         """ Update notification """
         if self.icon_theme != "Default":
             icon = os.path.abspath(os.path.join(
-                    config.res_dir, "icons", self.icon_theme, "48x48", icon+".png"))
+                    CONFIG.res_dir, "icons", self.icon_theme, "48x48", icon+".png"))
         try:
             self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
         except DBusException:
@@ -337,7 +320,7 @@ class VolumeTray(gtk.StatusIcon):
             gtk.gdk.threads_leave()
             return True
         except Exception, err:
-            log.Warn(str(err))
+            log.exception(str(err))
             return False
 
     def toggle_mute(self, widget=None):
@@ -366,7 +349,8 @@ class VolumeTray(gtk.StatusIcon):
                     cmd = which(mixer)
                 Popen(cmd, shell=False)
         except Exception, err:
-            log.Warn(str(err))
+            log.debug(cmd)
+            log.exception(str(err))
 
     def mixer_get_pid(self):
         """ Get process id of mixer application """

@@ -20,7 +20,7 @@ import gtk
 import pango
 from ConfigParser import ConfigParser
 
-from debug import log
+from volti.utils import log
 
 PREFS = {
     "card_index": 0,
@@ -126,7 +126,7 @@ class Preferences:
             self.tree.set_translation_domain(self.main.config.app_name)
             self.tree.add_from_file(glade_file)
         except Exception, err:
-            log.Warn(str(err))
+            log.exception(str(err))
 
         self.version_label = self.tree.get_object("version_label")
         self.version_label.set_text("%s %s" % (

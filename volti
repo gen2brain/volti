@@ -30,11 +30,24 @@ except ImportError, AssertionError:
     sys.exit(1)
 
 try:
-    if os.path.isdir(os.path.join(".","src")) and os.path.isfile(
-            os.path.join(".","setup.py")):
-        from src import main
-    else:
-        from volti import main
+    import gtk
+    assert gtk.pygtk_version >= (2, 16, 0)
+except ImportError, AssertionError:
+    sys.stderr.write("This program needs pygtk 2.16 or higher\nExiting\n")
+    sys.exit(1)
+
+try:
+    import alsaaudio
+except ImportError:
+    sys.stderr.write("This program needs pyalsaaudio 0.6 or higher\nExiting\n")
+    sys.exit(1)
+
+if os.path.isdir(os.path.join(".","src")) and os.path.isfile(
+        os.path.join(".","setup.py")):
+    sys.path.append(os.path.realpath("src"))
+
+try:
+    from volti.gtk2 import main
 except ImportError:
     sys.stderr.write("Can't import volti main module\nExiting\n")
     sys.exit(1)

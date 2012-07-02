@@ -27,17 +27,17 @@ except ImportError:
     sys.exit(1)
 
 try:
-    import alsaaudio as alsa
+    import alsaaudio
 except ImportError:
     sys.stderr.write("This program needs pyalsaaudio 0.6 or higher\nExiting\n")
     sys.exit(1)
 
+if os.path.isdir(os.path.join(".","src")) and os.path.isfile(
+        os.path.join(".","setup.py")):
+    sys.path.append(os.path.realpath("src"))
+
 try:
-    if os.path.isdir(os.path.join(".","src")) and os.path.isfile(
-            os.path.join(".","setup.py")):
-        from src import mixer
-    else:
-        from volti import mixer
+    from volti.gtk2 import mixer
 except ImportError, err:
     sys.stderr.write("Can't import mixer module: %s\nExiting\n" % str(err))
     sys.exit(1)

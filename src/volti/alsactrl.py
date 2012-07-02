@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+
 import alsaaudio as alsa
 
-from debug import log
+from volti.utils import log
 
 OLD_VOLUME = 0
 MUTED = False
@@ -36,7 +38,7 @@ class AlsaControl():
             self.open()
             self._check_version()
         except Exception, err:
-            log.Warn("can't open %s control for card %s, trying to select first available mixer channel\n" % (
+            log.warn("can't open %s control for card %s, trying to select first available mixer channel\n" % (
                 self.control, self.get_card_name()))
             try:
                 control = self.get_mixers(self.card_index)[0]
@@ -44,8 +46,9 @@ class AlsaControl():
                 self.reopen(self.card_index, control)
                 self._check_version()
             except Exception, err:
-                log.Error("can't open first available control for card %s\nerror: %s" % (
+                log.error("can't open first available control for card %s\nerror: %s" % (
                     self.get_card_name(), str(err)))
+                sys.exit(1)
 
     def __del__(self):
         """ Destructor """
@@ -56,7 +59,8 @@ class AlsaControl():
         try:
             assert hasattr(self.mixer, "polldescriptors")
         except AssertionError:
-            log.Error("This program needs pyalsaaudio 0.6 or higher")
+            log.error("This program needs pyalsaaudio 0.6 or higher")
+            sys.exit(1)
 
     def open(self):
         """ Open mixer """
@@ -105,7 +109,7 @@ class AlsaControl():
                 return (None, None)
             return self.mixer.polldescriptors()[0]
         except Exception, err:
-            log.Warn(str(err))
+            log.exception(str(err))
             return (None, None)
 
     def set_volume(self, volume):
@@ -115,7 +119,7 @@ class AlsaControl():
                 mixer.setvolume(volume, self.channel)
             return True
         except alsa.ALSAAudioError, err:
-            log.Warn(str(err))
+            log.exception(str(err))
             return False
 
     def get_volume(self):
@@ -125,7 +129,7 @@ class AlsaControl():
                 return 0
             return self.mixerlist[0].getvolume()[0]
         except alsa.ALSAAudioError, err:
-            log.Warn(str(err))
+            log.exception(str(err))
 
     def set_mute(self, mute=0):
         """ Set mixer mute status """
@@ -161,7 +165,7 @@ class AlsaControl():
         try:
             return alsa.cards()[self.card_index]
         except IndexError, err:
-            log.Warn(str(err))
+            log.exception(str(err))
 
     def get_mixer_name(self):
         """ Returns mixer name """
@@ -170,7 +174,7 @@ class AlsaControl():
                 return ''
             return self.mixerlist[0].mixer()
         except alsa.ALSAAudioError, err:
-            log.Warn(str(err))
+            log.exception(str(err))
 
     def get_cards(self):
         """ Returns cards list """
