@@ -24,7 +24,7 @@ from volti.utils import log
 OLD_VOLUME = 0
 MUTED = False
 
-class AlsaControl():
+class PyAlsaAudioControl():
     """ Interface to ALSA mixer API. """
 
     def __init__(self, card_index, control, main_instance):

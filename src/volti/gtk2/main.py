@@ -27,7 +27,6 @@ from dbus.exceptions import DBusException
 
 try:
     from volti.defs import *
-    from volti.alsactrl import AlsaControl
     from volti.dbusservice import DBusService
     from volti.utils import log, which, find_term, get_pid_app, get_icon_name
     from volti.gtk2.scale import VolumeScale
@@ -36,6 +35,17 @@ try:
 except ImportError:
     sys.stderr.write("Can't import application modules\nExiting\n")
     sys.exit(1)
+
+try:
+    import pyalsa
+    from volti.alsactl import PyAlsaControl as AlsaControl
+except ImportError:
+    try:
+        import alsaaudio
+        from volti.alsaaudioctl import PyAlsaAudioControl as AlsaControl
+    except ImportError:
+        sys.stderr.write("This program needs pyalsa 1.0.23 or pyalsaaudio 0.6\nExiting\n")
+        sys.exit(1)
 
 class VolumeTray(gtk.StatusIcon):
     """ GTK+ application for controlling audio volume
@@ -73,8 +83,7 @@ class VolumeTray(gtk.StatusIcon):
 
         # watch for changes
         fd, eventmask = self.alsactrl.get_descriptors()
-        self.watchid = gobject.io_add_watch(
-                fd, eventmask, self.update)
+        self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
 
     def init_prefs(self):
         """ Initialize preferences """
@@ -274,7 +283,8 @@ class VolumeTray(gtk.StatusIcon):
             return True
         try:
             if reopen:
-                self.alsactrl.reopen(self.card_index, self.control)
+                del self.alsactrl
+                self.alsactrl = AlsaControl(self.card_index, self.control, self)
             volume = self.alsactrl.get_volume()
             gtk.gdk.threads_enter()
             self.set_volume(volume)
