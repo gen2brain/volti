@@ -300,8 +300,10 @@ class SelectControls(gtk.Window):
 
         hbox = gtk.HBox(False, 5)
         label = gtk.Label()
-        label.set_markup('<b>%s</b>' % _('Select which controls should be visible'))
-        image = gtk.image_new_from_icon_name('preferences-desktop', gtk.ICON_SIZE_DIALOG)
+        label.set_markup('<b>%s</b>' % _(
+            'Select which controls should be visible'))
+        image = gtk.image_new_from_icon_name(
+                'preferences-desktop', gtk.ICON_SIZE_DIALOG)
         hbox.pack_start(image, False, False)
         hbox.pack_start(label, False, False)
         vbox.pack_start(hbox, False, False)
@@ -374,7 +376,8 @@ class SelectControls(gtk.Window):
         section = "card-%d" % self.card_index
         if not self.cp.has_section(section):
             self.cp.add_section(section)
-        self.cp.set(section, "mask_control", str(self.main.control_mask[self.card_index]))
+        self.cp.set(section, "mask_control",
+                str(self.main.control_mask[self.card_index]))
         self.cp.write(open(CONFIG_FILE, "w"))
 
     def close(self, widget=None):
@@ -389,13 +392,16 @@ class MixerControl(gtk.Frame):
     """
 
     __gsignals__ = {
-            'volume_changed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_BOOLEAN,
-                (gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT)),
-            'volume_setting_toggled': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_BOOLEAN,
-                (gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT))
+            'volume_changed': (gobject.SIGNAL_RUN_LAST,
+                gobject.TYPE_BOOLEAN, (gobject.TYPE_INT,
+                    gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT)),
+            'volume_setting_toggled': (gobject.SIGNAL_RUN_LAST,
+                gobject.TYPE_BOOLEAN, (gobject.TYPE_INT,
+                    gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT))
         }
 
-    def __init__(self, channel, option_mask, option_value, show_value, card_index, label=None):
+    def __init__(self, channel, option_mask, option_value,
+            show_value, card_index, label=None):
         """
         Create a volume control widget
         'channel' specifies the audio device mixer channel.
@@ -407,10 +413,11 @@ class MixerControl(gtk.Frame):
         'label' is the name of the channel (e.g. 'PCM).
 
         The widget supports two signals 'volume_changed' and 'volume_setting_toggled'.
-        'volume_changed' always sends left and right volume settings regardless of
-        whether the control is locked or mono.
+        'volume_changed' always sends left and right volume settings
+        regardless of whether the control is locked or mono.
 
-        'volume_setting_toggled' notifies the parent of changes in the optional checkboxes.
+        'volume_setting_toggled' notifies the parent of changes
+        in the optional checkboxes.
         """
         gtk.Frame.__init__(self, label)
 
@@ -447,10 +454,12 @@ class MixerControl(gtk.Frame):
 
         self.volume1 = gtk.Adjustment(0.0, 0.0, 100.0, 1.0, 10.0, 0.0)
         if self.stereo:
-            self.volume1_handler_id = self.volume1.connect('value_changed', self.value_changed,
+            self.volume1_handler_id = self.volume1.connect(
+                    'value_changed', self.value_changed,
                     channel, CHANNEL_LEFT, card_index)
         else:
-            self.volume1_handler_id = self.volume1.connect('value_changed', self.value_changed,
+            self.volume1_handler_id = self.volume1.connect(
+                    'value_changed', self.value_changed,
                     channel, CHANNEL_MONO, card_index)
 
         volume1_control = gtk.VScale(self.volume1)
@@ -463,7 +472,8 @@ class MixerControl(gtk.Frame):
 
         if self.stereo:
             self.volume2 = gtk.Adjustment(0.0, 0.0, 100.0, 1.0, 10.0, 0.0)
-            self.volume2_handler_id = self.volume2.connect('value_changed', self.value_changed,
+            self.volume2_handler_id = self.volume2.connect(
+                    'value_changed', self.value_changed,
                     channel, CHANNEL_RIGHT, card_index)
 
             volume2_control = gtk.VScale(self.volume2)
@@ -540,12 +550,13 @@ class MixerControl(gtk.Frame):
                 self.volume1.handler_unblock(self.volume1_handler_id)
         else:
             self.vol_left = self.vol_right = int(vol.get_value())
-        self.emit("volume_changed", channel, self.vol_left, self.vol_right, card_index)
+        self.emit("volume_changed", channel,
+                self.vol_left, self.vol_right, card_index)
 
     def check(self, button, channel, id):
         """
-        Process the various checkboxes/buttons and signal the parent when they change
-        via the 'volume_setting_toggled' signal.
+        Process the various checkboxes/buttons and signal the parent
+        when they change via the 'volume_setting_toggled' signal.
         """
         active = button.get_active()
         if id == _LOCK:
@@ -559,7 +570,8 @@ class MixerControl(gtk.Frame):
         elif id == _REC:
             self.channel_rec = not self.channel_rec
         button.set_property("image", self.button_image(id, active))
-        self.emit('volume_setting_toggled', channel, id, button.get_active(), self.card_index)
+        self.emit('volume_setting_toggled', channel,
+                id, button.get_active(), self.card_index)
 
     def toggle_element(self, active, channel, id):
         button = gtk.ToggleButton()

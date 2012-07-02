@@ -27,10 +27,12 @@ class DBusService(dbus.service.Object):
         loop = DBusGMainLoop()
         self.main = main_instance
         session_bus = dbus.SessionBus(mainloop=loop)
-        bus_name = dbus.service.BusName('com.google.code.Volti', bus=session_bus)
+        bus_name = dbus.service.BusName(
+                'com.google.code.Volti', bus=session_bus)
         dbus.service.Object.__init__(self, bus_name, '/com/google/code/Volti')
 
-        obj = session_bus.get_object('com.google.code.Volti', '/com/google/code/Volti')
+        obj = session_bus.get_object('com.google.code.Volti',
+                '/com/google/code/Volti')
         iface = dbus.Interface(obj, 'com.google.code.Volti')
         iface.connect_to_signal("signal", self.signal_handler)
 
@@ -39,7 +41,8 @@ class DBusService(dbus.service.Object):
         """ DBus signal """
         pass
 
-    @dbus.service.method('com.google.code.Volti', in_signature='s', out_signature='')
+    @dbus.service.method('com.google.code.Volti',
+            in_signature='s', out_signature='')
     def emit(self, signal):
         """ DBus method to emit signal """
         self.signal(signal)

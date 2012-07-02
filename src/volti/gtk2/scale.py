@@ -23,7 +23,7 @@ class VolumeScale():
     def __init__(self, main_instance):
         """ Constructor """
         self.main = main_instance
-        self.screen, self.rectangle, self.orientation = self.main.get_geometry()
+        self.screen,self.rectangle,self.orientation = self.main.get_geometry()
         self.win = None
         self.init_window()
 
@@ -43,10 +43,14 @@ class VolumeScale():
         frame.add(self.align)
         self.win.add(frame)
 
-        self.win.connect("button_press_event", self.on_window_button_press_event)
-        self.win.connect("key_release_event", self.on_window_key_release_event)
-        self.win.connect("scroll_event", self.on_window_scroll_event)
-        self.win.connect_after("realize", self.on_realize)
+        self.win.connect("button_press_event",
+                self.on_window_button_press_event)
+        self.win.connect("key_release_event",
+                self.on_window_key_release_event)
+        self.win.connect("scroll_event",
+                self.on_window_scroll_event)
+        self.win.connect_after("realize",
+                self.on_realize)
 
     def init_slider(self):
         """ Initialize volume scale """
@@ -74,19 +78,25 @@ class VolumeScale():
             self.slider.set_size_request(128, -1)
             self.slider.set_value_pos(gtk.POS_LEFT)
 
-        self.slider.connect("value_changed", self.main.on_volume_changed)
-        self.slider.connect("button_press_event", self.on_scale_button_press_event)
-        self.slider.connect("button_release_event", self.on_scale_button_release_event)
-        self.slider.connect("scroll_event", self.on_scale_scroll_event)
+        self.slider.connect("value_changed",
+                self.main.on_volume_changed)
+        self.slider.connect("button_press_event",
+                self.on_scale_button_press_event)
+        self.slider.connect("button_release_event",
+                self.on_scale_button_release_event)
+        self.slider.connect("scroll_event",
+                self.on_scale_scroll_event)
 
     def on_scale_button_press_event(self, widget, event):
-        """ Callback for button_press_event. We want the behaviour you get with the middle button """
+        """ Callback for button_press_event.
+        We want the behaviour you get with the middle button """
         if event.button == 1:
             event.button = 2
         return False
 
     def on_scale_button_release_event(self, widget, event):
-        """ Callback for button_release_event. We want the behaviour you get with the middle button """
+        """ Callback for button_release_event.
+        We want the behaviour you get with the middle button """
         if event.button == 1:
             event.button = 2
         return False
@@ -97,26 +107,30 @@ class VolumeScale():
         return True
 
     def on_window_button_press_event(self, widget, event):
-        """ Callback for button_press_event. If clicked somewhere else release window """
+        """ Callback for button_press_event.
+        If clicked somewhere else release window """
         if event.type == gtk.gdk.BUTTON_PRESS:
             self.release_grab()
             return True
         return False
 
     def on_window_key_release_event(self, widget, event):
-        """ Callback for key_release_event. On escape key release window """
+        """ Callback for key_release_event.
+        On escape key release window """
         if event.keyval == gtk.gdk.keyval_from_name("Escape"):
             self.release_grab()
             return True
         return True
 
     def on_window_scroll_event(self, widget, event):
-        """ Callback for scroll_event. Forwards event to statusicon """
+        """ Callback for scroll_event.
+        Forwards event to statusicon """
         self.main.on_scroll_event(widget, event)
         return True
 
     def on_realize(self, widget):
-        """ Callback for realize. Move window when realized """
+        """ Callback for realize.
+        Move window when realized """
         self.move_window()
 
     def toggle_window(self):
@@ -124,13 +138,14 @@ class VolumeScale():
         if self.win.get_property("visible"):
             self.release_grab()
         else:
-            screen, rectangle, orientation = self.main.get_geometry()
+            screen,rectangle,orientation = self.main.get_geometry()
             if orientation != self.orientation:
                 self.orientation = orientation
                 self.init_window()
                 self.main.scale = self
                 self.main.update()
-            if rectangle.x != self.rectangle.x or rectangle.y != self.rectangle.y:
+            if rectangle.x != self.rectangle.x or \
+                    rectangle.y != self.rectangle.y:
                 self.rectangle = rectangle
                 self.win.unrealize()
             self.win.show_all()
@@ -151,7 +166,8 @@ class VolumeScale():
             gtk.gdk.SCROLL_MASK)
 
         if gtk.gdk.pointer_is_grabbed():
-            if gtk.gdk.keyboard_grab(self.win.window, True) != gtk.gdk.GRAB_SUCCESS:
+            if gtk.gdk.keyboard_grab(
+                    self.win.window, True) != gtk.gdk.GRAB_SUCCESS:
                 self.release_grab()
                 return False
         else:
@@ -172,7 +188,7 @@ class VolumeScale():
 
     def get_position(self):
         """ Get coordinates to place scale window """
-        screen, rectangle, orientation = self.main.get_geometry()
+        screen,rectangle,orientation = self.main.get_geometry()
         self.win.set_screen(screen)
         monitor_num = screen.get_monitor_at_point(rectangle.x, rectangle.y)
         monitor = screen.get_monitor_geometry(monitor_num)
@@ -187,7 +203,8 @@ class VolumeScale():
                 posx = rectangle.x + rectangle.width
             posy = rectangle.y
         else:
-            if (rectangle.y + rectangle.height + window.height <= monitor.y + monitor.height):
+            if (rectangle.y + rectangle.height + window.height \
+                    <= monitor.y + monitor.height):
                 posy = rectangle.y + rectangle.height
             else:
                 posy = rectangle.y - window.height

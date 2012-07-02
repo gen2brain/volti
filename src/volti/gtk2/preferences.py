@@ -290,7 +290,8 @@ class Preferences:
 
         file_filter_mixers = gtk.FileFilter()
         file_filter_mixers.set_name(_("Sound Mixers"))
-        file_filter_mixers.add_custom(gtk.FILE_FILTER_FILENAME, self.custom_mixer_filter)
+        file_filter_mixers.add_custom(
+                gtk.FILE_FILTER_FILENAME, self.custom_mixer_filter)
         file_filter_all = gtk.FileFilter()
         file_filter_all.set_name(_("All files"))
         file_filter_all.add_pattern("*")

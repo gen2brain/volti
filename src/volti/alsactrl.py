@@ -38,7 +38,8 @@ class AlsaControl():
             self.open()
             self._check_version()
         except Exception, err:
-            log.warn("can't open %s control for card %s, trying to select first available mixer channel\n" % (
+            log.warn("can't open %s control for card %s, \
+                    trying to select first available mixer channel\n" % (
                 self.control, self.get_card_name()))
             try:
                 control = self.get_mixers(self.card_index)[0]
@@ -46,7 +47,8 @@ class AlsaControl():
                 self.reopen(self.card_index, control)
                 self._check_version()
             except Exception, err:
-                log.error("can't open first available control for card %s\nerror: %s" % (
+                log.error("can't open first available control \
+                        for card %s\nerror: %s" % (
                     self.get_card_name(), str(err)))
                 sys.exit(1)
 
@@ -97,9 +99,10 @@ class AlsaControl():
                 else:
                     seq += 1
                 if self.control == mixer:
-                    m = alsa.Mixer(control=mixer, cardindex=self.card_index, id=seq)
+                    m = alsa.Mixer(control=mixer,
+                            cardindex=self.card_index, id=seq)
                     self.mixerlist.append(m)
-            except alsa.ALSAAudioError, err:
+            except alsa.ALSAAudioError:
                 pass
 
     def get_descriptors(self):

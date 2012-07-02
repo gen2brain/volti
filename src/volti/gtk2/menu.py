@@ -29,12 +29,14 @@ class PopupMenu(gtk.Menu):
 
         self.toggle_mute = gtk.CheckMenuItem(_("Mute"))
         self.toggle_mute.set_active(self.main.alsactrl.is_muted())
-        self.mute_handler_id = self.toggle_mute.connect("toggled", self.on_toggle_mute)
+        self.mute_handler_id = self.toggle_mute.connect(
+                "toggled", self.on_toggle_mute)
         self.add(self.toggle_mute)
 
         self.toggle_mixer = gtk.CheckMenuItem(_("Show Mixer"))
         self.toggle_mixer.set_active(self.main.mixer_get_active())
-        self.mixer_handler_id = self.toggle_mixer.connect("toggled", self.on_toggle_mixer)
+        self.mixer_handler_id = self.toggle_mixer.connect(
+                "toggled", self.on_toggle_mixer)
         self.add(self.toggle_mixer)
 
         item = gtk.ImageMenuItem("gtk-preferences")

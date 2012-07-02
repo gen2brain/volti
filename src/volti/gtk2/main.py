@@ -53,7 +53,8 @@ class VolumeTray(gtk.StatusIcon):
         self.keys_events = None
         self.pid_app = get_pid_app()
 
-        self.alsactrl = AlsaControl(self.card_index, self.control, self)
+        self.alsactrl = AlsaControl(
+                self.card_index, self.control, self)
         self.menu = PopupMenu(self)
         self.scale = VolumeScale(self)
         self.dbus = DBusService(self)
@@ -72,7 +73,8 @@ class VolumeTray(gtk.StatusIcon):
 
         # watch for changes
         fd, eventmask = self.alsactrl.get_descriptors()
-        self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
+        self.watchid = gobject.io_add_watch(
+                fd, eventmask, self.update)
 
     def init_prefs(self):
         """ Initialize preferences """
@@ -193,7 +195,8 @@ class VolumeTray(gtk.StatusIcon):
         self.menu.toggle_mute.set_active(self.alsactrl.is_muted())
         self.menu.toggle_mute.handler_unblock(self.menu.mute_handler_id)
 
-        self.menu.popup(None, None, gtk.status_icon_position_menu, button, time, self)
+        self.menu.popup(None, None, gtk.status_icon_position_menu,
+                button, time, self)
 
     def change_volume(self, event, key_press=False):
         """ Change volume """
@@ -246,7 +249,8 @@ class VolumeTray(gtk.StatusIcon):
         """ Update tooltip """
         var, card_name, mixer_name = self.get_status_info(volume)
         tooltip = "<b>%s: %s%s </b>\n<small>%s: %s\n%s: %s</small>" % (
-                _("Output"), volume, var, _("Card"), card_name, _("Mixer"), mixer_name)
+                _("Output"), volume, var, _("Card"),
+                card_name, _("Mixer"), mixer_name)
         self.set_tooltip_markup(tooltip)
 
     def update_notify(self, volume, icon):
@@ -255,12 +259,14 @@ class VolumeTray(gtk.StatusIcon):
             icon = os.path.abspath(os.path.join(RES_DIR, "icons",
                 self.icon_theme, "48x48", icon+".png"))
         try:
-            self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
+            self.notify.show(icon,
+                    self.notify_body, self.notify_timeout, volume)
         except DBusException:
             del self.notify
             self.notify = None
             self.init_notify()
-            self.notify.show(icon, self.notify_body, self.notify_timeout, volume)
+            self.notify.show(icon,
+                    self.notify_body, self.notify_timeout, volume)
 
     def update(self, source=None, condition=None, reopen=True):
         """ Update volume """

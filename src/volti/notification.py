@@ -24,7 +24,8 @@ class Notification:
         """ Constructor """
         self.main = main_instance
         bus = dbus.SessionBus()
-        obj = bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications')
+        obj = bus.get_object('org.freedesktop.Notifications',
+                '/org/freedesktop/Notifications')
         self.notify = dbus.Interface(obj, 'org.freedesktop.Notifications')
         self.server_capable = self.check_capabilities()
         self.title = '' if self.server_capable else 'volume'
@@ -47,7 +48,9 @@ class Notification:
         hints = {"urgency": dbus.Byte(0), "desktop-entry": dbus.String("volti")}
         if self.main.notify_position and self.server_capable:
             hints["x"], hints["y"] = self.get_position()
-        self.last_id = self.notify.Notify('volume', self.last_id, icon, self.title, body, [], hints, duration * 1000)
+        self.last_id = self.notify.Notify('volume',
+                self.last_id, icon, self.title,
+                body, [], hints, duration * 1000)
 
     def close(self):
         """ Close the notification """
@@ -56,7 +59,7 @@ class Notification:
 
     def get_position(self):
         """ Returns status icon center coordinates """
-        screen, rectangle, orientation = self.main.get_geometry()
+        screen,rectangle,orientation = self.main.get_geometry()
         posx = rectangle.x + rectangle.width/2
         posy = rectangle.y + rectangle.height/2
         return posx, posy

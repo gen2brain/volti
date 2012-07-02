@@ -52,9 +52,12 @@ class XlibEvent(gobject.GObject, threading.Thread):
         self.root = self.screen.root
         self.root.change_attributes(event_mask = X.KeyPressMask)
 
-        self.up_keys = self.get_keycodes(self.display.keysym_to_keycodes(XK.XK_XF86_AudioRaiseVolume))
-        self.down_keys = self.get_keycodes(self.display.keysym_to_keycodes(XK.XK_XF86_AudioLowerVolume))
-        self.mute_keys = self.get_keycodes(self.display.keysym_to_keycodes(XK.XK_XF86_AudioMute))
+        self.up_keys = self.get_keycodes(
+                self.display.keysym_to_keycodes(XK.XK_XF86_AudioRaiseVolume))
+        self.down_keys = self.get_keycodes(
+                self.display.keysym_to_keycodes(XK.XK_XF86_AudioLowerVolume))
+        self.mute_keys = self.get_keycodes(
+                self.display.keysym_to_keycodes(XK.XK_XF86_AudioMute))
         self.keycodes = [self.up_keys, self.down_keys, self.mute_keys]
 
         self.grab()
@@ -72,10 +75,12 @@ class XlibEvent(gobject.GObject, threading.Thread):
         return keycodes
 
     def grab(self):
-        """ Grab keys, will print error if some other app already have those keys grabbed """
+        """ Grab keys, will print error if some
+        other app already have those keys grabbed """
         for keys in self.keycodes:
             for keycode in keys:
-                self.root.grab_key(keycode, X.AnyModifier, True, X.GrabModeAsync, X.GrabModeAsync)
+                self.root.grab_key(keycode, X.AnyModifier,
+                        True, X.GrabModeAsync, X.GrabModeAsync)
 
     def ungrab(self):
         """ Ungrab keys """
