@@ -195,15 +195,6 @@ class Preferences:
         self.keys_checkbutton.set_active(bool(int(PREFS["keys"])))
         self.keys_checkbutton.connect("toggled", self.on_keys_toggled)
 
-        self.hal_radiobutton = self.tree.get_object("radiobutton_hal")
-        self.xlib_radiobutton = self.tree.get_object("radiobutton_xlib")
-        if PREFS["keys_backend"] == "hal":
-            self.hal_radiobutton.set_active(True)
-        elif PREFS["keys_backend"] == "xlib":
-            self.xlib_radiobutton.set_active(True)
-        self.hal_radiobutton.connect("toggled", self.on_radio_hal_toggled)
-        self.xlib_radiobutton.connect("toggled", self.on_radio_xlib_toggled)
-
         self.mute_radiobutton = self.tree.get_object("radiobutton_mute")
         self.mixer_radiobutton = self.tree.get_object("radiobutton_mixer")
         if PREFS["toggle"] == "mute":
@@ -213,7 +204,6 @@ class Preferences:
         self.mute_radiobutton.connect("toggled", self.on_radio_mute_toggled)
         self.mixer_radiobutton.connect("toggled", self.on_radio_mixer_toggled)
 
-        self.set_keys_sensitive(bool(int(PREFS["keys"])))
         self.set_notify_sensitive(bool(int(PREFS["show_notify"])))
         self.set_mixer_sensitive(bool(int(PREFS["mixer_internal"])))
 
@@ -470,7 +460,6 @@ class Preferences:
         PREFS["keys"] = int(active)
         self.main.keys = active
         self.main.init_keys_events()
-        self.set_keys_sensitive(active)
 
     def on_notify_toggled(self, widget):
         """ Callback for notify_toggled event """
@@ -501,31 +490,12 @@ class Preferences:
         PREFS["notify_timeout"] = timeout
         self.main.notify_timeout = timeout
 
-    def on_radio_hal_toggled(self, widget):
-        """ Callback for radio_hal_toggled event """
-        if widget.get_active():
-            PREFS["keys_backend"] = "hal"
-            self.main.keys_backend = "hal"
-            self.main.init_keys_events()
-
-    def on_radio_xlib_toggled(self, widget):
-        """ Callback for radio_xlib_toggled event """
-        if widget.get_active():
-            PREFS["keys_backend"] = "xlib"
-            self.main.keys_backend = "xlib"
-            self.main.init_keys_events()
-
     def set_mixer_sensitive(self, active):
         """ Set widgets sensitivity """
         self.mixer_values_checkbutton.set_sensitive(active)
         self.mixer_entry.set_sensitive(not active)
         self.button_browse.set_sensitive(not active)
         self.terminal_checkbutton.set_sensitive(not active)
-
-    def set_keys_sensitive(self, active):
-        """ Set widgets sensitivity """
-        self.hal_radiobutton.set_sensitive(active)
-        self.xlib_radiobutton.set_sensitive(active)
 
     def set_notify_sensitive(self, active):
         """ Set widgets sensitivity """

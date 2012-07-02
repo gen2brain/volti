@@ -38,6 +38,12 @@ except ImportError:
     sys.stderr.write("Can't import application modules\nExiting\n")
     sys.exit(1)
 
+try:
+    from Xlib import X
+    HAS_XLIB = True
+except ImportError:
+    HAS_XLIB = False
+
 CONFIG = Config()
 gettext.bindtextdomain(CONFIG.app_name, CONFIG.locale_dir)
 gettext.textdomain(CONFIG.app_name)
@@ -46,7 +52,8 @@ import __builtin__
 __builtin__._ = gettext.gettext
 
 class VolumeTray(gtk.StatusIcon):
-    """ GTK+ application for controlling audio volume from system tray/notification area """
+    """ GTK+ application for controlling audio volume
+    from system tray/notification area """
 
     def __init__(self):
         """ Constructor """
@@ -66,17 +73,10 @@ class VolumeTray(gtk.StatusIcon):
         self.scale_increment = float(PREFS["scale_increment"])
         self.scale_show_value = bool(int(PREFS["scale_show_value"]))
         self.keys = bool(int(PREFS["keys"]))
-        self.keys_backend = PREFS["keys_backend"]
         self.show_notify = bool(int(PREFS["show_notify"]))
         self.notify_timeout = float(PREFS["notify_timeout"])
         self.notify_position = bool(int(PREFS["notify_position"]))
         self.notify_body = PREFS["notify_body"]
-
-        try:
-            from Xlib import X
-            self.has_xlib = True
-        except ImportError:
-            self.has_xlib = False
 
         self.lock = False
         self.lockid = None
@@ -117,25 +117,17 @@ class VolumeTray(gtk.StatusIcon):
         if not self.keys:
             return
 
-        if self.keys_backend == "hal":
+        if HAS_XLIB:
             try:
-                from dbusevent import DBusEvent
-                self.keys_events = DBusEvent(self)
+                from volti.xlibevent import XlibEvent
+                self.keys_events = XlibEvent(self)
+                self.keys_events.start()
             except Exception, err:
                 log.exception(str(err))
                 self.keys_events = None
-        elif self.keys_backend == "xlib":
-            if self.has_xlib:
-                try:
-                    from xlibevent import XlibEvent
-                    self.keys_events = XlibEvent(self)
-                    self.keys_events.start()
-                except Exception, err:
-                    log.exception(str(err))
-                    self.keys_events = None
-            else:
-                log.warn("Xlib backend needs python-xlib 0.15rc1 or higher\n")
-                self.keys_events = None
+        else:
+            log.warn("Xlib backend needs python-xlib 0.15rc1 or higher\n")
+            self.keys_events = None
 
     def init_notify(self):
         """ Initialize desktop notifications """
