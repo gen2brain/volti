@@ -17,12 +17,18 @@
 
 import threading
 
-import gtk
-import gobject
 from Xlib.display import Display
 from Xlib import X, XK
 
+from volti.defs import *
 from volti.utils import log
+
+if HAS_GTK3:
+    from gi.repository import Gdk as gdk
+    from gi.repository import GObject as gobject
+elif HAS_GTK2:
+    import gtk.gdk as gdk
+    import gobject
 
 class XlibEvent(gobject.GObject, threading.Thread):
     """ Handle multimedia keys via Xlib """
@@ -99,9 +105,9 @@ class XlibEvent(gobject.GObject, threading.Thread):
 
     def signal(self, signal):
         """ Emit signal """
-        gtk.gdk.threads_enter()
+        gdk.threads_enter()
         self.emit(signal)
-        gtk.gdk.threads_leave()
+        gdk.threads_leave()
         return False
 
     def run(self):

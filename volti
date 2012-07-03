@@ -29,22 +29,24 @@ except ImportError, AssertionError:
     sys.stderr.write("This program needs dbus-python 0.80.0 or higher\nExiting\n")
     sys.exit(1)
 
-try:
-    import gtk
-    assert gtk.pygtk_version >= (2, 16, 0)
-except ImportError, AssertionError:
-    sys.stderr.write("This program needs pygtk 2.16 or higher\nExiting\n")
-    sys.exit(1)
-
 if os.path.isdir(os.path.join(".","src")) and os.path.isfile(
         os.path.join(".","setup.py")):
     sys.path.append(os.path.realpath("src"))
 
 try:
-    from volti.gtk2 import main
-except ImportError:
-    sys.stderr.write("Can't import volti main module\nExiting\n")
+    from volti.defs import *
+except ImportError, err:
+    print str(err)
+    sys.stderr.write("Can't import application modules\nExiting\n")
     sys.exit(1)
+
+if HAS_GTK3:
+    from volti.gtk3 import main
+elif HAS_GTK2:
+    from volti.gtk2 import main
+else:
+    sys.stderr.write("This program needs pygtk 2.16 or gi.repository\nExiting\n")
+
 
 if __name__ == "__main__":
     try:

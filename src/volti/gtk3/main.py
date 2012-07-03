@@ -21,17 +21,18 @@ import sys
 from subprocess import Popen, PIPE
 from signal import SIGTERM
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GObject
 from dbus.exceptions import DBusException
 
 try:
     from volti.defs import *
     from volti.dbusservice import DBusService
     from volti.utils import log, which, find_term, get_pid_app, get_icon_name
-    from volti.gtk2.scale import VolumeScale
-    from volti.gtk2.menu import PopupMenu
-    from volti.gtk2.preferences import Preferences
+    from volti.gtk3.scale import VolumeScale
+    from volti.gtk3.menu import PopupMenu
+    from volti.gtk3.preferences import Preferences
 except ImportError:
     sys.stderr.write("Can't import application modules\nExiting\n")
     sys.exit(1)
@@ -44,13 +45,13 @@ else:
     sys.stderr.write("This program needs pyalsa 1.0.23 or pyalsaaudio 0.6\nExiting\n")
     sys.exit(1)
 
-class VolumeTray(gtk.StatusIcon):
+class VolumeTray(Gtk.StatusIcon):
     """ GTK+ application for controlling audio volume
     from system tray/notification area """
 
     def __init__(self):
         """ Constructor """
-        gtk.StatusIcon.__init__(self)
+        Gtk.StatusIcon.__init__(self)
 
         self.init_prefs()
         self.lock = False
@@ -80,7 +81,7 @@ class VolumeTray(gtk.StatusIcon):
 
         # watch for changes
         fd, eventmask = self.alsactrl.get_descriptors()
-        self.watchid = gobject.io_add_watch(fd, eventmask, self.update)
+        self.watchid = GObject.io_add_watch(fd, eventmask, self.update)
 
     def init_prefs(self):
         """ Initialize preferences """
@@ -145,7 +146,7 @@ class VolumeTray(gtk.StatusIcon):
             return
 
         if self.lockid:
-            gobject.source_remove(self.lockid)
+            GObject.source_remove(self.lockid)
             self.lockid = None
 
         self.lock = True
@@ -162,7 +163,7 @@ class VolumeTray(gtk.StatusIcon):
             if self.show_notify and self.notify:
                 self.update_notify(vol, icon)
 
-        self.lockid = gobject.timeout_add(10, self._unlock)
+        self.lockid = GObject.timeout_add(10, self._unlock)
 
     def _unlock(self):
         """ Unlock scale """
@@ -184,9 +185,9 @@ class VolumeTray(gtk.StatusIcon):
 
     def on_scroll_event(self, widget, event):
         """ Callback for scroll_event """
-        if event.direction == gtk.gdk.SCROLL_UP:
+        if event.direction == Gdk.ScrollDirection.UP:
             self.change_volume("up")
-        elif event.direction == gtk.gdk.SCROLL_DOWN:
+        elif event.direction == Gdk.ScrollDirection.DOWN:
             self.change_volume("down")
         if self.show_notify and self.notify:
             self.notify.close()
@@ -201,8 +202,8 @@ class VolumeTray(gtk.StatusIcon):
         self.menu.toggle_mute.set_active(self.alsactrl.is_muted())
         self.menu.toggle_mute.handler_unblock(self.menu.mute_handler_id)
 
-        self.menu.popup(None, None, gtk.status_icon_position_menu,
-                button, time, self)
+        self.menu.popup_for_device(None, None, None,
+                Gtk.StatusIcon.position_menu, self, button, time)
 
     def change_volume(self, event, key_press=False):
         """ Change volume """
@@ -284,9 +285,9 @@ class VolumeTray(gtk.StatusIcon):
                 self.alsactrl = AlsaControl(
                         self.card_index, self.control, self)
             volume = self.alsactrl.get_volume()
-            gtk.gdk.threads_enter()
+            Gdk.threads_enter()
             self.set_volume(volume)
-            gtk.gdk.threads_leave()
+            Gdk.threads_leave()
             return True
         except Exception, err:
             log.exception(str(err))
@@ -341,12 +342,12 @@ class VolumeTray(gtk.StatusIcon):
 
     def main(self):
         """ Main loop """
-        gobject.threads_init()
+        GObject.threads_init()
         try:
-            gtk.main()
+            Gtk.main()
         except KeyboardInterrupt:
             pass
 
     def quit(self, widget=None):
         """ Quit main loop """
-        gtk.main_quit()
+        Gtk.main_quit()

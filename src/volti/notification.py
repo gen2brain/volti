@@ -17,6 +17,8 @@
 
 import dbus
 
+from volti.defs import *
+
 class Notification:
     """ Desktop notifications """
 
@@ -59,7 +61,10 @@ class Notification:
 
     def get_position(self):
         """ Returns status icon center coordinates """
-        screen,rectangle,orientation = self.main.get_geometry()
+        if HAS_GTK3:
+            rval,screen,rectangle,orientation = self.main.get_geometry()
+        else:
+            screen,rectangle,orientation = self.main.get_geometry()
         posx = rectangle.x + rectangle.width/2
         posy = rectangle.y + rectangle.height/2
         return posx, posy

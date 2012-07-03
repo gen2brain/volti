@@ -24,7 +24,6 @@ class PyAlsaControl():
             self.mixer.load()
             
             self.open()
-
             self._has_capture()
             self._check_version()
 
@@ -67,9 +66,6 @@ class PyAlsaControl():
 
     def close(self):
         """ Close mixer """
-        for mixer in self.mixerlist:
-            if hasattr(mixer, 'close'):
-                mixer.close()
         self.element = None
         self.mixerlist = []
 
