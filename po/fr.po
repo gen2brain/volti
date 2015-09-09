@@ -1,15 +1,15 @@
 # French translations for volti package.
-# Copyright (C) 2010 THE volti'S COPYRIGHT HOLDER
+# Copyright (C) 2010-2015 THE volti'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the volti package.
 # Jean-Alexandre Anglès d'Auriac <archidiacredusquig@gmail.com>, 2010.
+# Lilian Besson <naereen at crans dot org>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: volti 0.1.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-07-02 18:44+0200\n"
-"PO-Revision-Date: 2010-02-12 01:12+0100\n"
-"Last-Translator: Jean-Alexandre Anglès d'Auriac <archidiacredusquig@gmail."
-"com>\n"
+"PO-Revision-Date: 2015-09-09 13:32+0100\n"
+"Last-Translator: Lilian Besson <naereen at crans dot org>\n"
 "Language-Team: français <>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -20,11 +20,11 @@ msgstr ""
 
 #: ../src/volti/gtk2/mixer.py:93
 msgid "_Select Controls..."
-msgstr ""
+msgstr "_Choisir les contrôles..."
 
 #: ../src/volti/gtk2/mixer.py:303
 msgid "Select which controls should be visible"
-msgstr ""
+msgstr "Choisissez quel contrôles doivent être visibles"
 
 #: ../src/volti/gtk2/preferences.py:284
 msgid "Choose external mixer"
@@ -82,11 +82,11 @@ msgstr "Matériel"
 
 #: ../data/preferences.glade.h:5
 msgid "Use internal mixer"
-msgstr ""
+msgstr "Utiliser le mixeur interne"
 
 #: ../data/preferences.glade.h:6
 msgid "Show values"
-msgstr ""
+msgstr "Montrer les valeurs"
 
 #: ../data/preferences.glade.h:7
 msgid "External mixer:"
@@ -124,6 +124,11 @@ msgid ""
 "If your notification daemon has support,\n"
 "you can use the Pango markup language for formating."
 msgstr ""
+"Les champs de la forme {champ} sont remplacés par les valeurs correspondantes.\n"
+"Les champs disponibles sont : {volume}, {card} et {mixer}. \n"
+"\n"
+"Si votre démon de notification le supporte,\n"
+"vous pouvez utiliser le langage de balisage Pango pour des mises en forme."
 
 #: ../data/preferences.glade.h:20
 msgid "Position notification"
@@ -135,7 +140,7 @@ msgstr "Clavier"
 
 #: ../data/preferences.glade.h:22
 msgid "Icon theme:"
-msgstr ""
+msgstr "Thème des icônes"
 
 #: ../data/preferences.glade.h:23
 msgid "Middle mouse button action:"
@@ -159,7 +164,7 @@ msgstr "Interface"
 
 #: ../data/preferences.glade.h:30
 msgid "About"
-msgstr ""
+msgstr "À-propos"
 
 #: ../data/preferences.glade.h:31
 msgid "Close"
