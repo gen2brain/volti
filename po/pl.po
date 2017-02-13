@@ -1,0 +1,175 @@
+# Polish translations for volti package
+# Polskie tłumaczenia dla pakietu volti.
+# Copyright (C) 2017 THE volti'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the volti package.
+# Piotr Wójcik <chocimier@tlen.pl>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: volti 0.2.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-02 18:44+0200\n"
+"PO-Revision-Date: 2017-02-11 16:51+0100\n"
+"Last-Translator: Piotr Wójcik <chocimier@tlen.pl>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Language: pl_PL\n"
+"X-Source-Language: C\n"
+
+#: ../src/volti/gtk2/mixer.py:93
+msgid "_Select Controls..."
+msgstr "_Wybierz regulatory…"
+
+#: ../src/volti/gtk2/mixer.py:303
+msgid "Select which controls should be visible"
+msgstr "Zaznacz regulatory, do wyświetlenia"
+
+#: ../src/volti/gtk2/preferences.py:284
+msgid "Choose external mixer"
+msgstr "Wybierz zewnętrny mikser"
+
+#: ../src/volti/gtk2/preferences.py:292
+msgid "Sound Mixers"
+msgstr "Miksery dźwięku"
+
+#: ../src/volti/gtk2/preferences.py:295
+msgid "All files"
+msgstr "Wszystkie pliki"
+
+#: ../src/volti/gtk2/menu.py:30 ../data/preferences.glade.h:24
+msgid "Mute"
+msgstr "Wycisz"
+
+#: ../src/volti/gtk2/menu.py:35 ../data/preferences.glade.h:25
+msgid "Show Mixer"
+msgstr "Pokaż mikser"
+
+#: ../src/volti/gtk2/main.py:217 ../src/volti/gtk2/main.py:232
+#: ../src/volti/utils.py:48
+msgid "Muted"
+msgstr "Wyciszone"
+
+#: ../src/volti/gtk2/main.py:249
+msgid "Output"
+msgstr "Wyjście"
+
+#: ../src/volti/gtk2/main.py:249 ../src/volti/notification.py:68
+msgid "Card"
+msgstr "Karta"
+
+#: ../src/volti/gtk2/main.py:249 ../src/volti/notification.py:69
+#: ../data/preferences.glade.h:10
+msgid "Mixer"
+msgstr "Mikser"
+
+#: ../data/preferences.glade.h:1
+msgid "Volti Preferences"
+msgstr "Preferencje Volti"
+
+#: ../data/preferences.glade.h:2
+msgid "Select audio card:"
+msgstr "Wybierz kartę dźwiękową:"
+
+#: ../data/preferences.glade.h:3
+msgid "Select a channel to control:"
+msgstr "Wybierz kontrolowany kanał:"
+
+#: ../data/preferences.glade.h:4
+msgid "Hardware"
+msgstr "Sprzęt"
+
+#: ../data/preferences.glade.h:5
+msgid "Use internal mixer"
+msgstr "Użyj wbudowanego mikseru"
+
+#: ../data/preferences.glade.h:6
+msgid "Show values"
+msgstr "Pokazuj wartości"
+
+#: ../data/preferences.glade.h:7
+msgid "External mixer:"
+msgstr "Zewnętrzny mikser:"
+
+#: ../data/preferences.glade.h:8
+msgid "Browse"
+msgstr "Wybierz"
+
+#: ../data/preferences.glade.h:9
+msgid "Run in terminal"
+msgstr "Uruchom w terminalu"
+
+#: ../data/preferences.glade.h:11
+msgid "Enable multimedia keys"
+msgstr "Włącz klawisze multimedialne"
+
+#: ../data/preferences.glade.h:12
+msgid "Enable desktop notifications"
+msgstr "Włącz powiadomienia"
+
+#: ../data/preferences.glade.h:13
+msgid "Timeout:"
+msgstr "Trwanie:"
+
+#: ../data/preferences.glade.h:14
+msgid "seconds"
+msgstr "sekund"
+
+#: ../data/preferences.glade.h:15
+msgid ""
+"Fields of the form {field} are replaced by their corresponding value.\n"
+"Available fields are: {volume}, {card} and {mixer} . \n"
+"\n"
+"If your notification daemon has support,\n"
+"you can use the Pango markup language for formating."
+msgstr ""
+"Symbole postaci {symbol} są zastępowane bieżącymi wartościami.\n"
+"Dostępne symbole: \n"
+"{volume} — głośność,\n"
+"{card} — karta,\n"
+"{mixer} — mikser.\n"
+"\n"
+"Możesz formatować tekst składnią Pango,\n"
+"o ile twoja usługa powiadomień na to pozwala."
+
+#: ../data/preferences.glade.h:20
+msgid "Position notification"
+msgstr "Położenie dymku"
+
+#: ../data/preferences.glade.h:21
+msgid "Keyboard"
+msgstr "Klawiatura"
+
+#: ../data/preferences.glade.h:22
+msgid "Icon theme:"
+msgstr "Motyw ikon:"
+
+#: ../data/preferences.glade.h:23
+msgid "Middle mouse button action:"
+msgstr "Klikając środkowym przyciskiem myszy:"
+
+#: ../data/preferences.glade.h:26
+msgid "Show tooltip"
+msgstr "Pokazuj dymki"
+
+#: ../data/preferences.glade.h:27
+msgid "Show scale value"
+msgstr "Pokaż wartość"
+
+#: ../data/preferences.glade.h:28
+msgid "Volume adjustment:"
+msgstr "Krok:"
+
+#: ../data/preferences.glade.h:29
+msgid "UI"
+msgstr "Interfejs"
+
+#: ../data/preferences.glade.h:30
+msgid "About"
+msgstr "O programie"
+
+#: ../data/preferences.glade.h:31
+msgid "Close"
+msgstr "Wyjdź"
