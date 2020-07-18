@@ -235,6 +235,8 @@ class Mixer(gtk.Window):
         ch, id = self.alsa_channels[card_index][channel]
         mixer = alsa.Mixer(ch, id, card_index)
         vol = mixer.getvolume()
+        if vol == None or len(vol) == 0:
+            return (0, 0)
         if len(vol) == 1:
             return (vol[0], vol[0])
         return (vol[0], vol[1])
